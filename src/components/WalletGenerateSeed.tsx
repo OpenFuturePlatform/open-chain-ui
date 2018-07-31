@@ -8,6 +8,8 @@ import { getVersion } from '../actions/index';
 import { IState } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
+import danger from '../img/danger.svg';
+import info from '../img/info.svg';
 import { walletSelector } from '../reducers';
 
 interface IProps {
@@ -18,7 +20,8 @@ interface IProps {
 }
 
 export class WalletGenerateSeedComponent extends React.Component<IProps> {
-  public handleOnGenerate = () => {
+  public handleOnGenerate = (e: React.SyntheticEvent) => {
+    e.preventDefault();
     this.props.getVersion();
   };
 
@@ -35,9 +38,24 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
             <Link to="/wallet/login-type">
               <img src={arrow} alt="<" />
             </Link>
-            <h2>GENERAGE SEED PHRASE</h2>
-            <button onClick={this.handleOnGenerate}>Generate</button>
+            <h2>Create a new wallet</h2>
           </div>
+          <form>
+            <h2 className="generate">Generate seed phrase</h2>
+            <a className="info-link" href="#">
+              <img src={info} alt="?" />
+              <span>What is Seed Phrase?</span>
+            </a>
+            <button className="button" onClick={this.handleOnGenerate}>
+              <div />
+              <span>Generate</span>
+            </button>
+            <div className="disclaimer">
+              <img src={danger} alt="!" />
+              <span>Disclaimer text</span>
+              <a href="#">Read</a>
+            </div>
+          </form>
         </div>
       </section>
     );
