@@ -11,7 +11,7 @@ export const WalletLoginType: React.SFC<{}> = () => {
       <div className="select-type">
         <h2>Select type of login</h2>
         <div className="links">
-          <Link to="/wallet/create">
+          <Link to="/wallet/generate-seed-phrase">
             <img src={create} alt="create" />
             <h3>
               Create <br /> a new wallet
