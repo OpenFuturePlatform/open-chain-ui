@@ -1,13 +1,13 @@
-import { EventType } from '../actions/event-types';
+import { ActionType } from '../actions/actionType';
+import { WalletAction } from '../actions/wallet';
 import { IWallet } from '../configureStore';
-import { IEvent } from './index';
 
-export const wallet = (state = null, action: IEvent<IWallet>) => {
+export const wallet = (state = null, action: WalletAction) => {
   switch (action.type) {
-    case EventType.SAVE_WALLET:
+    case ActionType.SAVE_WALLET:
       const newWallet: IWallet = action.payload;
       return { ...newWallet };
-    case EventType.CLEAR_WALLET:
+    case ActionType.CLEAR_WALLET:
       return null;
     default:
       return state;

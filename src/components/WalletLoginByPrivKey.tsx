@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 
-interface IState {
+interface IStoreState {
   isKeyHidden: boolean;
   key: string;
 }
 
-export class WalletLoginByPrivKey extends React.Component<{}, IState> {
+export class WalletLoginByPrivKey extends React.Component<{}, IStoreState> {
   public state = {
     isKeyHidden: true,
     key: ''

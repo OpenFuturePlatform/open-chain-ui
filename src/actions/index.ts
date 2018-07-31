@@ -1,28 +1,15 @@
-import axios from 'axios';
-import { Dispatch } from 'redux';
-import { IKeys, IWallet } from '../configureStore';
-import { IEvent } from '../reducers/index';
-import { EventType } from './event-types';
+import { Action } from 'redux';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { IStoreState } from '../configureStore';
+import { ActionType } from './actionType';
 
-interface IGetVersionResponse {
-  body: string;
+export interface IAction<T = any> extends Action {
+  readonly type: ActionType;
+  readonly payload: T;
 }
 
-export const getVersion = () => async (dispatch: Dispatch) => {
-  const { data } = await axios.get<IGetVersionResponse>('/rpc/info/getVersion');
-  const payload: string = data.body;
-  dispatch<IEvent<string>>({ type: EventType.SAVE_VERSION, payload });
-};
+export type IThunkDispatch = ThunkDispatch<IStoreState, undefined, IAction<any>>;
 
-interface IGenerateSeedPhraseResponse {
-  seedPhrase: string;
-  masterKeys: IKeys;
-  defaultWallet: IWallet;
-}
+export type IThunkAction<A extends IAction, R = Promise<void>> = ThunkAction<R, IStoreState, undefined, A>;
 
-export const generateWallet = () => async (dispatch: Dispatch) => {
-  const { data } = await axios.get<IGenerateSeedPhraseResponse>('/rpc/accounts/doGenerate');
-  const payload = data.defaultWallet;
-  dispatch<IEvent<IWallet>>({ type: EventType.SAVE_WALLET, payload });
-  return data;
-};
+export const ActionCreator = Object;

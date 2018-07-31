@@ -1,9 +1,9 @@
-import { EventType } from '../actions/event-types';
-import { IEvent } from './index';
+import { ActionType } from '../actions/actionType';
+import { VersionAction } from '../actions/version';
 
-export const version = (state = '', action: IEvent<string>) => {
+export const version = (state = '', action: VersionAction) => {
   switch (action.type) {
-    case EventType.SAVE_VERSION:
+    case ActionType.SAVE_VERSION:
       return action.payload;
     default:
       return state;

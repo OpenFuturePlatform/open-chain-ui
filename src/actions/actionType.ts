@@ -1,4 +1,4 @@
-export enum EventType {
+export enum ActionType {
   SAVE_VERSION = 'SAVE_VERSION',
   SAVE_WALLET = 'SAVE_WALLET',
   CLEAR_WALLET = 'CLEAR_WALLET'

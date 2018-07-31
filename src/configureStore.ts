@@ -1,5 +1,6 @@
 import { applyMiddleware, createStore } from 'redux';
-import reduxThunk from 'redux-thunk';
+import reduxThunk, { ThunkMiddleware } from 'redux-thunk';
+import { IAction } from './actions/index';
 import { mainReducer } from './reducers';
 
 export interface IKeys {
@@ -12,7 +13,7 @@ export interface IWallet {
   address: string;
 }
 
-export interface IState {
+export interface IStoreState {
   readonly version: string;
   readonly wallet: IWallet | null;
 }
@@ -20,4 +21,8 @@ export interface IState {
 const initState = { wallet: null };
 
 export const configureStore = () =>
-  createStore<IState, any, any, any>(mainReducer, initState, applyMiddleware(reduxThunk));
+  createStore<IStoreState, IAction, object, object>(
+    mainReducer,
+    initState,
+    applyMiddleware(reduxThunk as ThunkMiddleware<IStoreState>)
+  );
