@@ -22,7 +22,7 @@ interface IProps {
 export class WalletGenerateSeedComponent extends React.Component<IProps> {
   public handleOnGenerate = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    this.props.getVersion();
+    this.props.history.push('/wallet/new-seed-phrase');
   };
 
   public render() {

@@ -138,6 +138,7 @@ section {
   -webkit-box-shadow: none;
   box-shadow: none;
   cursor: default;
+  pointer-events: none;
 }
 .button.disable div {
   display: none;
