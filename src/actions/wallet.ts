@@ -3,6 +3,7 @@ import { Dispatch } from 'redux';
 import { IKeys, IWallet } from '../configureStore';
 import { ActionType } from './actionType';
 import { ActionCreator, IAction, IThunkAction } from './index';
+import { SaveSeed, SeedAction } from './seed';
 
 interface IGenerateSeedPhraseResponse {
   seedPhrase: string;
@@ -24,8 +25,11 @@ class ClearWallet extends ActionCreator implements IAction<null> {
   public readonly payload: null = null;
 }
 
-export const generateWallet = (): IThunkAction<WalletAction> => async (dispatch: Dispatch<SaveWallet>) => {
+export const generateWallet = (): IThunkAction<WalletAction> => async (
+  dispatch: Dispatch<WalletAction | SeedAction>
+) => {
   const { data } = await axios.get<IGenerateSeedPhraseResponse>('/rpc/accounts/doGenerate');
-  const payload = data.defaultWallet;
-  dispatch(new SaveWallet(payload));
+  const { defaultWallet, seedPhrase } = data;
+  dispatch(new SaveSeed(seedPhrase));
+  dispatch(new SaveWallet(defaultWallet));
 };

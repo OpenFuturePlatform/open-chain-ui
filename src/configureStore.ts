@@ -4,17 +4,18 @@ import { IAction } from './actions/index';
 import { mainReducer } from './reducers';
 
 export interface IKeys {
-  publicKey: string;
-  privateKey: string;
+  readonly publicKey: string;
+  readonly privateKey: string;
 }
 
 export interface IWallet {
-  keys: IKeys;
-  address: string;
+  readonly keys: IKeys;
+  readonly address: string;
 }
 
 export interface IStoreState {
   readonly version: string;
+  readonly seed: string;
   readonly wallet: IWallet | null;
 }
 

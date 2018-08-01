@@ -6,24 +6,42 @@ import { IStoreState } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import danger from '../img/danger.svg';
-import { walletSelector } from '../reducers';
+import { copy2Clipboard } from '../utils/copy2Clipboard';
+import { download } from '../utils/download';
 
 interface IProps {
+  seed: string;
   history: History;
 }
 
 interface IState {
+  copied: boolean;
   isConfirmDisabled: boolean;
 }
 
 export class WalletNewSeedComponent extends React.Component<IProps, IState> {
   public state = {
+    copied: false,
     isConfirmDisabled: true
+  };
+
+  private seedRef = React.createRef<HTMLTextAreaElement>();
+
+  public onCopyHandler = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    if (this.seedRef.current) {
+      const copyValue = this.seedRef.current.value;
+      const copied = copy2Clipboard(copyValue);
+      this.setState({ copied });
+      setTimeout(() => this.setState({ copied: false }), 4000);
+    }
   };
 
   public onExportHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
+    const { seed } = this.props;
     this.setState({ isConfirmDisabled: false });
+    download('seed-phrase.txt', seed);
   };
 
   public onConfirmHandler = (e: React.MouseEvent<HTMLElement>) => {
@@ -31,7 +49,9 @@ export class WalletNewSeedComponent extends React.Component<IProps, IState> {
   };
 
   public render() {
-    const { isConfirmDisabled } = this.state;
+    const { seed } = this.props;
+    const { copied, isConfirmDisabled } = this.state;
+    const copyButtonText = copied ? 'Copied' : 'Copy to clipboard';
 
     return (
       <section>
@@ -53,13 +73,11 @@ export class WalletNewSeedComponent extends React.Component<IProps, IState> {
             <div className="input">
               <p className="required">
                 Seed phrase <span>12 words</span>
-                <a className="copy" href="#">
-                  Copy to clipboard
-                </a>
+                <button className="copy" onClick={this.onCopyHandler}>
+                  {copyButtonText}
+                </button>
               </p>
-              <textarea className="disable" readOnly={true}>
-                Looping videfo iffsws fdsfa shorfgt vi2deo thwat plaeys oveer anwwed oveer again
-              </textarea>
+              <textarea ref={this.seedRef} className="disable" readOnly={true} value={seed} />
             </div>
             <div className="button-area">
               <a className="button white" onClick={this.onExportHandler}>
@@ -85,8 +103,6 @@ export class WalletNewSeedComponent extends React.Component<IProps, IState> {
   }
 }
 
-const mapStateToProps = (state: IStoreState) => ({
-  wallet: walletSelector(state)
-});
+const mapStateToProps = ({ seed }: IStoreState) => ({ seed });
 
 export const WalletNewSeed = connect(mapStateToProps)(WalletNewSeedComponent);
