@@ -1,31 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CopyToClipboard } from '../components-ui/CopyToClipboard';
 import { IStoreState, IWallet } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import infoGray from '../img/info-gray.svg';
-import { download } from '../utils/download';
 
 interface IStoreStateProps {
   wallet: IWallet | null;
 }
 
-interface IRouterProps extends RouteComponentProps<any> {}
-
-type IProps = IStoreStateProps & IRouterProps;
-
-export class WalletNewKeysComponent extends React.Component<IProps, object> {
-  public onExportHandler = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    const { wallet } = this.props;
-    download('wallet.json', JSON.stringify(wallet));
-  };
-
+export class WalletNewKeysComponent extends React.Component<IStoreStateProps, object> {
   public render() {
-    console.log(this.props.wallet);
-
     if (!this.props.wallet) {
       return null;
     }
@@ -47,7 +34,7 @@ export class WalletNewKeysComponent extends React.Component<IProps, object> {
             <img src={crumb} alt=">" />
           </div>
           <div className="name">
-            <Link to="/wallet/generate-seed-phrase">
+            <Link to="/wallet/new-seed-phrase">
               <img src={arrow} alt="<" />
             </Link>
             <h2>Wallet data</h2>
@@ -81,14 +68,7 @@ export class WalletNewKeysComponent extends React.Component<IProps, object> {
               </div>
             </div>
             <div className="button-area ">
-              <button onClick={this.onExportHandler} className="button white">
-                <div />
-                <span>
-                  Export<span>.json</span>
-                </span>
-                <input type="file" />
-              </button>
-              <Link to="/" className="button">
+              <Link to="/wallet/create-password" className="button">
                 <div />
                 <span>Confirm</span>
               </Link>
@@ -102,6 +82,4 @@ export class WalletNewKeysComponent extends React.Component<IProps, object> {
 
 const mapStateToProps = ({ wallet }: IStoreState) => ({ wallet });
 
-export const WalletNewKeys = connect<IStoreStateProps, {}, {}>(mapStateToProps)(
-  withRouter<IRouterProps>(WalletNewKeysComponent)
-);
+export const WalletNewKeys = connect<IStoreStateProps, {}, {}>(mapStateToProps)(WalletNewKeysComponent);
