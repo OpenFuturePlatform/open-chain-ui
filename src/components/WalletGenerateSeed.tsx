@@ -1,23 +1,28 @@
-import { History } from 'history';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { IThunkDispatch } from '../actions/index';
 import { getVersion } from '../actions/version';
 import { generateWallet } from '../actions/wallet';
-import { IStoreState } from '../configureStore';
+import { IStoreState, IWallet } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import danger from '../img/danger.svg';
 import info from '../img/info.svg';
-import { walletSelector } from '../reducers';
 
-interface IProps {
-  history: History;
+interface IStoreStateProps {
   version: string;
+  wallet: IWallet | null;
+}
+
+interface IDispatchProps {
   generateWallet: () => void;
   getVersion: () => void;
 }
+
+interface IRouterProps extends RouteComponentProps<any> {}
+
+type IProps = IStoreStateProps & IDispatchProps & IRouterProps;
 
 export class WalletGenerateSeedComponent extends React.Component<IProps> {
   public handleOnGenerate = (e: React.MouseEvent<HTMLElement>) => {
@@ -62,17 +67,14 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
   }
 }
 
-const mapStateToProps = (state: IStoreState) => ({
-  version: state.version,
-  wallet: walletSelector(state)
-});
+const mapStateToProps = ({ version, wallet }: IStoreState) => ({ version, wallet });
 
 const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
   generateWallet: () => dispatch(generateWallet()),
   getVersion: () => dispatch(getVersion())
 });
 
-export const WalletGenerateSeed = connect(
+export const WalletGenerateSeed = connect<IStoreStateProps, IDispatchProps>(
   mapStateToProps,
   mapDispatchToProps
 )(WalletGenerateSeedComponent);
