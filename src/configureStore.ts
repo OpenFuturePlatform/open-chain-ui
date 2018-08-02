@@ -19,7 +19,7 @@ export interface IStoreState {
   readonly wallet: IWallet | null;
 }
 
-const initState = { wallet: null };
+const initState = {};
 
 export const configureStore = () =>
   createStore<IStoreState, IAction, object, object>(

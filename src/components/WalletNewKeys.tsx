@@ -6,6 +6,7 @@ import { IStoreState, IWallet } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import infoGray from '../img/info-gray.svg';
+import { download } from '../utils/download';
 
 interface IStoreStateProps {
   wallet: IWallet | null;
@@ -15,28 +16,22 @@ interface IRouterProps extends RouteComponentProps<any> {}
 
 type IProps = IStoreStateProps & IRouterProps;
 
-interface IState {
-  isConfirmDisabled: boolean;
-}
-
-export class WalletNewKeysComponent extends React.Component<IProps, IState> {
-  public state = {
-    isConfirmDisabled: true
-  };
-
+export class WalletNewKeysComponent extends React.Component<IProps, object> {
   public onExportHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    this.setState({ isConfirmDisabled: false });
-  };
-
-  public onConfirmHandler = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
+    const { wallet } = this.props;
+    download('wallet.json', JSON.stringify(wallet));
   };
 
   public render() {
-    const privateKey = 'FF7508C54D3EF2141D05F7EB1A0CC719692E8A3A189B3';
-    const publicKey = 'FF7508C54D3EF2141D05F7EB1A0CC719692E8A3A189B3';
-    const address = 'FF7508C54D3EF2141D05F7EB1A0CC719692E8A3A189B1342354223';
+    console.log(this.props.wallet);
+
+    if (!this.props.wallet) {
+      return null;
+    }
+
+    const { address, keys } = this.props.wallet;
+    const { privateKey, publicKey } = keys;
 
     return (
       <section>
@@ -86,17 +81,17 @@ export class WalletNewKeysComponent extends React.Component<IProps, IState> {
               </div>
             </div>
             <div className="button-area ">
-              <a className="button white">
+              <button onClick={this.onExportHandler} className="button white">
                 <div />
                 <span>
-                  Export<span>.txt</span>
+                  Export<span>.json</span>
                 </span>
                 <input type="file" />
-              </a>
-              <a href="#" className="button">
+              </button>
+              <Link to="/" className="button">
                 <div />
                 <span>Confirm</span>
-              </a>
+              </Link>
             </div>
           </form>
         </div>
