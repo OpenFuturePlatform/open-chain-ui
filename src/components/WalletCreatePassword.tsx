@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { IStoreState, IWallet } from '../configureStore';
+import { IWallet } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import danger from '../img/danger.svg';
@@ -9,7 +8,7 @@ import { encryptWallet, IEncWallet } from '../utils/crypto';
 import { download } from '../utils/download';
 
 interface IProps {
-  wallet: IWallet | null;
+  wallet: IWallet;
 }
 
 interface IState {
@@ -17,7 +16,7 @@ interface IState {
   password: string;
 }
 
-export class WalletCreatePasswordComponent extends React.Component<IProps, IState> {
+export class WalletCreatePassword extends React.Component<IProps, IState> {
   public state = {
     isPasswordShown: false,
     password: ''
@@ -31,9 +30,6 @@ export class WalletCreatePasswordComponent extends React.Component<IProps, IStat
   public onExportHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const { wallet } = this.props;
-    if (!wallet) {
-      return;
-    }
     download(`${wallet.address}.json`, JSON.stringify(wallet));
   };
 
@@ -41,9 +37,6 @@ export class WalletCreatePasswordComponent extends React.Component<IProps, IStat
     const { wallet } = this.props;
     const { password } = this.state;
     e.preventDefault();
-    if (!wallet) {
-      return;
-    }
     const encWallet: IEncWallet = await encryptWallet(wallet, password);
     download(`${wallet.address}.json`, JSON.stringify(encWallet, null, 2));
   };
@@ -57,20 +50,20 @@ export class WalletCreatePasswordComponent extends React.Component<IProps, IStat
       <section>
         <div className="form-content">
           <div className="crumbs">
-            <Link to="/wallet/login-type">Select type of login</Link>
+            <Link to="/login">Select type of login</Link>
             <img src={crumb} alt=">" />
 
-            <Link to="/wallet/generate-seed-phrase">Create a new wallet</Link>
+            <Link to="/new">Create a new wallet</Link>
             <img src={crumb} alt=">" />
 
-            <Link to="/wallet/new-seed-phrase">Seed phrase</Link>
+            <Link to="/new/seed-phrase">Seed phrase</Link>
             <img src={crumb} alt=">" />
 
-            <Link to="/wallet/new-keys">Wallet data</Link>
+            <Link to="/new/new-keys">Wallet data</Link>
             <img src={crumb} alt=">" />
           </div>
           <div className="name">
-            <Link to="/wallet/new-keys">
+            <Link to="/new/new-keys">
               <img src={arrow} alt="<" />
             </Link>
             <h2>Create password</h2>
@@ -102,6 +95,7 @@ export class WalletCreatePasswordComponent extends React.Component<IProps, IStat
                 <div />
                 <span>Done</span>
               </button>
+              <Link to="/">hello</Link>
             </div>
             <div className="disclaimer">
               <img src={danger} alt="!" />
@@ -113,7 +107,3 @@ export class WalletCreatePasswordComponent extends React.Component<IProps, IStat
     );
   }
 }
-
-const mapStateToProps = ({ wallet }: IStoreState) => ({ wallet });
-
-export const WalletCreatePassword = connect<IProps, {}, {}>(mapStateToProps)(WalletCreatePasswordComponent);

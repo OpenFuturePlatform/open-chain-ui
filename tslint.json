@@ -5,6 +5,7 @@
   },
   "rules": {
     "no-console": [true, "warning"],
-    "max-classes-per-file": [false]
+    "max-classes-per-file": [false],
+    "jsx-no-lambda": [false]
   }
 }

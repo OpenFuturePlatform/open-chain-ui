@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 import { IKeys, IWallet } from '../configureStore';
 import { ActionType } from './actionType';
 import { ActionCreator, IAction, IThunkAction } from './index';
-import { SaveSeed, SeedAction } from './seed';
+import { ClearSeed, SaveSeed, SeedAction } from './seed';
 
 interface IGenerateSeedPhraseResponse {
   seedPhrase: string;
@@ -32,4 +32,10 @@ export const generateWallet = (): IThunkAction<WalletAction> => async (
   const { defaultWallet, seedPhrase } = data;
   dispatch(new SaveSeed(seedPhrase));
   dispatch(new SaveWallet(defaultWallet));
+};
+
+export const cleanWallet = (): IThunkAction<WalletAction> => async (dispatch: Dispatch<WalletAction | SeedAction>) => {
+  dispatch(new ClearWallet());
+  const clearSeed = new ClearSeed();
+  dispatch(clearSeed);
 };

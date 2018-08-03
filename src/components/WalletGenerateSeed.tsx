@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { IThunkDispatch } from '../actions/index';
 import { getVersion } from '../actions/version';
 import { generateWallet } from '../actions/wallet';
@@ -27,7 +27,7 @@ type IProps = IStoreStateProps & IDispatchProps & IRouterProps;
 export class WalletGenerateSeedComponent extends React.Component<IProps> {
   public handleOnGenerate = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    this.props.history.push('/wallet/new-seed-phrase');
+    this.props.history.push('/new/seed-phrase');
   };
 
   public render() {
@@ -36,11 +36,11 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
         {this.props.version}
         <div className="form-content">
           <div className="crumbs">
-            <Link to="/wallet/login-type">Select type of login</Link>
+            <Link to="/login">Select type of login</Link>
             <img src={crumb} alt=">" />
           </div>
           <div className="name">
-            <Link to="/wallet/login-type">
+            <Link to="/login">
               <img src={arrow} alt="<" />
             </Link>
             <h2>Create a new wallet</h2>
@@ -77,4 +77,4 @@ const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
 export const WalletGenerateSeed = connect<IStoreStateProps, IDispatchProps>(
   mapStateToProps,
   mapDispatchToProps
-)(WalletGenerateSeedComponent);
+)(withRouter(WalletGenerateSeedComponent));

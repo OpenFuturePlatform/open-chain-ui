@@ -1,22 +1,17 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CopyToClipboard } from '../components-ui/CopyToClipboard';
-import { IStoreState, IWallet } from '../configureStore';
+import { IWallet } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import infoGray from '../img/info-gray.svg';
 
 interface IStoreStateProps {
-  wallet: IWallet | null;
+  wallet: IWallet;
 }
 
-export class WalletNewKeysComponent extends React.Component<IStoreStateProps, object> {
+export class WalletNewKeys extends React.Component<IStoreStateProps, object> {
   public render() {
-    if (!this.props.wallet) {
-      return null;
-    }
-
     const { address, keys } = this.props.wallet;
     const { privateKey, publicKey } = keys;
 
@@ -24,17 +19,17 @@ export class WalletNewKeysComponent extends React.Component<IStoreStateProps, ob
       <section>
         <div className="form-content">
           <div className="crumbs">
-            <Link to="/wallet/login-type">Select type of login</Link>
+            <Link to="/login">Select type of login</Link>
             <img src={crumb} alt=">" />
 
-            <Link to="/wallet/generate-seed-phrase">Create a new wallet</Link>
+            <Link to="/new">Create a new wallet</Link>
             <img src={crumb} alt=">" />
 
-            <Link to="/wallet/new-seed-phrase">Seed phrase</Link>
+            <Link to="/new/seed-phrase">Seed phrase</Link>
             <img src={crumb} alt=">" />
           </div>
           <div className="name">
-            <Link to="/wallet/new-seed-phrase">
+            <Link to="/new/seed-phrase">
               <img src={arrow} alt="<" />
             </Link>
             <h2>Wallet data</h2>
@@ -68,7 +63,7 @@ export class WalletNewKeysComponent extends React.Component<IStoreStateProps, ob
               </div>
             </div>
             <div className="button-area ">
-              <Link to="/wallet/create-password" className="button">
+              <Link to="/new/create-password" className="button">
                 <div />
                 <span>Confirm</span>
               </Link>
@@ -79,7 +74,3 @@ export class WalletNewKeysComponent extends React.Component<IStoreStateProps, ob
     );
   }
 }
-
-const mapStateToProps = ({ wallet }: IStoreState) => ({ wallet });
-
-export const WalletNewKeys = connect<IStoreStateProps, {}, {}>(mapStateToProps)(WalletNewKeysComponent);

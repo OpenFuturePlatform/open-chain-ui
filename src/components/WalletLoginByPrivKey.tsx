@@ -26,11 +26,11 @@ export class WalletLoginByPrivKey extends React.Component<{}, IStoreState> {
       <section>
         <div className="form-content">
           <div className="crumbs">
-            <Link to="/wallet/login-type">Select type of login</Link>
+            <Link to="/login">Select type of login</Link>
             <img src={crumb} alt=">" />
           </div>
           <div className="name">
-            <Link to="/wallet/login-type">
+            <Link to="/login">
               <img src={arrow} alt="<" />
             </Link>
             <h2>Enter private key</h2>

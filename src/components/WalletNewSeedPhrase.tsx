@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CopyToClipboard } from '../components-ui/CopyToClipboard';
-import { IStoreState } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import danger from '../img/danger.svg';
@@ -16,7 +14,7 @@ interface IState {
   isConfirmDisabled: boolean;
 }
 
-export class WalletNewSeedComponent extends React.Component<IProps, IState> {
+export class WalletNewSeed extends React.Component<IProps, IState> {
   public state = {
     isConfirmDisabled: true
   };
@@ -36,14 +34,14 @@ export class WalletNewSeedComponent extends React.Component<IProps, IState> {
       <section>
         <div className="form-content">
           <div className="crumbs">
-            <Link to="/wallet/login-type">Select type of login</Link>
+            <Link to="/login">Select type of login</Link>
             <img src={crumb} alt=">" />
 
-            <Link to="/wallet/generate-seed-phrase">Create a new wallet</Link>
+            <Link to="/new">Create a new wallet</Link>
             <img src={crumb} alt=">" />
           </div>
           <div className="name">
-            <Link to="/wallet/generate-seed-phrase">
+            <Link to="/new">
               <img src={arrow} alt="<" />
             </Link>
             <h2>Seed phrase</h2>
@@ -63,7 +61,7 @@ export class WalletNewSeedComponent extends React.Component<IProps, IState> {
                   Export<span>.txt</span>
                 </span>
               </a>
-              <Link to="/wallet/new-keys" className={`button ${isConfirmDisabled && 'disable'}`}>
+              <Link to="/new/new-keys" className={`button ${isConfirmDisabled && 'disable'}`}>
                 <div />
                 <span>Confirm</span>
               </Link>
@@ -79,7 +77,3 @@ export class WalletNewSeedComponent extends React.Component<IProps, IState> {
     );
   }
 }
-
-const mapStateToProps = ({ seed }: IStoreState) => ({ seed });
-
-export const WalletNewSeed = connect(mapStateToProps)(WalletNewSeedComponent);

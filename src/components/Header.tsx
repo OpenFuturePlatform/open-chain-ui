@@ -4,7 +4,7 @@ import logo from '../img/logo.svg';
 
 export const Header: React.SFC<{}> = () => {
   return (
-    <Link className="logo" to="/wallet/login-type">
+    <Link className="logo" to="/login">
       <img src={logo} alt="logo" />
     </Link>
   );
