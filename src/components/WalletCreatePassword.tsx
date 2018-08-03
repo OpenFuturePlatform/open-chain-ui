@@ -5,6 +5,7 @@ import { IStoreState, IWallet } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import danger from '../img/danger.svg';
+import { encryptWallet, IEncWallet } from '../utils/crypto';
 import { download } from '../utils/download';
 
 interface IProps {
@@ -36,8 +37,15 @@ export class WalletCreatePasswordComponent extends React.Component<IProps, IStat
     download(`${wallet.address}.json`, JSON.stringify(wallet));
   };
 
-  public onSubmit = (e: React.MouseEvent<HTMLElement>) => {
+  public onSubmit = async (e: React.MouseEvent<HTMLElement>) => {
+    const { wallet } = this.props;
+    const { password } = this.state;
     e.preventDefault();
+    if (!wallet) {
+      return;
+    }
+    const encWallet: IEncWallet = await encryptWallet(wallet, password);
+    download(`${wallet.address}.json`, JSON.stringify(encWallet, null, 2));
   };
 
   public render() {
