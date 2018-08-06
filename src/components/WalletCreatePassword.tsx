@@ -95,7 +95,6 @@ export class WalletCreatePassword extends React.Component<IProps, IState> {
                 <div />
                 <span>Done</span>
               </button>
-              <Link to="/">hello</Link>
             </div>
             <div className="disclaimer">
               <img src={danger} alt="!" />

@@ -1,14 +1,17 @@
 import axios from 'axios';
 import { Dispatch } from 'redux';
 import { IKeys, IWallet } from '../configureStore';
+import { mockWallet } from '../mocks/wallet';
 import { ActionType } from './actionType';
 import { ActionCreator, IAction, IThunkAction } from './index';
 import { ClearSeed, SaveSeed, SeedAction } from './seed';
 
-interface IGenerateSeedPhraseResponse {
-  seedPhrase: string;
-  masterKeys: IKeys;
-  defaultWallet: IWallet;
+export interface IGenerateSeedPhraseResponse {
+  payload: {
+    seedPhrase: string;
+    masterKeys: IKeys;
+    defaultWallet: IWallet;
+  };
 }
 
 export type WalletAction = SaveWallet | ClearWallet;
@@ -25,17 +28,25 @@ class ClearWallet extends ActionCreator implements IAction<null> {
   public readonly payload: null = null;
 }
 
+const generateWalletRequest = () => {
+  if (process.env.REACT_APP_IS_MOCK) {
+    const data = mockWallet;
+    return Promise.resolve({ data });
+  } else {
+    return axios.get<IGenerateSeedPhraseResponse>('/rpc/accounts/doGenerate');
+  }
+};
+
 export const generateWallet = (): IThunkAction<WalletAction> => async (
   dispatch: Dispatch<WalletAction | SeedAction>
 ) => {
-  const { data } = await axios.get<IGenerateSeedPhraseResponse>('/rpc/accounts/doGenerate');
-  const { defaultWallet, seedPhrase } = data;
+  const { data } = await generateWalletRequest();
+  const { defaultWallet, seedPhrase } = data.payload;
   dispatch(new SaveSeed(seedPhrase));
   dispatch(new SaveWallet(defaultWallet));
 };
 
 export const cleanWallet = (): IThunkAction<WalletAction> => async (dispatch: Dispatch<WalletAction | SeedAction>) => {
   dispatch(new ClearWallet());
-  const clearSeed = new ClearSeed();
-  dispatch(clearSeed);
+  dispatch(new ClearSeed());
 };

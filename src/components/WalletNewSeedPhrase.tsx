@@ -7,6 +7,7 @@ import danger from '../img/danger.svg';
 import { download } from '../utils/download';
 
 interface IProps {
+  address: string;
   seed: string;
 }
 
@@ -21,9 +22,9 @@ export class WalletNewSeed extends React.Component<IProps, IState> {
 
   public onExportHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    const { seed } = this.props;
+    const { address, seed } = this.props;
     this.setState({ isConfirmDisabled: false });
-    download('seed-phrase.txt', seed);
+    download(`${address}-seed-phrase.txt`, seed);
   };
 
   public render() {

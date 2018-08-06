@@ -25,8 +25,9 @@ interface IRouterProps extends RouteComponentProps<any> {}
 type IProps = IStoreStateProps & IDispatchProps & IRouterProps;
 
 export class WalletGenerateSeedComponent extends React.Component<IProps> {
-  public handleOnGenerate = (e: React.MouseEvent<HTMLElement>) => {
+  public handleOnGenerate = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
+    await this.props.generateWallet();
     this.props.history.push('/new/seed-phrase');
   };
 
