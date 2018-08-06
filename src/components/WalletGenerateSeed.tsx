@@ -2,27 +2,20 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { IThunkDispatch } from '../actions/index';
-import { getVersion } from '../actions/version';
 import { generateWallet } from '../actions/wallet';
-import { IStoreState, IWallet } from '../configureStore';
+import { IStoreState } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import danger from '../img/danger.svg';
 import info from '../img/info.svg';
 
-interface IStoreStateProps {
-  version: string;
-  wallet: IWallet | null;
-}
-
 interface IDispatchProps {
   generateWallet: () => void;
-  getVersion: () => void;
 }
 
 interface IRouterProps extends RouteComponentProps<any> {}
 
-type IProps = IStoreStateProps & IDispatchProps & IRouterProps;
+type IProps = IDispatchProps & IRouterProps;
 
 export class WalletGenerateSeedComponent extends React.Component<IProps> {
   public handleOnGenerate = async (e: React.MouseEvent<HTMLElement>) => {
@@ -34,7 +27,6 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
   public render() {
     return (
       <section>
-        {this.props.version}
         <div className="form-content">
           <div className="crumbs">
             <Link to="/login">Select type of login</Link>
@@ -68,14 +60,13 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
   }
 }
 
-const mapStateToProps = ({ version, wallet }: IStoreState) => ({ version, wallet });
+const mapStateToProps = (state: IStoreState) => ({});
 
 const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
-  generateWallet: () => dispatch(generateWallet()),
-  getVersion: () => dispatch(getVersion())
+  generateWallet: () => dispatch(generateWallet())
 });
 
-export const WalletGenerateSeed = connect<IStoreStateProps, IDispatchProps>(
+export const WalletGenerateSeed = connect<object, IDispatchProps>(
   mapStateToProps,
   mapDispatchToProps
 )(withRouter(WalletGenerateSeedComponent));

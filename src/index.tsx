@@ -10,6 +10,7 @@ import { withMainBackground } from './components/withMainBackground';
 import { configureStore } from './configureStore';
 import registerServiceWorker from './registerServiceWorker';
 import { CreateWorkFlow } from './scenes/CreateWorkFlow';
+import { UploadWorkFlow } from './scenes/UploadWorkFlow';
 import './styles/index.css';
 
 export interface IRouterProps extends RouteComponentProps<any> {}
@@ -27,7 +28,8 @@ ReactDOM.render(
         <Route exact={true} path="/" component={withMainBackground(WalletEnter)} />
         <Route path="/login" component={withBackground(WalletLoginType)} />
         <Route path="/new" component={withBackground(CreateWorkFlow)} />
-        <Route path={`/enter-private-key`} component={WalletLoginByPrivKey} />
+        <Route path="/enter-private-key" component={WalletLoginByPrivKey} />
+        <Route path="/upload" component={UploadWorkFlow} />
         <Redirect from="*" to="/" />
       </Switch>
     </BrowserRouter>

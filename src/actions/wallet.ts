@@ -16,7 +16,7 @@ export interface IGenerateSeedPhraseResponse {
 
 export type WalletAction = SaveWallet | ClearWallet;
 
-class SaveWallet extends ActionCreator implements IAction<IWallet> {
+export class SaveWallet extends ActionCreator implements IAction<IWallet> {
   public readonly type = ActionType.SAVE_WALLET;
   constructor(public readonly payload: IWallet) {
     super();
@@ -44,6 +44,10 @@ export const generateWallet = (): IThunkAction<WalletAction> => async (
   const { defaultWallet, seedPhrase } = data.payload;
   dispatch(new SaveSeed(seedPhrase));
   dispatch(new SaveWallet(defaultWallet));
+};
+
+export const setWallet = (wallet: IWallet) => async (dispatch: Dispatch<WalletAction | SeedAction>) => {
+  dispatch(new SaveWallet(wallet));
 };
 
 export const cleanWallet = (): IThunkAction<WalletAction> => async (dispatch: Dispatch<WalletAction | SeedAction>) => {

@@ -1,7 +1,7 @@
 import { IKeys, IWallet } from '../configureStore';
 
 interface ICrypto {
-  iv: Uint8Array;
+  iv: string;
   data: string;
 }
 
@@ -9,6 +9,8 @@ export interface IEncWallet {
   address: string;
   crypto: ICrypto;
 }
+
+const stringifyArrayBuffer = (arrayBuffer: ArrayBuffer) => String.fromCharCode.apply(null, new Uint8Array(arrayBuffer));
 
 const encryptText = async (plainText: string, password: string): Promise<ICrypto> => {
   const ptUtf8 = new TextEncoder().encode(plainText);
@@ -20,22 +22,29 @@ const encryptText = async (plainText: string, password: string): Promise<ICrypto
   const key = await crypto.subtle.importKey('raw', pwHash, alg as any, false, ['encrypt']);
 
   const encBuffer = await crypto.subtle.encrypt(alg, key, ptUtf8);
-  const stringBuffer = String.fromCharCode.apply(null, new Uint8Array(encBuffer));
+  const stringBuffer = stringifyArrayBuffer(encBuffer);
+  const stringIv = stringifyArrayBuffer(iv as any);
 
-  return { iv, data: stringBuffer };
+  return { iv: stringIv, data: stringBuffer };
 };
 
-const decryptText = async (data: string, iv: any, password: string): Promise<string> => {
+const parseArrayBuffer = (data: string) => {
   const ctBuffer = new ArrayBuffer(data.length);
   const bufView = new Uint8Array(ctBuffer);
   for (let i = 0, strLen = data.length; i < strLen; i++) {
     bufView[i] = data.charCodeAt(i);
   }
+  return ctBuffer;
+};
+
+const decryptText = async (data: string, iv: string, password: string): Promise<string> => {
+  const ctBuffer = parseArrayBuffer(data);
+  const restoredIv = parseArrayBuffer(iv);
 
   const pwUtf8 = new TextEncoder().encode(password);
   const pwHash = await crypto.subtle.digest('SHA-256', pwUtf8);
 
-  const alg = { name: 'AES-GCM', iv };
+  const alg = { name: 'AES-GCM', iv: restoredIv };
   const key = await crypto.subtle.importKey('raw', pwHash, alg as any, false, ['decrypt']);
 
   const ptBuffer = await crypto.subtle.decrypt(alg, key, ctBuffer);

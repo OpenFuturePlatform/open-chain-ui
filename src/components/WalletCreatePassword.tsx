@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { IRouterProps } from '..';
+import { Password } from '../components-ui/Password';
 import { IWallet } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
@@ -15,20 +16,16 @@ interface IOwnProps {
 type IProps = IOwnProps & IRouterProps;
 
 interface IState {
-  isPasswordShown: boolean;
   password: string;
 }
 
 class WalletCreatePasswordComponent extends React.Component<IProps, IState> {
   public state = {
-    isPasswordShown: false,
     password: ''
   };
 
   public onPasswordChange = (e: React.SyntheticEvent<HTMLInputElement>) =>
     this.setState({ password: e.currentTarget.value });
-
-  public onShowPassword = () => this.setState(({ isPasswordShown }: IState) => ({ isPasswordShown: !isPasswordShown }));
 
   public onSubmit = async (e: React.MouseEvent<HTMLElement>) => {
     const { wallet } = this.props;
@@ -40,8 +37,7 @@ class WalletCreatePasswordComponent extends React.Component<IProps, IState> {
   };
 
   public render() {
-    const { isPasswordShown, password } = this.state;
-    const inputType = isPasswordShown ? 'text' : 'password';
+    const { password } = this.state;
     const isSubmitDisabled = password.length < 3;
 
     return (
@@ -69,17 +65,7 @@ class WalletCreatePasswordComponent extends React.Component<IProps, IState> {
           <form className="form-create-pass">
             <div className="input">
               <p className="required">Create password</p>
-              <input
-                type={inputType}
-                placeholder="Password"
-                value={password}
-                required={true}
-                onChange={this.onPasswordChange}
-              />
-              <label htmlFor="eye">
-                <input id="eye" type="checkbox" checked={isPasswordShown} onChange={this.onShowPassword} />
-                <div className="eye" />
-              </label>
+              <Password password={password} onChange={this.onPasswordChange} />
             </div>
             <div className="button-area ">
               <button className={`button ${isSubmitDisabled && 'disable'}`} onClick={this.onSubmit}>
