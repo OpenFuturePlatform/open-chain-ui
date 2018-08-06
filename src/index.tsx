@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { WalletEnter } from './components/WalletEnter';
 import { WalletLoginByPrivKey } from './components/WalletLoginByPrivKey';
 import { WalletLoginType } from './components/WalletLoginType';
@@ -11,6 +11,8 @@ import { configureStore } from './configureStore';
 import registerServiceWorker from './registerServiceWorker';
 import { CreateWorkFlow } from './scenes/CreateWorkFlow';
 import './styles/index.css';
+
+export interface IRouterProps extends RouteComponentProps<any> {}
 
 const store = configureStore();
 

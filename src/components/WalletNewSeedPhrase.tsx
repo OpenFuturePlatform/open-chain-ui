@@ -62,7 +62,7 @@ export class WalletNewSeed extends React.Component<IProps, IState> {
                   Export<span>.txt</span>
                 </span>
               </a>
-              <Link to="/new/new-keys" className={`button ${isConfirmDisabled && 'disable'}`}>
+              <Link to="/new/keys" className={`button ${isConfirmDisabled && 'disable'}`}>
                 <div />
                 <span>Confirm</span>
               </Link>

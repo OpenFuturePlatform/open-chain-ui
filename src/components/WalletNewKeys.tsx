@@ -63,7 +63,7 @@ export class WalletNewKeys extends React.Component<IStoreStateProps, object> {
               </div>
             </div>
             <div className="button-area ">
-              <Link to="/new/create-password" className="button">
+              <Link to="/new/create" className="button">
                 <div />
                 <span>Confirm</span>
               </Link>

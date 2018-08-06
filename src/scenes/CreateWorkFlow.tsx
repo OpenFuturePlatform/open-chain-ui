@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
+import { IRouterProps } from '..';
 import { IThunkDispatch } from '../actions';
 import { cleanWallet, generateWallet } from '../actions/wallet';
 import { WalletCreatePassword } from '../components/WalletCreatePassword';
+import { WalletCreationComplete } from '../components/WalletCreationComplete';
 import { WalletGenerateSeed } from '../components/WalletGenerateSeed';
 import { WalletNewKeys } from '../components/WalletNewKeys';
 import { WalletNewSeed } from '../components/WalletNewSeedPhrase';
 import { IStoreState, IWallet } from '../configureStore';
-
-interface IRouterProps extends RouteComponentProps<any> {}
 
 interface IStoreStateProps {
   wallet: IWallet | null;
@@ -44,8 +44,9 @@ class CreateWorkFlowComponent extends React.Component<IProps> {
       <Switch>
         <Route exact={true} path={path} component={WalletGenerateSeed} />
         <Route path={`${path}/seed-phrase`} component={() => <WalletNewSeed seed={seed} address={wallet.address} />} />
-        <Route path={`${path}/new-keys`} component={() => <WalletNewKeys wallet={wallet} />} />
-        <Route path={`${path}/create-password`} component={() => <WalletCreatePassword wallet={wallet} />} />
+        <Route path={`${path}/keys`} component={() => <WalletNewKeys wallet={wallet} />} />
+        <Route path={`${path}/create`} component={() => <WalletCreatePassword wallet={wallet} />} />
+        <Route path={`${path}/complete`} component={() => <WalletCreationComplete />} />
         <Redirect from="*" to={`/login`} />
       </Switch>
     );
