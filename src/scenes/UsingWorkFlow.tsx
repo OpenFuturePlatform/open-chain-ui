@@ -36,6 +36,7 @@ class UsingWorkFlowComponent extends React.Component<IProps> {
       return (
         <Switch>
           <Route path="/upload" component={UploadFile} />
+          <Route path="/private-key" component={WalletLoginByPrivKey} />
           <Redirect to="/upload" />
         </Switch>
       );

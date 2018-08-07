@@ -1,26 +1,22 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { Password } from '../components-ui/Password';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 
 interface IStoreState {
-  isKeyHidden: boolean;
   key: string;
 }
 
 export class WalletLoginByPrivKey extends React.Component<{}, IStoreState> {
   public state = {
-    isKeyHidden: true,
     key: ''
   };
 
-  public onShowKey = () => this.setState(prevState => ({ isKeyHidden: !prevState.isKeyHidden }));
-
-  public onKeyChange = (e: { target: HTMLInputElement }) => this.setState({ key: e.target.value });
+  public onKeyChange = (e: React.SyntheticEvent<HTMLInputElement>) => this.setState({ key: e.currentTarget.value });
 
   public render() {
-    const { isKeyHidden, key } = this.state;
-    const inputType = this.state.isKeyHidden ? 'password' : 'text';
+    const { key } = this.state;
 
     return (
       <section>
@@ -38,11 +34,7 @@ export class WalletLoginByPrivKey extends React.Component<{}, IStoreState> {
           <form action="#">
             <div className="input input-enter-key">
               <p className="required">private key</p>
-              <input type={inputType} placeholder="Private Key" value={key} onChange={this.onKeyChange} />
-              <label htmlFor="eye">
-                <input id="eye" type="checkbox" checked={!isKeyHidden} onChange={this.onShowKey} />
-                <div className="eye" />
-              </label>
+              <Password password={key} onChange={this.onKeyChange} />
             </div>
             <button className="button disable btn-enter-key">
               <div />
