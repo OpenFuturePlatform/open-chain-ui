@@ -22,7 +22,7 @@ export class WalletNewKeys extends React.Component<IStoreStateProps, object> {
             <Link to="/login">Select type of login</Link>
             <img src={crumb} alt=">" />
 
-            <Link to="/new">Create a new wallet</Link>
+            <Link to="/new">Create new wallet</Link>
             <img src={crumb} alt=">" />
 
             <Link to="/new/seed-phrase">Seed phrase</Link>

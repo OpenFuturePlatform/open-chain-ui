@@ -36,7 +36,7 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
             <Link to="/login">
               <img src={arrow} alt="<" />
             </Link>
-            <h2>Create a new wallet</h2>
+            <h2>Create new wallet</h2>
           </div>
           <form>
             <h2 className="generate">Generate seed phrase</h2>

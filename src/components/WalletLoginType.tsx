@@ -14,7 +14,7 @@ export const WalletLoginType: React.SFC<{}> = () => {
           <Link to="/new">
             <img src={create} alt="create" />
             <h3>
-              Create <br /> a new wallet
+              Create <br /> new wallet
             </h3>
           </Link>
           <Link to="/private-key">
