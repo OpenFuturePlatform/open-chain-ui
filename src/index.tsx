@@ -3,14 +3,14 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Redirect, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { WalletEnter } from './components/WalletEnter';
-import { WalletLoginByPrivKey } from './components/WalletLoginByPrivKey';
 import { WalletLoginType } from './components/WalletLoginType';
 import { withBackground } from './components/withBackground';
-import { withMainBackground } from './components/withMainBackground';
+import { withStartBackground } from './components/withStartBackground';
 import { configureStore } from './configureStore';
 import registerServiceWorker from './registerServiceWorker';
 import { CreateWorkFlow } from './scenes/CreateWorkFlow';
-import { UploadWorkFlow } from './scenes/UploadWorkFlow';
+import { MainHeader } from './scenes/MainHeader';
+import { UsingWorkFlow } from './scenes/UsingWorkFlow';
 import './styles/index.css';
 
 export interface IRouterProps extends RouteComponentProps<any> {}
@@ -24,14 +24,17 @@ store.subscribe(() => {
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <Switch>
-        <Route exact={true} path="/" component={withMainBackground(WalletEnter)} />
-        <Route path="/login" component={withBackground(WalletLoginType)} />
-        <Route path="/new" component={withBackground(CreateWorkFlow)} />
-        <Route path="/enter-private-key" component={WalletLoginByPrivKey} />
-        <Route path="/upload" component={UploadWorkFlow} />
-        <Redirect from="*" to="/" />
-      </Switch>
+      <React.Fragment>
+        <MainHeader />
+        <Switch>
+          <Route exact={true} path="/" component={withStartBackground(WalletEnter)} />
+          <Route path="/login" component={withBackground(WalletLoginType)} />
+          <Route path="/new" component={withBackground(CreateWorkFlow)} />
+          <Route path="/restore" component={() => <div>hello restore flow</div>} />
+          <Route path="/" component={withBackground(UsingWorkFlow)} />
+          <Redirect from="*" to="/" />
+        </Switch>
+      </React.Fragment>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root') as HTMLElement

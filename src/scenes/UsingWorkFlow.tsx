@@ -5,19 +5,16 @@ import { IRouterProps } from '..';
 import { IThunkDispatch } from '../actions';
 import { cleanWallet } from '../actions/wallet';
 import { UploadFile } from '../components/UploadFile';
-import { IStoreState, IWallet } from '../configureStore';
-
-interface IStoreStateProps {
-  wallet: IWallet | null;
-}
+import { WalletLoginByPrivKey } from '../components/WalletLoginByPrivKey';
+import { IStoreState } from '../configureStore';
 
 interface IDispatchProps {
   cleanWallet(): void;
 }
 
-type IProps = IRouterProps & IStoreStateProps & IDispatchProps;
+type IProps = IRouterProps & IDispatchProps;
 
-class UploadWorkFlowComponent extends React.Component<IProps> {
+class UsingWorkFlowComponent extends React.Component<IProps> {
   public componentDidMount() {
     this.props.cleanWallet();
   }
@@ -32,20 +29,23 @@ class UploadWorkFlowComponent extends React.Component<IProps> {
 
     return (
       <Switch>
-        <Route exact={true} path={path} component={UploadFile} />
-        <Redirect from="*" to={`/login`} />
+        <Redirect exact={true} from={path} to={`${path}/upload`} />
+        <Route path="/upload" component={UploadFile} />
+        <Route path="/private-key" component={WalletLoginByPrivKey} />
+        <Route path="/wallet" component={() => <div>hello wallet route</div>} />
+        <Redirect from="*" to="/login" />
       </Switch>
     );
   }
 }
 
-const mapStateToProps = ({ wallet, version }: IStoreState) => ({ wallet, version });
+const mapStateToProps = (state: IStoreState) => ({});
 
 const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
   cleanWallet: () => dispatch(cleanWallet())
 });
 
-export const UploadWorkFlow = connect<IStoreStateProps, IDispatchProps, object>(
+export const UsingWorkFlow = connect<object, IDispatchProps, object>(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(UploadWorkFlowComponent));
+)(withRouter(UsingWorkFlowComponent));

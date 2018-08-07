@@ -61,7 +61,7 @@ export class UploadFileComponent extends React.Component<IProps, IState> {
     }
     const wallet = await decryptWallet(encWallet, password);
     this.props.setWallet(wallet);
-    // this.props.history.push('/new/seed-phrase');
+    this.props.history.push('/wallet');
   };
 
   public render() {

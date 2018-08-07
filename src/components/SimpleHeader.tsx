@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../img/logo.svg';
 
-export const Header: React.SFC<{}> = () => {
+export const SimpleHeader: React.SFC<{}> = () => {
   return (
-    <Link className="logo" to="/login">
+    <Link className="logo" to="/">
       <img src={logo} alt="logo" />
     </Link>
   );

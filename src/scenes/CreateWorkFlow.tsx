@@ -40,10 +40,12 @@ class CreateWorkFlowComponent extends React.Component<IProps> {
       return <WalletGenerateSeed />;
     }
 
+    const address = wallet.address;
+
     return (
       <Switch>
         <Route exact={true} path={path} component={WalletGenerateSeed} />
-        <Route path={`${path}/seed-phrase`} component={() => <WalletNewSeed seed={seed} address={wallet.address} />} />
+        <Route path={`${path}/seed-phrase`} component={() => <WalletNewSeed seed={seed} address={address} />} />
         <Route path={`${path}/keys`} component={() => <WalletNewKeys wallet={wallet} />} />
         <Route path={`${path}/create`} component={() => <WalletCreatePassword wallet={wallet} />} />
         <Route path={`${path}/complete`} component={() => <WalletCreationComplete />} />
