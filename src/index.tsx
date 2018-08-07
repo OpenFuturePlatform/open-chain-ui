@@ -30,7 +30,6 @@ ReactDOM.render(
           <Route exact={true} path="/" component={withStartBackground(WalletEnter)} />
           <Route path="/login" component={withBackground(WalletLoginType)} />
           <Route path="/new" component={withBackground(CreateWorkFlow)} />
-          <Route path="/restore" component={() => <div>hello restore flow</div>} />
           <Route path="/" component={withBackground(UsingWorkFlow)} />
           <Redirect from="*" to="/" />
         </Switch>

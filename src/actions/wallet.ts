@@ -7,7 +7,7 @@ import { BalanceAction, CleanBalance } from './balance';
 import { ActionCreator, IAction, IThunkAction } from './index';
 import { ClearSeed, SaveSeed, SeedAction } from './seed';
 
-export interface IGenerateSeedPhraseResponse {
+export interface ISeedPhraseResponse {
   payload: {
     seedPhrase: string;
     masterKeys: IKeys;
@@ -34,7 +34,16 @@ const generateWalletRequest = () => {
     const data = mockWallet;
     return Promise.resolve({ data });
   } else {
-    return axios.get<IGenerateSeedPhraseResponse>('/rpc/accounts/doGenerate');
+    return axios.get<ISeedPhraseResponse>('/rpc/accounts/doGenerate');
+  }
+};
+
+const restoreWalletRequest = (seedPhrase: string) => {
+  if (process.env.REACT_APP_IS_MOCK) {
+    const data = mockWallet;
+    return Promise.resolve({ data });
+  } else {
+    return axios.post<ISeedPhraseResponse>('/rpc/accounts/doRestore', { seedPhrase });
   }
 };
 
@@ -42,6 +51,15 @@ export const generateWallet = (): IThunkAction<WalletAction> => async (
   dispatch: Dispatch<WalletAction | SeedAction>
 ) => {
   const { data } = await generateWalletRequest();
+  const { defaultWallet, seedPhrase } = data.payload;
+  dispatch(new SaveSeed(seedPhrase));
+  dispatch(new SaveWallet(defaultWallet));
+};
+
+export const restoreWallet = (seed: string): IThunkAction<WalletAction> => async (
+  dispatch: Dispatch<WalletAction | SeedAction>
+) => {
+  const { data } = await restoreWalletRequest(seed);
   const { defaultWallet, seedPhrase } = data.payload;
   dispatch(new SaveSeed(seedPhrase));
   dispatch(new SaveWallet(defaultWallet));

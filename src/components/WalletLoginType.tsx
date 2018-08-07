@@ -29,7 +29,7 @@ export const WalletLoginType: React.SFC<{}> = () => {
               Upload <br /> file
             </h3>
           </Link>
-          <Link to="/restore">
+          <Link to="/new/restore">
             <img src={restore} alt="restore" />
             <h3>
               Restore <br /> wallet

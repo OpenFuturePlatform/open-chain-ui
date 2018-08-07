@@ -1,6 +1,6 @@
-import { IGenerateSeedPhraseResponse } from '../actions/wallet';
+import { ISeedPhraseResponse } from '../actions/wallet';
 
-export const mockWallet: IGenerateSeedPhraseResponse = {
+export const mockWallet: ISeedPhraseResponse = {
   payload: {
     defaultWallet: {
       address: '0x62999a450A583A238BFE3B1d50293eb8C74847fD',

@@ -66,6 +66,7 @@ export class UploadFileComponent extends React.Component<IProps, IState> {
 
   public render() {
     const { file, password } = this.state;
+    const isConfirmDisabled = !file || !password;
 
     return (
       <section>
@@ -89,7 +90,7 @@ export class UploadFileComponent extends React.Component<IProps, IState> {
               <p className="required">Enter password</p>
               <Password password={password} onChange={this.onPasswordChange} />
             </div>
-            <button onClick={this.handleOnConfirm} className="button">
+            <button onClick={this.handleOnConfirm} className={`button ${isConfirmDisabled && 'disable'}`}>
               <div />
               <span>Confirm</span>
             </button>
