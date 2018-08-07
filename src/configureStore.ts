@@ -13,13 +13,27 @@ export interface IWallet {
   readonly address: string;
 }
 
+export interface IDelegate {
+  readonly publicKey: string;
+  readonly address: string;
+  readonly id: number;
+  readonly votes: number;
+}
+
+export interface IList<T> {
+  readonly list: T[];
+  readonly totalCount: number;
+}
+
 export interface IStoreState {
   readonly version: string;
   readonly seed: string;
   readonly wallet: IWallet | null;
+  readonly balance: string;
+  readonly delegates: IList<IDelegate>;
 }
 
-const initState = { wallet: null };
+const initState = {};
 
 export const configureStore = () =>
   createStore<IStoreState, IAction, object, object>(

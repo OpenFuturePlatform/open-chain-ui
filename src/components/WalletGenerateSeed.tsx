@@ -1,44 +1,42 @@
-import { History } from 'history';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { IThunkDispatch } from '../actions/index';
-import { getVersion } from '../actions/version';
 import { generateWallet } from '../actions/wallet';
 import { IStoreState } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import danger from '../img/danger.svg';
 import info from '../img/info.svg';
-import { walletSelector } from '../reducers';
 
-interface IProps {
-  history: History;
-  version: string;
+interface IDispatchProps {
   generateWallet: () => void;
-  getVersion: () => void;
 }
 
+interface IRouterProps extends RouteComponentProps<any> {}
+
+type IProps = IDispatchProps & IRouterProps;
+
 export class WalletGenerateSeedComponent extends React.Component<IProps> {
-  public handleOnGenerate = (e: React.MouseEvent<HTMLElement>) => {
+  public handleOnGenerate = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    this.props.history.push('/wallet/new-seed-phrase');
+    await this.props.generateWallet();
+    this.props.history.push('/new/seed-phrase');
   };
 
   public render() {
     return (
       <section>
-        {this.props.version}
         <div className="form-content">
           <div className="crumbs">
-            <Link to="/wallet/login-type">Select type of login</Link>
+            <Link to="/login">Select type of login</Link>
             <img src={crumb} alt=">" />
           </div>
           <div className="name">
-            <Link to="/wallet/login-type">
+            <Link to="/login">
               <img src={arrow} alt="<" />
             </Link>
-            <h2>Create a new wallet</h2>
+            <h2>Create new wallet</h2>
           </div>
           <form>
             <h2 className="generate">Generate seed phrase</h2>
@@ -62,17 +60,13 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
   }
 }
 
-const mapStateToProps = (state: IStoreState) => ({
-  version: state.version,
-  wallet: walletSelector(state)
-});
+const mapStateToProps = (state: IStoreState) => ({});
 
 const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
-  generateWallet: () => dispatch(generateWallet()),
-  getVersion: () => dispatch(getVersion())
+  generateWallet: () => dispatch(generateWallet())
 });
 
-export const WalletGenerateSeed = connect(
+export const WalletGenerateSeed = connect<object, IDispatchProps>(
   mapStateToProps,
   mapDispatchToProps
-)(WalletGenerateSeedComponent);
+)(withRouter(WalletGenerateSeedComponent));

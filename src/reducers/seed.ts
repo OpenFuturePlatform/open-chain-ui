@@ -1,10 +1,7 @@
 import { ActionType } from '../actions/actionType';
 import { SeedAction } from '../actions/seed';
 
-export const seed = (
-  state = 'multiply fault butter script extend exotic luxury ocean matter session version play',
-  action: SeedAction
-) => {
+export const seed = (state = '', action: SeedAction) => {
   switch (action.type) {
     case ActionType.SAVE_SEED:
       const newSeed: string = action.payload;

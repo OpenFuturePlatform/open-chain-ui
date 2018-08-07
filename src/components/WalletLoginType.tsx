@@ -11,25 +11,25 @@ export const WalletLoginType: React.SFC<{}> = () => {
       <div className="select-type">
         <h2>Select type of login</h2>
         <div className="links">
-          <Link to="/wallet/generate-seed-phrase">
+          <Link to="/new">
             <img src={create} alt="create" />
             <h3>
-              Create <br /> a new wallet
+              Create <br /> new wallet
             </h3>
           </Link>
-          <Link to="/wallet/enter-private-key">
+          <Link to="/private-key">
             <img src={enterKey} alt="enter-key" />
             <h3>
               Enter <br /> private key
             </h3>
           </Link>
-          <Link to="/wallet/upload">
+          <Link to="/upload">
             <img src={upload} alt="upload" />
             <h3>
               Upload <br /> file
             </h3>
           </Link>
-          <Link to="/wallet/restore">
+          <Link to="/new/restore">
             <img src={restore} alt="restore" />
             <h3>
               Restore <br /> wallet

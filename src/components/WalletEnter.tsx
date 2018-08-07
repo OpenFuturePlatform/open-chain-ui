@@ -7,7 +7,7 @@ export const WalletEnter: React.SFC<{}> = () => {
       <div className="welcome-content">
         <h1>YOUR TRUSTED BLOCKCHAIN WALLET.</h1>
         <p>Securely store, manage and exchange Bitcoin, Ethereum, and other blockchain assets.</p>
-        <Link to="/wallet/login-type" className="button">
+        <Link to="/login" className="button">
           <div />
           <span>Enter</span>
         </Link>

@@ -1,23 +1,39 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { WalletEnter } from './components/WalletEnter';
+import { WalletLoginType } from './components/WalletLoginType';
+import { withBackground } from './components/withBackground';
+import { withStartBackground } from './components/withStartBackground';
 import { configureStore } from './configureStore';
 import registerServiceWorker from './registerServiceWorker';
-import { Explorer } from './scenes/Explorer';
-import { WalletMain } from './scenes/WalletMain';
+import { CreateWorkFlow } from './scenes/CreateWorkFlow';
+import { MainHeader } from './scenes/MainHeader';
+import { UsingWorkFlow } from './scenes/UsingWorkFlow';
 import './styles/index.css';
 
+export interface IRouterProps extends RouteComponentProps<any> {}
+
 const store = configureStore();
+
+store.subscribe(() => {
+  console.log(store.getState());
+});
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <Switch>
-        <Route exact={true} path="/" component={Explorer} />
-        <Route path="/wallet" component={WalletMain} />
-        <Redirect from="*" to="/" />
-      </Switch>
+      <React.Fragment>
+        <MainHeader />
+        <Switch>
+          <Route exact={true} path="/" component={withStartBackground(WalletEnter)} />
+          <Route path="/login" component={withBackground(WalletLoginType)} />
+          <Route path="/new" component={withBackground(CreateWorkFlow)} />
+          <Route path="/" component={withBackground(UsingWorkFlow)} />
+          <Redirect from="*" to="/" />
+        </Switch>
+      </React.Fragment>
     </BrowserRouter>
   </Provider>,
   document.getElementById('root') as HTMLElement
