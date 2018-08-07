@@ -6,13 +6,18 @@ import { IThunkDispatch } from '../actions';
 import { cleanWallet } from '../actions/wallet';
 import { UploadFile } from '../components/UploadFile';
 import { WalletLoginByPrivKey } from '../components/WalletLoginByPrivKey';
-import { IStoreState } from '../configureStore';
+import { IStoreState, IWallet } from '../configureStore';
+import { WalletDashboard } from './WalletDashboard';
+
+interface IStoreStateProps {
+  wallet: IWallet | null;
+}
 
 interface IDispatchProps {
   cleanWallet(): void;
 }
 
-type IProps = IRouterProps & IDispatchProps;
+type IProps = IRouterProps & IDispatchProps & IStoreStateProps;
 
 class UsingWorkFlowComponent extends React.Component<IProps> {
   public componentDidMount() {
@@ -24,28 +29,37 @@ class UsingWorkFlowComponent extends React.Component<IProps> {
   }
 
   public render() {
-    const { match } = this.props;
+    const { match, wallet } = this.props;
     const path = match.path;
+
+    if (!wallet) {
+      return (
+        <Switch>
+          <Route path="/upload" component={UploadFile} />
+          <Redirect to="/upload" />
+        </Switch>
+      );
+    }
 
     return (
       <Switch>
         <Redirect exact={true} from={path} to={`${path}/upload`} />
         <Route path="/upload" component={UploadFile} />
         <Route path="/private-key" component={WalletLoginByPrivKey} />
-        <Route path="/wallet" component={() => <div>hello wallet route</div>} />
+        <Route path="/wallet" component={WalletDashboard} />
         <Redirect from="*" to="/login" />
       </Switch>
     );
   }
 }
 
-const mapStateToProps = (state: IStoreState) => ({});
+const mapStateToProps = ({ wallet }: IStoreState) => ({ wallet });
 
 const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
   cleanWallet: () => dispatch(cleanWallet())
 });
 
-export const UsingWorkFlow = connect<object, IDispatchProps, object>(
+export const UsingWorkFlow = connect<IStoreStateProps, IDispatchProps, object>(
   mapStateToProps,
   mapDispatchToProps
 )(withRouter(UsingWorkFlowComponent));

@@ -1,8 +1,20 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { IStoreState, IWallet } from '../configureStore';
+import copyGray from '../img/copy-gray.svg';
+import { copy2Clipboard } from '../utils/copy2Clipboard';
 import { SimpleHeader } from './SimpleHeader';
 
-export const WalletHeader: React.SFC<{}> = () => {
+interface IProps {
+  wallet: IWallet | null;
+  balance: string;
+}
+
+export const WalletHeaderComponent: React.SFC<IProps> = ({ wallet, balance }) => {
+  const address = wallet ? wallet.address : '';
+  const onCopyHandler = (value: string) => copy2Clipboard(value);
+
   return (
     <nav>
       <SimpleHeader />
@@ -18,10 +30,10 @@ export const WalletHeader: React.SFC<{}> = () => {
       <div className="profile-info">
         <div className="info">
           <p className="amt">
-            33.44680966 <span>open</span>
+            {balance} <span>open</span>
           </p>
           <p className="address">
-            <img src="img/copy-gray.svg" alt="copy" /> 0XFF7508C54D3EF2141D05F7EB1A0CC71969
+            <img src={copyGray} alt="copy" onClick={() => onCopyHandler(address)} /> {address}
           </p>
         </div>
         <Link to="/login" className="logout" />
@@ -29,3 +41,7 @@ export const WalletHeader: React.SFC<{}> = () => {
     </nav>
   );
 };
+
+const mapStateToProps = ({ wallet, balance }: IStoreState) => ({ wallet, balance });
+
+export const WalletHeader = connect<IProps>(mapStateToProps)(WalletHeaderComponent);

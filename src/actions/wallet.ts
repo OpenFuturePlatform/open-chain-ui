@@ -3,6 +3,7 @@ import { Dispatch } from 'redux';
 import { IKeys, IWallet } from '../configureStore';
 import { mockWallet } from '../mocks/wallet';
 import { ActionType } from './actionType';
+import { BalanceAction, CleanBalance } from './balance';
 import { ActionCreator, IAction, IThunkAction } from './index';
 import { ClearSeed, SaveSeed, SeedAction } from './seed';
 
@@ -50,7 +51,10 @@ export const setWallet = (wallet: IWallet) => async (dispatch: Dispatch<WalletAc
   dispatch(new SaveWallet(wallet));
 };
 
-export const cleanWallet = (): IThunkAction<WalletAction> => async (dispatch: Dispatch<WalletAction | SeedAction>) => {
+export const cleanWallet = (): IThunkAction<WalletAction> => async (
+  dispatch: Dispatch<WalletAction | SeedAction | BalanceAction>
+) => {
   dispatch(new ClearWallet());
   dispatch(new ClearSeed());
+  dispatch(new CleanBalance());
 };
