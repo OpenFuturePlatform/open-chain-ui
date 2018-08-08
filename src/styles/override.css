@@ -5,3 +5,8 @@
 .left-section .wallet-info .conversions {
   height: 21px;
 }
+
+.form-content form .input.invalid > textarea {
+  border-color: #df4c4c;
+  color: #df4c4c;
+}

@@ -6,6 +6,7 @@ import { restoreWallet } from '../actions/wallet';
 import { IStoreState } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
+import { parseApiError } from '../utils/parseApiError';
 
 interface IDispatchProps {
   restoreWallet(seed: string): void;
@@ -17,24 +18,55 @@ type IProps = IDispatchProps & IRouterProps;
 
 interface IState {
   seed: string;
+  seedError: string;
 }
 
 export class WalletRestoreComponent extends React.Component<IProps, IState> {
   public state = {
-    seed: ''
+    seed: '',
+    seedError: ''
   };
 
   public onSeedChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => this.setState({ seed: e.currentTarget.value });
 
-  public handleOnConfirm = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    const { seed } = this.state;
-    await this.props.restoreWallet(seed);
+  public onSeedError = (message: string) => this.setState({ seedError: message });
+
+  public getSeedError = (seed: string) => {
+    const seedWords = seed.split(' ');
+    if (seedWords.length !== 12) {
+      return 'Seed Phrase needs to include 12 words';
+    }
+    if (seed.match(/^[a-z ]+$/) === null) {
+      return 'Only Latin letters are valid';
+    }
+    return '';
+  };
+
+  public restoreWallet = async (seed: string) => {
+    try {
+      await this.props.restoreWallet(seed);
+    } catch (e) {
+      throw e;
+    }
     this.props.history.push('/new/keys');
   };
 
+  public handleOnConfirm = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    const seed = this.state.seed.toLowerCase();
+    const seedError = this.getSeedError(seed);
+    if (seedError) {
+      return this.onSeedError(seedError);
+    }
+    try {
+      await this.restoreWallet(seed.toLowerCase());
+    } catch (e) {
+      this.onSeedError(parseApiError(e));
+    }
+  };
+
   public render() {
-    const { seed } = this.state;
+    const { seed, seedError } = this.state;
     const isConfirmDisabled = !seed;
 
     return (
@@ -51,11 +83,12 @@ export class WalletRestoreComponent extends React.Component<IProps, IState> {
             <h2>Restore wallet</h2>
           </div>
           <form className="form-restore-wallet">
-            <div className="input">
+            <div className={`input ${seedError && 'invalid'}`}>
               <p className="required">
                 Enter seed phrase <span>12 words</span>
               </p>
               <label htmlFor="eye" className="showing" />
+              <span className="error">{seedError}</span>
               <textarea placeholder="Seed Phrase" value={seed} onChange={this.onSeedChange} />
             </div>
             <button onClick={this.handleOnConfirm} className={`button ${isConfirmDisabled && 'disable'}`}>
