@@ -4,7 +4,7 @@ import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { IRouterProps } from '..';
 import { IThunkDispatch } from '../actions';
 import { cleanWallet } from '../actions/wallet';
-import { UploadFile } from '../components/UploadFile';
+import { UploadWallet } from '../components/UploadWallet';
 import { WalletLoginByPrivKey } from '../components/WalletLoginByPrivKey';
 import { IStoreState, IWallet } from '../configureStore';
 import { WalletDashboard } from './WalletDashboard';
@@ -35,7 +35,7 @@ class UsingWorkFlowComponent extends React.Component<IProps> {
     if (!wallet) {
       return (
         <Switch>
-          <Route path="/upload" component={UploadFile} />
+          <Route path="/upload" component={UploadWallet} />
           <Route path="/private-key" component={WalletLoginByPrivKey} />
           <Redirect to="/upload" />
         </Switch>
@@ -45,7 +45,7 @@ class UsingWorkFlowComponent extends React.Component<IProps> {
     return (
       <Switch>
         <Redirect exact={true} from={path} to={`${path}/upload`} />
-        <Route path="/upload" component={UploadFile} />
+        <Route path="/upload" component={UploadWallet} />
         <Route path="/private-key" component={WalletLoginByPrivKey} />
         <Route path="/wallet" component={WalletDashboard} />
         <Redirect from="*" to="/login" />

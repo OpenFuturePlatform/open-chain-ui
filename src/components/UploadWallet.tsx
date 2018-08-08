@@ -5,11 +5,11 @@ import { IThunkDispatch } from '../actions/index';
 import { getVersion } from '../actions/version';
 import { setWallet } from '../actions/wallet';
 import { Password } from '../components-ui/Password';
-import { IFile, SelectFile } from '../components-ui/SelectFile';
 import { IStoreState, IWallet } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import { decryptWallet, IEncWallet } from '../utils/crypto';
+import { UploadEncWalletInput } from './UploadEncWalletInput';
 
 interface IDispatchProps {
   getVersion(): void;
@@ -17,41 +17,30 @@ interface IDispatchProps {
 }
 
 interface IState {
-  file: IFile;
   encWallet: IEncWallet | null;
+  fileError: string;
   password: string;
+  passwordError: string;
 }
 
 interface IRouterProps extends RouteComponentProps<any> {}
 
 type IProps = IDispatchProps & IRouterProps;
 
-export class UploadFileComponent extends React.Component<IProps, IState> {
+export class UploadWalletComponent extends React.Component<IProps, IState> {
   public state = {
     encWallet: null,
-    file: null,
-    password: ''
+    fileError: '',
+    password: '',
+    passwordError: ''
   };
 
   public onPasswordChange = (e: React.SyntheticEvent<HTMLInputElement>) =>
     this.setState({ password: e.currentTarget.value });
 
-  public onSelectFile = (file: File | null) => {
-    this.setState({ file });
-    if (!file) {
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const encWallet: IEncWallet = JSON.parse(reader.result);
-        this.setState({ encWallet });
-      } catch (e) {
-        throw e;
-      }
-    };
-    reader.readAsText(file);
-  };
+  public onSelectEncWallet = (encWallet: IEncWallet) => this.setState({ encWallet });
+
+  public onFileError = (message: string) => this.setState({ fileError: message, passwordError: '' });
 
   public handleOnConfirm = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -59,14 +48,18 @@ export class UploadFileComponent extends React.Component<IProps, IState> {
     if (!encWallet) {
       return;
     }
-    const wallet = await decryptWallet(encWallet, password);
-    this.props.setWallet(wallet);
-    this.props.history.push('/wallet');
+    try {
+      const wallet = await decryptWallet(encWallet, password);
+      this.props.setWallet(wallet);
+      this.props.history.push('/wallet');
+    } catch (e) {
+      this.setState({ passwordError: 'Invalid password or wallet file' });
+    }
   };
 
   public render() {
-    const { file, password } = this.state;
-    const isConfirmDisabled = !file || !password;
+    const { encWallet, password, passwordError, fileError } = this.state;
+    const isConfirmDisabled = !password || !encWallet || fileError;
 
     return (
       <section>
@@ -84,10 +77,12 @@ export class UploadFileComponent extends React.Component<IProps, IState> {
           <form className="form-upload-file">
             <div className="input">
               <p className="required">Select file</p>
-              <SelectFile file={file} onSelect={this.onSelectFile} />
+              <span className="error">{fileError}</span>
+              <UploadEncWalletInput onSelect={this.onSelectEncWallet} onFileError={this.onFileError} />
             </div>
-            <div className="input">
+            <div className={`input ${passwordError && 'invalid'}`}>
               <p className="required">Enter password</p>
+              <span className="error">{passwordError}</span>
               <Password password={password} onChange={this.onPasswordChange} />
             </div>
             <button onClick={this.handleOnConfirm} className={`button ${isConfirmDisabled && 'disable'}`}>
@@ -108,7 +103,7 @@ const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
   setWallet: (wallet: IWallet) => dispatch(setWallet(wallet))
 });
 
-export const UploadFile = connect<{}, IDispatchProps>(
+export const UploadWallet = connect<{}, IDispatchProps>(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(UploadFileComponent));
+)(withRouter(UploadWalletComponent));
