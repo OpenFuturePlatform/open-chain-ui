@@ -1,21 +1,71 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { IThunkDispatch } from '../actions';
+import { getTransactions } from '../actions/transactions';
+import { IStoreState, ITransaction, IWallet } from '../configureStore';
+import { copy2Clipboard } from '../utils/copy2Clipboard';
 
-export class LastTransactions extends React.Component<object> {
+interface IStoreStateProps {
+  wallet: IWallet | null;
+  transactions: ITransaction[];
+}
+
+interface IDispatchProps {
+  getTransactions(address: string): void;
+}
+
+type IProps = IStoreStateProps & IDispatchProps;
+
+export class LastTransactionsComponent extends React.Component<IProps> {
+  public componentDidMount() {
+    const { wallet } = this.props;
+    if (wallet) {
+      this.props.getTransactions(wallet.address);
+    }
+  }
+
+  public copyAddress = (value: string) => copy2Clipboard(value);
+
+  public renderTransactions = (transactions: ITransaction[]) =>
+    transactions.map(transaction => (
+      <div key={transaction.senderAddress + transaction.recipientAddress} className="transaction">
+        <p className="from copy" onClick={() => this.copyAddress(transaction.senderAddress)}>
+          {transaction.senderAddress}
+        </p>
+        <p className="to copy" onClick={() => this.copyAddress(transaction.recipientAddress)}>
+          {transaction.recipientAddress}
+        </p>
+        {/* <p className="date">12/12/2018, 10:21 PM</p> */}
+        <p className="amount">{transaction.amount}</p>
+        <p className="fee">{transaction.fee}</p>
+      </div>
+    ));
+
   public render() {
+    const transactions: ITransaction[] = [
+      {
+        amount: 5,
+        fee: 4,
+        recipientAddress: '3',
+        senderAddress: '2',
+        senderPublicKey: '4',
+        senderSignature: '3'
+      }
+    ];
     return (
       <div className="table-section">
         <div className="title">
           <h3>Last transaction</h3>
-          <a href="#" className="button small">
+          {/* <a href="#" className="button small">
             <div />
             <span>Create transaction</span>
-          </a>
+          </a> */}
         </div>
         <div className="list">
           <div className="head">
             <p className="from">From</p>
             <p className="to">To</p>
-            <p className="date">Date</p>
+            <p className="date" />
             <p className="amount">
               Amount <span>open</span>
             </p>
@@ -23,96 +73,23 @@ export class LastTransactions extends React.Component<object> {
               Fee <span>open</span>
             </p>
           </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-          <div className="transaction">
-            <p className="from copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="to copy">0x7880600a3685df15bd18b823frtg567ju</p>
-            <p className="date">12/12/2018, 10:21 PM</p>
-            <p className="amount">551.67309464 BTC</p>
-            <p className="fee">0.02</p>
-          </div>
-
-          <a href="#" className="all">
+          {this.renderTransactions(transactions)}
+          {/* <a href="#" className="all">
             View All Transactions <span>231</span>
-          </a>
+          </a> */}
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = ({ transactions, wallet }: IStoreState) => ({ transactions, wallet });
+
+const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
+  getTransactions: (address: string) => dispatch(getTransactions(address))
+});
+
+export const LastTransactions = connect<IStoreStateProps, IDispatchProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(LastTransactionsComponent);
