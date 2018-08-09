@@ -34,10 +34,10 @@ class DelegatesComponent extends React.Component<IProps> {
       <div className="delegates-list">
         <div className="title">
           <h3>delegates</h3>
-          <a href="#" className="button small">
+          {/* <a href="#" className="button small">
             <div />
             <span>Vote</span>
-          </a>
+          </a> */}
         </div>
         <div className="list">
           <div className="head">
@@ -46,9 +46,9 @@ class DelegatesComponent extends React.Component<IProps> {
             <p className="amount">Amount of votes</p>
           </div>
           {this.renderDelegates(delegates.list)}
-          <a href="#" className="all">
+          {/* <a href="#" className="all">
             View all delegates
-          </a>
+          </a> */}
         </div>
       </div>
     );

@@ -56,10 +56,11 @@ export class WalletNewSeed extends React.Component<IProps, IState> {
               <textarea className="disable" readOnly={true} value={seed} />
             </div>
             <div className="button-area">
-              <a className="button white" onClick={this.onExportHandler}>
+              <a className={`button ${!isConfirmDisabled && 'white'}`} onClick={this.onExportHandler}>
                 <div />
                 <span>
-                  Export<span>.txt</span>
+                  Export
+                  <span>.txt</span>
                 </span>
               </a>
               <Link to="/new/keys" className={`button ${isConfirmDisabled && 'disable'}`}>

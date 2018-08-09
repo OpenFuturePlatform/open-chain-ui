@@ -27,10 +27,15 @@ class WalletCreatePasswordComponent extends React.Component<IProps, IState> {
   public onPasswordChange = (e: React.SyntheticEvent<HTMLInputElement>) =>
     this.setState({ password: e.currentTarget.value });
 
-  public onSubmit = async (e: React.MouseEvent<HTMLElement>) => {
+  public isSubmitDisabled = () => this.state.password.length < 3;
+
+  public onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (this.isSubmitDisabled()) {
+      return;
+    }
     const { wallet } = this.props;
     const { password } = this.state;
-    e.preventDefault();
     const encWallet: IEncWallet = await encryptWallet(wallet, password);
     download(`${wallet.address}.json`, JSON.stringify(encWallet, null, 2));
     this.props.history.push('/new/complete');
@@ -38,7 +43,7 @@ class WalletCreatePasswordComponent extends React.Component<IProps, IState> {
 
   public render() {
     const { password } = this.state;
-    const isSubmitDisabled = password.length < 3;
+    const isSubmitDisabled = this.isSubmitDisabled();
 
     return (
       <section>
@@ -62,13 +67,13 @@ class WalletCreatePasswordComponent extends React.Component<IProps, IState> {
             </Link>
             <h2>Create password</h2>
           </div>
-          <form className="form-create-pass">
+          <form className="form-create-pass" onSubmit={this.onSubmit}>
             <div className="input">
               <p className="required">Create password</p>
               <Password password={password} onChange={this.onPasswordChange} />
             </div>
             <div className="button-area ">
-              <button className={`button ${isSubmitDisabled && 'disable'}`} onClick={this.onSubmit}>
+              <button className={`button ${isSubmitDisabled && 'disable'}`}>
                 <div />
                 <span>Done</span>
               </button>

@@ -1,6 +1,6 @@
 {
   "name": "open-wallet",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "proxy": {
     "/rpc": {
@@ -17,9 +17,9 @@
     "redux": "^4.0.0"
   },
   "scripts": {
-    "start": "react-scripts-ts start",
-    "start:mock": "REACT_APP_IS_MOCK=true react-scripts-ts start",
-    "build": "react-scripts-ts build",
+    "start": "REACT_APP_VERSION=0.1.1 react-scripts-ts start",
+    "start:mock": "REACT_APP_IS_MOCK=true REACT_APP_VERSION=0.1.1 react-scripts-ts start",
+    "build": "REACT_APP_VERSION=0.1.1 react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
   },

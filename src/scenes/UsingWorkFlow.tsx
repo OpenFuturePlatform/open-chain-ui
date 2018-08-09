@@ -44,7 +44,7 @@ class UsingWorkFlowComponent extends React.Component<IProps> {
 
     return (
       <Switch>
-        <Redirect exact={true} from={path} to={`${path}/upload`} />
+        <Redirect exact={true} from={path} to="/upload" />
         <Route path="/upload" component={UploadWallet} />
         <Route path="/private-key" component={WalletLoginByPrivKey} />
         <Route path="/wallet" component={WalletDashboard} />

@@ -14,13 +14,17 @@ import { UsingWorkFlow } from './scenes/UsingWorkFlow';
 import './styles/index.css';
 import './styles/override.css';
 
+console.log('ui-version: ', process.env.REACT_APP_VERSION);
+
 export interface IRouterProps extends RouteComponentProps<any> {}
 
 const store = configureStore();
 
-store.subscribe(() => {
-  console.log(store.getState());
-});
+if (process.env.NODE_ENV === 'development') {
+  store.subscribe(() => {
+    console.log(store.getState());
+  });
+}
 
 ReactDOM.render(
   <Provider store={store}>
