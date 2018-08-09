@@ -1,22 +1,55 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import { IThunkDispatch } from '../actions';
+import { getWalletByPrivateKey } from '../actions/wallet';
 import { Password } from '../components-ui/Password';
+import { IStoreState } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
+import { parseApiError } from '../utils/parseApiError';
 
-interface IStoreState {
-  key: string;
+interface IDispatchProps {
+  getWalletByPrivateKey(privateKey: string): Promise<void>;
 }
 
-export class WalletLoginByPrivKey extends React.Component<{}, IStoreState> {
+interface IState {
+  key: string;
+  keyError: string;
+}
+
+interface IRouterProps extends RouteComponentProps<any> {}
+
+type IProps = IDispatchProps & IRouterProps;
+
+export class WalletLoginByPrivKeyComponent extends React.Component<IProps, IState> {
   public state = {
-    key: ''
+    key: '',
+    keyError: ''
   };
 
   public onKeyChange = (e: React.SyntheticEvent<HTMLInputElement>) => this.setState({ key: e.currentTarget.value });
 
-  public render() {
+  public isSubmitDisabled = () => !this.state.key;
+
+  public onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const { key } = this.state;
+    if (this.isSubmitDisabled()) {
+      return;
+    }
+    try {
+      await this.props.getWalletByPrivateKey(key);
+      this.props.history.push('/wallet');
+    } catch (e) {
+      const keyError = parseApiError(e);
+      this.setState({ keyError });
+    }
+  };
+
+  public render() {
+    const { key, keyError } = this.state;
+    const isConfirmDisabled = this.isSubmitDisabled();
 
     return (
       <section>
@@ -31,12 +64,13 @@ export class WalletLoginByPrivKey extends React.Component<{}, IStoreState> {
             </Link>
             <h2>Enter private key</h2>
           </div>
-          <form action="#">
-            <div className="input input-enter-key">
+          <form onSubmit={this.onSubmit}>
+            <div className={`input input-enter-key ${keyError && 'invalid'}`}>
               <p className="required">private key</p>
+              <span className="error">{keyError}</span>
               <Password password={key} onChange={this.onKeyChange} />
             </div>
-            <button className="button disable btn-enter-key">
+            <button className={`button btn-enter-key ${isConfirmDisabled && 'disable'}`}>
               <div />
               <span>Confirm</span>
             </button>
@@ -46,3 +80,14 @@ export class WalletLoginByPrivKey extends React.Component<{}, IStoreState> {
     );
   }
 }
+
+const mapStateToProps = (state: IStoreState) => ({});
+
+const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
+  getWalletByPrivateKey: (privateKey: string) => dispatch(getWalletByPrivateKey(privateKey))
+});
+
+export const WalletLoginByPrivKey = connect<{}, IDispatchProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(WalletLoginByPrivKeyComponent);

@@ -23,7 +23,7 @@ export class Password extends React.Component<IProps, IState> {
 
     return (
       <React.Fragment>
-        <input type={inputType} placeholder="Password" value={password} required={true} onChange={onChange} />
+        <input type={inputType} placeholder="Password" value={password} onChange={onChange} />
         <label htmlFor="eye">
           <input id="eye" type="checkbox" checked={isPasswordShown} onChange={this.onShowPassword} />
           <div className="eye" />

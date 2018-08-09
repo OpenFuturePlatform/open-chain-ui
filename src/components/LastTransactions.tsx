@@ -42,16 +42,7 @@ export class LastTransactionsComponent extends React.Component<IProps> {
     ));
 
   public render() {
-    const transactions: ITransaction[] = [
-      {
-        amount: 5,
-        fee: 4,
-        recipientAddress: '3',
-        senderAddress: '2',
-        senderPublicKey: '4',
-        senderSignature: '3'
-      }
-    ];
+    const transactions: ITransaction[] = this.props.transactions;
     return (
       <div className="table-section">
         <div className="title">
