@@ -10,3 +10,12 @@
   border-color: #df4c4c;
   color: #df4c4c;
 }
+
+.form-content form {
+  min-height: 510px;
+}
+
+.dnd input {
+  top: 0;
+  left: 0;
+}
