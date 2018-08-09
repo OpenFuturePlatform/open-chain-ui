@@ -1,2 +1,2 @@
-# open-wallet
+# OPEN Chain UI
 
