@@ -32,18 +32,29 @@ export class WalletLoginByPrivKeyComponent extends React.Component<IProps, IStat
 
   public isSubmitDisabled = () => !this.state.key;
 
+  public getKeyError = (key: string) => {
+    if (key.length !== 69) {
+      return 'Private Key needs to include 69 symbols';
+    }
+    const spaces = key.split('').filter(it => it === ' ');
+    if (spaces.length === 69) {
+      return 'Invalid Private Key';
+    }
+    return '';
+  };
+
   public onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { key } = this.state;
-    if (this.isSubmitDisabled()) {
-      return;
+    const keyError = this.getKeyError(key);
+    if (keyError) {
+      return this.setState({ keyError });
     }
     try {
       await this.props.getWalletByPrivateKey(key);
       this.props.history.push('/wallet');
     } catch (e) {
-      const keyError = parseApiError(e);
-      this.setState({ keyError });
+      this.setState({ keyError: parseApiError(e) });
     }
   };
 

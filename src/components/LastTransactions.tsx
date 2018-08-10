@@ -46,7 +46,7 @@ export class LastTransactionsComponent extends React.Component<IProps> {
     return (
       <div className="table-section">
         <div className="title">
-          <h3>Last transaction</h3>
+          <h3>Last transactions</h3>
           {/* <a href="#" className="button small">
             <div />
             <span>Create transaction</span>
