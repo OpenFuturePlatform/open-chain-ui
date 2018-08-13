@@ -12,6 +12,7 @@
 }
 
 .form-content form {
+  height: auto;
   min-height: 510px;
 }
 
