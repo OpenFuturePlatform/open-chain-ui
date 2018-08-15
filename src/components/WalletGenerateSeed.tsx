@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { IThunkDispatch } from '../actions/index';
+import { createTransaction } from '../actions/transactions';
 import { generateWallet } from '../actions/wallet';
 import { IStoreState } from '../configureStore';
 import arrow from '../img/arrow.svg';
@@ -10,7 +11,8 @@ import danger from '../img/danger.svg';
 import info from '../img/info.svg';
 
 interface IDispatchProps {
-  generateWallet: () => void;
+  generateWallet(): void;
+  createTransaction(): void;
 }
 
 interface IRouterProps extends RouteComponentProps<any> {}
@@ -27,6 +29,7 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
   public render() {
     return (
       <section>
+        <button onClick={() => this.props.createTransaction()}>Hello</button>
         <div className="form-content">
           <div className="crumbs">
             <Link to="/login">Select type of login</Link>
@@ -63,6 +66,7 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
 const mapStateToProps = (state: IStoreState) => ({});
 
 const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
+  createTransaction: () => dispatch(createTransaction()),
   generateWallet: () => dispatch(generateWallet())
 });
 

@@ -27,6 +27,7 @@ export interface ITransaction {
   readonly senderPublicKey: string;
   readonly senderAddress: string;
   readonly senderSignature: string;
+  readonly timestamp: number;
 }
 
 export interface IList<T> {

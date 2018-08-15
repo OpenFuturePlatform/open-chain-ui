@@ -1,4 +1,8 @@
 import { IKeys, IWallet } from '../configureStore';
+/* tslint:disable */
+const sha256 = require('js-sha256').sha256;
+const EC = require('elliptic').ec;
+/* tslint:enable */
 
 interface ICrypto {
   iv: string;
@@ -70,4 +74,13 @@ export const decryptWallet = async (encWallet: IEncWallet, password: string): Pr
   } catch (e) {
     throw e;
   }
+};
+
+export const signByPrivateKey = (message: string, privateKey: string) => {
+  const ec = new EC('secp256k1');
+  const keyPair = ec.keyFromPrivate(privateKey, 'hex');
+  const msgHash = sha256(message);
+  const signature = keyPair.sign(msgHash);
+  const derSign = signature.toDER();
+  return btoa(derSign.map((it: any) => String.fromCharCode(it)).join(''));
 };
