@@ -21,10 +21,10 @@ export const WalletHeaderComponent: React.SFC<IProps> = ({ wallet, balance }) =>
       <Link to="/wallet" className="link active">
         dashboard
       </Link>
-      {/* <Link to="/wallet/info" className="link">
+      <Link to="/wallet/info" className="link">
         wallet
       </Link>
-      <Link to="/wallet/delegates" className="link">
+      {/* <Link to="/wallet/delegates" className="link">
         delegates
       </Link> */}
       <div className="profile-info">

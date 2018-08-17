@@ -1,9 +1,14 @@
 import axios from 'axios';
 import { Dispatch } from 'redux';
-import { ITransaction } from '../configureStore';
-import { signByPrivateKey } from '../utils/crypto';
+import { IStoreState, ITransaction, ITransactionCandidate, IWallet } from '../configureStore';
+import { buildTransaction } from '../utils/crypto';
 import { ActionType } from './actionType';
-import { ActionCreator, IAction, IThunkAction } from './index';
+import { ActionCreator, IAction, IThunkAction, IThunkDispatch } from './index';
+
+/* tslint:disable */
+// const sha256 = require('js-sha256').sha256;
+// const BN = require('bn.js');
+/* tslint:enable */
 
 interface IGetTransactionsResponse {
   payload: ITransaction[];
@@ -26,23 +31,30 @@ export const getTransactions = (address: string): IThunkAction<TransactionAction
   dispatch(new SetTransactions(payload));
 };
 
-export const createTransaction = () => async (dispatch: Dispatch<TransactionAction>) => {
-  const senderPublicKey = '03dfa4bce7d0f0da39a5de3c0f43f633c1334aee6277f3b2efb0c0e1413a2d99e5';
-  const senderPrivateKey = '37df6f074afca0e5daad7ffdcf711451bc68d810fd2ff6cc96f85f9b0683102c';
-  // const transactionData = {
-  //   amount: 1000,
-  //   fee: 20,
-  //   recipientAddress: '0x969c7a534f00869D12Cd74E602f6eBcF13AC46De',
-  //   senderAddress: '0xA950383F788Fd6e3Ca208ce80f6501d905aBc042'
-  // };
+export const createTransaction = () => async (dispatch: IThunkDispatch, getState: () => IStoreState) => {
+  // const state = getState();
+  // const wallet: IWallet = state.wallet;
 
-  const sign = signByPrivateKey('hello1', senderPrivateKey);
+  const wallet: IWallet = {
+    address: '0x969eFa1861B3e0C1348D4258a2af7eed5796c807',
+    keys: {
+      privateKey: '3a80cfc4faab9bbff69326a87ca73c4dd0a4f0b86f9058fe4fc14c035cda2633',
+      publicKey: '02be38e216b8b0b3282634ef0e2a2221aaec5f1f2cb847da35c7286d304e103e38'
+    }
+  };
 
-  const respose = await axios.post('/rpc/info/testSign', {
-    data: 'hello12',
-    // pubKey: sendKey.getPublic().encode('hex'),
-    pubKey: senderPublicKey,
-    sign
-  });
-  console.log(respose);
+  const transactionCandidate: ITransactionCandidate = {
+    amount: 10,
+    fee: 1,
+    recipientAddress: '0xf465f33C35CE1216b4DB798653A47D9d854ee6c6'
+  };
+
+  if (!wallet) {
+    throw new Error('>> Wallet not authorized');
+  }
+
+  const transaction = buildTransaction(wallet, transactionCandidate);
+
+  await axios.post('/rpc/transactions/transfer', transaction);
+  dispatch(getTransactions(wallet.address));
 };

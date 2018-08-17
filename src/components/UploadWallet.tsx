@@ -27,7 +27,7 @@ interface IRouterProps extends RouteComponentProps<any> {}
 
 type IProps = IDispatchProps & IRouterProps;
 
-export class UploadWalletComponent extends React.Component<IProps, IState> {
+class UploadWalletComponent extends React.Component<IProps, IState> {
   public state = {
     encWallet: null,
     fileError: '',
