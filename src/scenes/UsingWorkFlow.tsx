@@ -8,6 +8,7 @@ import { UploadWallet } from '../components/UploadWallet';
 import { WalletLoginByPrivKey } from '../components/WalletLoginByPrivKey';
 import { IStoreState, IWallet } from '../configureStore';
 import { WalletDashboard } from './WalletDashboard';
+import { WalletTransactions } from './WalletTransactions';
 
 interface IStoreStateProps {
   wallet: IWallet | null;
@@ -47,7 +48,8 @@ class UsingWorkFlowComponent extends React.Component<IProps> {
         <Redirect exact={true} from={path} to="/upload" />
         <Route path="/upload" component={UploadWallet} />
         <Route path="/private-key" component={WalletLoginByPrivKey} />
-        <Route path="/wallet" component={WalletDashboard} />
+        <Route exact={true} path="/wallet" component={WalletDashboard} />
+        <Route path="/wallet/transactions" component={WalletTransactions} />
         <Redirect from="*" to="/login" />
       </Switch>
     );

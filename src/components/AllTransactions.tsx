@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { IThunkDispatch } from '../actions';
 import { getTransactions } from '../actions/transactions';
 import { IStoreState, ITransaction, IWallet } from '../configureStore';
@@ -18,7 +17,7 @@ interface IDispatchProps {
 
 type IProps = IStoreStateProps & IDispatchProps;
 
-export class LastTransactionsComponent extends React.Component<IProps> {
+export class AllTransactionsComponent extends React.Component<IProps> {
   public componentDidMount() {
     const { wallet } = this.props;
     if (wallet) {
@@ -27,11 +26,8 @@ export class LastTransactionsComponent extends React.Component<IProps> {
   }
 
   public render() {
-    const transactions: ITransaction[] = this.props.transactions.slice(0, 15);
-    const transactionList = transactions.map(transaction => (
-      <Transaction key={transaction.senderAddress + transaction.recipientAddress} transaction={transaction} />
-    ));
-    // const transactions = [
+    const transactions: ITransaction[] = this.props.transactions;
+    // const transactions1 = [
     //   {
     //     amount: 1000,
     //     fee: 20,
@@ -42,21 +38,21 @@ export class LastTransactionsComponent extends React.Component<IProps> {
     //     timestamp: 1534149753000
     //   }
     // ];
+    // const transactions2 = [...transactions1, ...transactions1, ...transactions1];
+    // const transactions3 = [...transactions2, ...transactions2, ...transactions2];
+    // const transactions = [...transactions3, ...transactions3, ...transactions3];
+
+    const transactionList = transactions.map(transaction => (
+      <Transaction key={transaction.senderAddress + transaction.recipientAddress} transaction={transaction} />
+    ));
     return (
       <div className="table-section">
         <div className="title">
           <h3>Last transactions</h3>
-          <Link to="/wallet/transactions" className="button small">
-            <div />
-            <span>Create transaction</span>
-          </Link>
         </div>
         <div className="list">
           <TransactionsHeader />
           {transactionList}
-          <Link to="/wallet/transactions" className="all">
-            View All Transactions <span>{transactions.length}</span>
-          </Link>
         </div>
       </div>
     );
@@ -69,7 +65,7 @@ const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreSta
   getTransactions: (address: string) => dispatch(getTransactions(address))
 });
 
-export const LastTransactions = connect<IStoreStateProps, IDispatchProps>(
+export const AllTransactions = connect<IStoreStateProps, IDispatchProps>(
   mapStateToProps,
   mapDispatchToProps
-)(LastTransactionsComponent);
+)(AllTransactionsComponent);

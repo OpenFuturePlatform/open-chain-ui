@@ -3,7 +3,7 @@ import { Delegates } from '../components/Delegates';
 import { LastTransactions } from '../components/LastTransactions';
 import { WalletInfo } from '../components/WalletInfo';
 
-class WalletDashboardComponent extends React.Component<object> {
+export class WalletDashboard extends React.Component<object> {
   public render() {
     return (
       <React.Fragment>
@@ -16,5 +16,3 @@ class WalletDashboardComponent extends React.Component<object> {
     );
   }
 }
-
-export const WalletDashboard = WalletDashboardComponent;
