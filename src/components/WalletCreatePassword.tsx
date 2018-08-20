@@ -80,7 +80,7 @@ class WalletCreatePasswordComponent extends React.Component<IProps, IState> {
             </div>
             <div className="disclaimer">
               <img src={danger} alt="!" />
-              <span>The password is downloaded in .txt format automatically</span>
+              <span>This password will be used to encrypt a file with your wallet data</span>
             </div>
           </form>
         </div>

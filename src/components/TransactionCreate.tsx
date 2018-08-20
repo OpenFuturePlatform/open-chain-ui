@@ -64,7 +64,10 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
       });
       this.setState(this.getDefaultState());
     } catch (e) {
-      const message = parseApiError(e);
+      let message = parseApiError(e);
+      if (message.includes('Transaction is invalid : ')) {
+        message = message.slice(25);
+      }
       this.setState({ recipientAddressError: message });
     }
   };
@@ -83,7 +86,6 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
         </div>
         <div className={`input ${recipientAddressError && 'invalid'}`}>
           <p className="required">To</p>
-          <span className="error">{recipientAddressError}</span>
           <input
             type="text"
             placeholder="Wallet Address"
@@ -91,6 +93,7 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
             value={recipientAddress}
             onChange={this.onAddressChange}
           />
+          <span className="error">{recipientAddressError}</span>
         </div>
         <div className="input">
           <p className="required">Amount</p>

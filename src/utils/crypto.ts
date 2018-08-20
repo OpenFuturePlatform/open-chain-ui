@@ -107,9 +107,9 @@ export const buildTransaction = (wallet: IWallet, transactionCandidate: ITransac
     senderPublicKey,
     timestamp
   };
-  const transactionHash = hashTransaction(unsignedTransaction);
-  const senderSignature = signByPrivateKey(transactionHash, privateKey);
-  return { senderSignature, ...unsignedTransaction };
+  const hash = hashTransaction(unsignedTransaction);
+  const senderSignature = signByPrivateKey(hash, privateKey);
+  return { senderSignature, ...unsignedTransaction, hash };
 };
 
 export const signByPrivateKey = (message: string, privateKey: string) => {

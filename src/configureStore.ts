@@ -34,6 +34,7 @@ export interface IUnsignedTransaction extends ITransactionCandidate {
 
 export interface ITransaction extends IUnsignedTransaction {
   readonly senderSignature: string;
+  readonly hash: string;
 }
 
 export interface IList<T> {

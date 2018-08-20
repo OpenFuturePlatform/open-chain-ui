@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { IThunkDispatch } from '../actions/index';
 import { generateWallet } from '../actions/wallet';
+import InfoPopup from '../components-ui/InfoPopup';
 import { IStoreState } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
@@ -17,7 +18,18 @@ interface IRouterProps extends RouteComponentProps<any> {}
 
 type IProps = IDispatchProps & IRouterProps;
 
-export class WalletGenerateSeedComponent extends React.Component<IProps> {
+interface IState {
+  isInfoShown: boolean;
+}
+
+export class WalletGenerateSeedComponent extends React.Component<IProps, IState> {
+  public state = {
+    isInfoShown: false
+  };
+
+  public onShowInfo = () => this.setState({ isInfoShown: true });
+  public onHideInfo = () => this.setState({ isInfoShown: false });
+
   public handleOnGenerate = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     await this.props.generateWallet();
@@ -25,6 +37,7 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
   };
 
   public render() {
+    const { isInfoShown } = this.state;
     return (
       <section>
         <div className="form-content">
@@ -40,21 +53,38 @@ export class WalletGenerateSeedComponent extends React.Component<IProps> {
           </div>
           <form>
             <h2 className="generate">Generate seed phrase</h2>
-            <a className="info-link" href="#">
-              <img src={info} alt="?" />
-              <span>What is Seed Phrase?</span>
-            </a>
+            <div className="popover-area">
+              <label htmlFor="popover" className="info-link">
+                <img src={info} alt="?" />
+                <span>What is Seed Phrase?</span>
+              </label>
+              <input type="checkbox" id="popover" />
+              <div className="popover">
+                <h3>Seed Phrase</h3>
+                <p>
+                  When you registering an account, you will be asked to save your secret phrase (Seed) which contains 12
+                  English words with spaces between each word. Please make sure that you are using the correct seed
+                  phrase, even a single space or character (even if you click on the Return/Enter button when you are
+                  importing the seed phrase) will generate another Open address Also please make sure that the original
+                  phrase doesn't have any white spaces or line breaks at the end of the line because wallet doesn't
+                  recognise any additional non default symbols at the begin and at the end of the phrase.
+                </p>
+              </div>
+            </div>
             <button className="button" onClick={this.handleOnGenerate}>
               <div />
               <span>Generate</span>
             </button>
             <div className="disclaimer">
               <img src={danger} alt="!" />
-              <span>Disclaimer text</span>
-              <a href="#">Read</a>
+              <span>Disclaimer</span>
+              <span className="link" onClick={this.onShowInfo}>
+                Read
+              </span>
             </div>
           </form>
         </div>
+        {isInfoShown && <InfoPopup closePopup={this.onHideInfo} />}
       </section>
     );
   }

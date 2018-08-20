@@ -4,7 +4,6 @@ import { CopyToClipboard } from '../components-ui/CopyToClipboard';
 import { IWallet } from '../configureStore';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
-import infoGray from '../img/info-gray.svg';
 
 interface IStoreStateProps {
   wallet: IWallet;
@@ -45,7 +44,18 @@ export class WalletNewKeys extends React.Component<IStoreStateProps, object> {
             <div className="key-area">
               <div className="title">
                 <p>public key</p>
-                <img src={infoGray} alt="?" />
+                <div className="popover-area2">
+                  <input type="checkbox" id="popover" />
+                  <label htmlFor="popover" />
+                  <div className="popover">
+                    <h3>Public Key</h3>
+                    <p>
+                      You should only give this Extended Public Key (xPub) to those you trust. With this information,
+                      they may be able to keep track of your payments, and may be able to disrupt your access to your
+                      wallet.
+                    </p>
+                  </div>
+                </div>
               </div>
               <div className="key">
                 <span>{publicKey}</span>
@@ -55,7 +65,14 @@ export class WalletNewKeys extends React.Component<IStoreStateProps, object> {
             <div className="key-area mgb54">
               <div className="title">
                 <p>wallet adress</p>
-                <img src={infoGray} alt="?" />
+                <div className="popover-area2">
+                  <input type="checkbox" id="popover2" />
+                  <label htmlFor="popover2" />
+                  <div className="popover">
+                    <h3>Wallet Adress</h3>
+                    <p>Wallet addresses are what you share with others when you want to receive funds.</p>
+                  </div>
+                </div>
               </div>
               <div className="key">
                 <span>{address}</span>
