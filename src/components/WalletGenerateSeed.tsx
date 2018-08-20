@@ -10,7 +10,7 @@ import danger from '../img/danger.svg';
 import info from '../img/info.svg';
 
 interface IDispatchProps {
-  generateWallet: () => void;
+  generateWallet(): void;
 }
 
 interface IRouterProps extends RouteComponentProps<any> {}

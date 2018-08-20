@@ -1,4 +1,9 @@
-import { IKeys, IWallet } from '../configureStore';
+import { IKeys, ITransaction, ITransactionCandidate, IUnsignedTransaction, IWallet } from '../configureStore';
+/* tslint:disable */
+const sha256 = require('js-sha256').sha256;
+const EC = require('elliptic').ec;
+const BN = require('bn.js');
+/* tslint:enable */
 
 interface ICrypto {
   iv: string;
@@ -70,4 +75,47 @@ export const decryptWallet = async (encWallet: IEncWallet, password: string): Pr
   } catch (e) {
     throw e;
   }
+};
+
+const toByteArray = (data: string | number): number[] => {
+  if (typeof data === 'number') {
+    return new BN(data).toArray(8, 8);
+  }
+  return data.split('').map(char => char.charCodeAt(0));
+};
+
+const hashTransaction = (unsignedTransaction: IUnsignedTransaction): string => {
+  const { timestamp, fee, senderAddress, amount, recipientAddress } = unsignedTransaction;
+  const byteArray = [
+    ...toByteArray(timestamp),
+    ...toByteArray(fee),
+    ...toByteArray(senderAddress),
+    ...toByteArray(amount),
+    ...toByteArray(recipientAddress)
+  ];
+  return sha256(sha256.array(byteArray));
+};
+
+export const buildTransaction = (wallet: IWallet, transactionCandidate: ITransactionCandidate): ITransaction => {
+  const { address: senderAddress, keys } = wallet;
+  const { publicKey: senderPublicKey, privateKey } = keys;
+  const timestamp = Date.now();
+
+  const unsignedTransaction: IUnsignedTransaction = {
+    ...transactionCandidate,
+    senderAddress,
+    senderPublicKey,
+    timestamp
+  };
+  const transactionHash = hashTransaction(unsignedTransaction);
+  const senderSignature = signByPrivateKey(transactionHash, privateKey);
+  return { senderSignature, ...unsignedTransaction };
+};
+
+export const signByPrivateKey = (message: string, privateKey: string) => {
+  const ec = new EC('secp256k1');
+  const keyPair = ec.keyFromPrivate(privateKey, 'hex');
+  const signature = keyPair.sign(message);
+  const derSign = signature.toDER();
+  return btoa(derSign.map((it: any) => String.fromCharCode(it)).join(''));
 };

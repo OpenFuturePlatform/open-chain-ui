@@ -33,11 +33,11 @@ export class WalletLoginByPrivKeyComponent extends React.Component<IProps, IStat
   public isSubmitDisabled = () => !this.state.key;
 
   public getKeyError = (key: string) => {
-    if (key.length !== 69) {
-      return 'Private Key needs to include 69 symbols';
+    if (key.length !== 64) {
+      return 'Private Key needs to include 64 symbols';
     }
     const spaces = key.split('').filter(it => it === ' ');
-    if (spaces.length === 69) {
+    if (spaces.length === 64) {
       return 'Invalid Private Key';
     }
     return '';

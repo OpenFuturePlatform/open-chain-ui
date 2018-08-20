@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { IStoreState, IWallet } from '../configureStore';
 import copyGray from '../img/copy-gray.svg';
 import { copy2Clipboard } from '../utils/copy2Clipboard';
@@ -18,13 +18,13 @@ export const WalletHeaderComponent: React.SFC<IProps> = ({ wallet, balance }) =>
   return (
     <nav>
       <SimpleHeader />
-      <Link to="/wallet" className="link active">
+      <NavLink exact={true} to="/wallet" className="link">
         dashboard
-      </Link>
-      {/* <Link to="/wallet/info" className="link">
+      </NavLink>
+      <NavLink to="/wallet/transactions" className="link">
         wallet
-      </Link>
-      <Link to="/wallet/delegates" className="link">
+      </NavLink>
+      {/* <Link to="/wallet/delegates" className="link">
         delegates
       </Link> */}
       <div className="profile-info">

@@ -20,3 +20,16 @@
   top: 0;
   left: 0;
 }
+
+form .input .error {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #df4c4c;
+  font-weight: 500;
+  display: none;
+}
+
+form .input.invalid .error {
+  display: block;
+}

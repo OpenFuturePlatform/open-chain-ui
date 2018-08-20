@@ -20,12 +20,19 @@ export interface IDelegate {
   readonly votes: number;
 }
 
-export interface ITransaction {
+export interface ITransactionCandidate {
   readonly fee: number;
   readonly amount: number;
   readonly recipientAddress: string;
+}
+
+export interface IUnsignedTransaction extends ITransactionCandidate {
   readonly senderPublicKey: string;
   readonly senderAddress: string;
+  readonly timestamp: number;
+}
+
+export interface ITransaction extends IUnsignedTransaction {
   readonly senderSignature: string;
 }
 
