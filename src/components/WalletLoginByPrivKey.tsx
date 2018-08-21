@@ -54,7 +54,7 @@ export class WalletLoginByPrivKeyComponent extends React.Component<IProps, IStat
       await this.props.getWalletByPrivateKey(key);
       this.props.history.push('/wallet');
     } catch (e) {
-      this.setState({ keyError: parseApiError(e) });
+      this.setState({ keyError: parseApiError(e).message });
     }
   };
 

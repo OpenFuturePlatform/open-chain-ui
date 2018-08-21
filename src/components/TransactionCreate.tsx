@@ -4,7 +4,7 @@ import { IThunkDispatch } from '../actions';
 import { createTransaction } from '../actions/transactions';
 import { IStoreState, ITransactionCandidate, IWallet } from '../configureStore';
 import { getNumbersOnly } from '../utils/getNumbersOnly';
-import { parseApiError } from '../utils/parseApiError';
+import { ErrorField, parseApiError } from '../utils/parseApiError';
 
 interface IStoreStateProps {
   wallet: IWallet | null;
@@ -18,9 +18,10 @@ type IProps = IStoreStateProps & IDispatchProps;
 
 interface IState {
   recipientAddress: string;
-  recipientAddressError: string;
   amount: string;
   fee: string;
+  amountError: string;
+  recipientError: string;
 }
 
 export class TransactionCreateComponent extends React.Component<IProps, IState> {
@@ -31,9 +32,10 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
 
   public getDefaultState = () => ({
     amount: '',
+    amountError: '',
     fee: '',
     recipientAddress: '',
-    recipientAddressError: ''
+    recipientError: ''
   });
 
   public isConfirmDisabled = () => !this.state.amount || !this.state.fee || !this.state.recipientAddress;
@@ -64,13 +66,17 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
       });
       this.setState(this.getDefaultState());
     } catch (e) {
-      const message = parseApiError(e);
-      this.setState({ recipientAddressError: message });
+      const { message, field } = parseApiError(e);
+      if (field === ErrorField.AMOUNT) {
+        this.setState({ amountError: message });
+      } else {
+        this.setState({ recipientError: message });
+      }
     }
   };
 
   public render() {
-    const { recipientAddress, amount, fee, recipientAddressError } = this.state;
+    const { recipientAddress, amount, fee, recipientError, amountError } = this.state;
     const { wallet } = this.props;
     const senderAddress = wallet ? wallet.address : '';
     const confirmDisabled = this.isConfirmDisabled();
@@ -79,11 +85,11 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
         <h2>Create Transaction</h2>
         <div className="input">
           <p>From</p>
-          <input type="text" placeholder="Wallet Address" className="disable" value={senderAddress} />
+          <input type="text" placeholder="Wallet Address" className="disable" value={senderAddress} readOnly={true} />
         </div>
-        <div className={`input ${recipientAddressError && 'invalid'}`}>
+        <div className={`input ${recipientError && 'invalid'}`}>
           <p className="required">To</p>
-          <span className="error">{recipientAddressError}</span>
+          <span className="error">{recipientError}</span>
           <input
             type="text"
             placeholder="Wallet Address"
@@ -92,8 +98,9 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
             onChange={this.onAddressChange}
           />
         </div>
-        <div className="input">
+        <div className={`input ${amountError && 'invalid'}`}>
           <p className="required">Amount</p>
+          <span className="error">{amountError}</span>
           <input type="text" placeholder="Amount" required={true} value={amount} onChange={this.onAmountChange} />
         </div>
         <div className="input">

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { CopyToClipboard } from '../components-ui/CopyToClipboard';
+import InfoPopup from '../components-ui/InfoPopup';
 import arrow from '../img/arrow.svg';
 import crumb from '../img/crumb.svg';
 import danger from '../img/danger.svg';
@@ -13,12 +14,17 @@ interface IProps {
 
 interface IState {
   isConfirmDisabled: boolean;
+  isInfoShown: boolean;
 }
 
 export class WalletNewSeed extends React.Component<IProps, IState> {
   public state = {
-    isConfirmDisabled: true
+    isConfirmDisabled: true,
+    isInfoShown: false
   };
+
+  public onShowInfo = () => this.setState({ isInfoShown: true });
+  public onHideInfo = () => this.setState({ isInfoShown: false });
 
   public onExportHandler = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -29,7 +35,7 @@ export class WalletNewSeed extends React.Component<IProps, IState> {
 
   public render() {
     const { seed } = this.props;
-    const { isConfirmDisabled } = this.state;
+    const { isConfirmDisabled, isInfoShown } = this.state;
 
     return (
       <section>
@@ -70,11 +76,14 @@ export class WalletNewSeed extends React.Component<IProps, IState> {
             </div>
             <div className="disclaimer">
               <img src={danger} alt="!" />
-              <span>Disclaimer text</span>
-              <a href="#">Read</a>
+              <span>Disclaimer</span>
+              <span className="link" onClick={this.onShowInfo}>
+                Read
+              </span>
             </div>
           </form>
         </div>
+        {isInfoShown && <InfoPopup closePopup={this.onHideInfo} />}
       </section>
     );
   }

@@ -22,7 +22,9 @@ export const WalletCreationComplete: React.SFC<{}> = () => {
             is complete!
           </h2>
           <p>
-            A password-protected file with the keys and wallet address was downloaded to your computer automatically.
+            I understand that my funds are securely held by this device, not by the
+            <br />
+            company, and I will store the file with the keys in a safe place
           </p>
           <Link to="/login" className="button">
             <div />

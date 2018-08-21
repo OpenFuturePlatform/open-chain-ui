@@ -1,5 +1,7 @@
 .form-content form .input .error {
   display: inline-block;
+  left: auto;
+  font-size: initial;
 }
 
 .left-section .wallet-info .conversions {
@@ -23,6 +25,7 @@
 
 form .input .error {
   position: absolute;
+  left: auto;
   right: 0;
   top: 0;
   color: #df4c4c;
@@ -32,4 +35,20 @@ form .input .error {
 
 form .input.invalid .error {
   display: block;
+}
+
+.left-section form .input .error {
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.form-content form .input p span {
+  top: 0;
+  right: 0;
+  left: auto;
+}
+
+.form-content form .generate + p {
+  width: auto;
+  min-width: 485px;
 }

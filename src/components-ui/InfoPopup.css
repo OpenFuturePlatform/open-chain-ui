@@ -1,0 +1,120 @@
+.popup-area {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(28, 28, 39, 0.6);
+  z-index: 10;
+}
+.popup-area .info-popup {
+  background: #ffffff;
+  box-shadow: 0px 15px 100px rgba(132, 149, 156, 0.1);
+  border-radius: 15px;
+  padding: 48px 48px 60px 48px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1013px;
+}
+.popup-area .info-popup .close-popup {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  top: -46px;
+  cursor: pointer;
+}
+.popup-area .info-popup .close-popup > img {
+  top: -2px;
+  margin-left: 12px;
+  width: 18px;
+  height: 18px;
+}
+.popup-area .info-popup .close-popup:hover {
+  opacity: 0.8;
+}
+.popup-area .info-popup .pagination {
+  position: absolute;
+  bottom: -48px;
+  right: 0;
+  margin-top: 21px;
+  float: right;
+  display: flex;
+  align-items: center;
+}
+.popup-area .info-popup .pagination .line {
+  height: 19px;
+  width: 1px;
+  margin: 0 12px;
+  background: #dcdcf0;
+}
+.popup-area .info-popup .pagination a {
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+.popup-area .info-popup .pagination a img {
+  width: 16px;
+  cursor: pointer;
+  top: -1px;
+}
+.popup-area .info-popup .pagination .next,
+.popup-area .info-popup .pagination .prev {
+  cursor: pointer;
+}
+.popup-area .info-popup .pagination .next img {
+  transform: rotate(180deg);
+  margin-left: 6px;
+}
+.popup-area .info-popup .pagination .prev img {
+  margin-right: 7px;
+}
+.popup-area .info-popup .main-title {
+  color: #3193f5;
+  font-size: 36px;
+  line-height: 36px;
+}
+.popup-area .info-popup .subtitle {
+  color: #3193f5;
+  font-size: 21px;
+  line-height: 45px;
+  padding-bottom: 36px;
+}
+.popup-area .info-popup .info {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 0;
+  border-top: 1px solid #dcdcf0;
+}
+.popup-area .info-popup .info span {
+  max-width: 70%;
+  text-align: right;
+  text-transform: uppercase;
+  word-wrap: break-word;
+}
+.popup-area .info-popup .info .title {
+  text-align: left;
+  font-weight: 700;
+}
+.popup-area .info-popup .info p {
+  font-weight: 700;
+}
+.popup-area .info-popup .info .lite {
+  font-weight: 400;
+  color: #c8c8dc;
+}
+.popup-area .content {
+  padding: 25px 0 30px;
+}
+.popup-area .content p {
+  padding-top: 16px;
+}

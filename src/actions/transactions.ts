@@ -21,7 +21,7 @@ class SetTransactions extends ActionCreator implements IAction<ITransaction[]> {
 export const getTransactions = (address: string): IThunkAction<TransactionAction> => async (
   dispatch: Dispatch<TransactionAction>
 ) => {
-  const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/${address}`);
+  const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`);
   const payload: ITransaction[] = data.payload;
   dispatch(new SetTransactions(payload));
 };
