@@ -54,11 +54,12 @@ export class WalletGenerateSeedComponent extends React.Component<IProps, IState>
           <form>
             <h2 className="generate">Generate seed phrase</h2>
             <div className="popover-area">
+              <input type="checkbox" id="popover" />
               <label htmlFor="popover" className="info-link">
                 <img src={info} alt="?" />
                 <span>What is Seed Phrase?</span>
+                <div className="close-wrapper" />
               </label>
-              <input type="checkbox" id="popover" />
               <div className="popover">
                 <h3>Seed Phrase</h3>
                 <p>

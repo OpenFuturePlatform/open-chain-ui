@@ -46,7 +46,9 @@ export class WalletNewKeys extends React.Component<IStoreStateProps, object> {
                 <p>public key</p>
                 <div className="popover-area2">
                   <input type="checkbox" id="popover" />
-                  <label htmlFor="popover" />
+                  <label htmlFor="popover">
+                    <div className="close-wrapper" />
+                  </label>
                   <div className="popover">
                     <h3>Public Key</h3>
                     <p>
@@ -67,7 +69,9 @@ export class WalletNewKeys extends React.Component<IStoreStateProps, object> {
                 <p>wallet adress</p>
                 <div className="popover-area2">
                   <input type="checkbox" id="popover2" />
-                  <label htmlFor="popover2" />
+                  <label htmlFor="popover2">
+                    <div className="close-wrapper" />
+                  </label>
                   <div className="popover">
                     <h3>Wallet Adress</h3>
                     <p>Wallet addresses are what you share with others when you want to receive funds.</p>

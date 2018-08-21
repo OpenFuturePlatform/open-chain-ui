@@ -61,7 +61,7 @@ export class WalletRestoreComponent extends React.Component<IProps, IState> {
     try {
       await this.restoreWallet(seed.toLowerCase());
     } catch (e) {
-      this.onSeedError(parseApiError(e));
+      this.onSeedError(parseApiError(e).message);
     }
   };
 

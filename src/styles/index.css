@@ -308,6 +308,7 @@ section {
   width: -moz-max-content;
   width: max-content;
   margin: 0 auto;
+  z-index: 10;
 }
 .popover-area.popover-area2 {
   width: 24px;
@@ -326,6 +327,9 @@ section {
   display: none;
 }
 .popover-area input[type='checkbox']:checked ~ .popover {
+  display: block;
+}
+.popover-area input[type='checkbox']:checked ~ .info-link > .close-wrapper {
   display: block;
 }
 .popover-area .popover {
@@ -357,6 +361,15 @@ section {
   text-transform: none;
   margin-bottom: 12px;
 }
+.popover-area .close-wrapper {
+  display: none;
+  position: fixed;
+  left: -100%;
+  top: -100vh;
+  width: 300%;
+  height: 300vh;
+  cursor: default;
+}
 
 .popover-area2 {
   width: 24px;
@@ -381,6 +394,9 @@ section {
 }
 .popover-area2 input[type='checkbox']:checked ~ label {
   background-image: url('../img/info.svg');
+}
+.popover-area2 input[type='checkbox']:checked ~ label > .close-wrapper {
+  display: block;
 }
 .popover-area2 .popover {
   width: 700px;
@@ -419,6 +435,16 @@ section {
   font-size: 16px !important;
   text-transform: none !important;
 }
+.popover-area2 .close-wrapper {
+  display: none;
+  position: fixed;
+  left: -100%;
+  top: -100vh;
+  width: 300%;
+  height: 300vh;
+  cursor: default;
+  z-index: 4;
+}
 
 .info-link {
   display: -webkit-box;
@@ -448,10 +474,9 @@ section {
   color: #c8c8dc;
   padding: 0 4px 0 6px;
 }
-.disclaimer .link {
+.disclaimer a {
   color: #3193f5;
   font-weight: 500;
-  cursor: pointer;
 }
 
 .welcome-content {
@@ -692,8 +717,9 @@ section {
 }
 .form-content form .input .error {
   position: absolute;
-  right: 0;
-  top: 0;
+  left: 0;
+  bottom: -20px;
+  font-size: 14px;
   color: #df4c4c;
   font-weight: 500;
   display: none;
@@ -1134,7 +1160,39 @@ nav .profile-info .logout {
 }
 .left-section form .input {
   width: 100%;
-  margin-bottom: 36px;
+  margin-bottom: 30px;
+}
+.left-section form .input.invalid > input {
+  border-color: #df4c4c;
+}
+.left-section form .input.invalid .error {
+  display: block;
+}
+.left-section form .input.invalid ::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  color: rgba(223, 76, 76, 0.5);
+}
+.left-section form .input.invalid ::-moz-placeholder {
+  /* Firefox 19+ */
+  color: rgba(223, 76, 76, 0.5);
+}
+.left-section form .input.invalid :-ms-input-placeholder {
+  /* IE 10+ */
+  color: rgba(223, 76, 76, 0.5);
+}
+.left-section form .input.invalid :-moz-placeholder {
+  /* Firefox 18- */
+  color: rgba(223, 76, 76, 0.5);
+}
+.left-section form .input .error {
+  color: #df4c4c;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: 400;
+  display: none;
+  padding: 0;
+  text-transform: none;
+  margin: 2px 0 0;
 }
 .left-section form .input p {
   width: 100%;
