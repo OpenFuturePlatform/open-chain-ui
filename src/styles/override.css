@@ -52,3 +52,7 @@ form .input.invalid .error {
   width: auto;
   min-width: 485px;
 }
+
+.list .all span {
+  color: #b9dbfd;
+}

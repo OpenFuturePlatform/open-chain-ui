@@ -6,10 +6,10 @@ export class WalletTransactions extends React.Component<object> {
   public render() {
     return (
       <React.Fragment>
+        <AllTransactions />
         <div className="left-section">
           <TransactionCreate />
         </div>
-        <AllTransactions />
       </React.Fragment>
     );
   }
