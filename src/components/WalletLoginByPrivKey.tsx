@@ -79,7 +79,7 @@ export class WalletLoginByPrivKeyComponent extends React.Component<IProps, IStat
             <div className={`input input-enter-key ${keyError && 'invalid'}`}>
               <p className="required">private key</p>
               <span className="error">{keyError}</span>
-              <Password password={key} onChange={this.onKeyChange} />
+              <Password password={key} placeholder="Private Key" onChange={this.onKeyChange} />
             </div>
             <button className={`button btn-enter-key ${isConfirmDisabled && 'disable'}`}>
               <div />
