@@ -2,6 +2,7 @@ import * as React from 'react';
 
 interface IProps {
   password: string;
+  placeholder?: string;
   onChange(e: React.SyntheticEvent<HTMLInputElement>): void;
 }
 
@@ -17,13 +18,13 @@ export class Password extends React.Component<IProps, IState> {
   public onShowPassword = () => this.setState(({ isPasswordShown }: IState) => ({ isPasswordShown: !isPasswordShown }));
 
   public render() {
-    const { password, onChange } = this.props;
+    const { password, onChange, placeholder } = this.props;
     const { isPasswordShown } = this.state;
     const inputType = isPasswordShown ? 'text' : 'password';
 
     return (
       <React.Fragment>
-        <input type={inputType} placeholder="Password" value={password} onChange={onChange} />
+        <input type={inputType} placeholder={placeholder || ''} value={password} onChange={onChange} />
         <label htmlFor="eye">
           <input id="eye" type="checkbox" checked={isPasswordShown} onChange={this.onShowPassword} />
           <div className="eye" />

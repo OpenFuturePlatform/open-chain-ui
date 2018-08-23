@@ -70,7 +70,7 @@ class WalletCreatePasswordComponent extends React.Component<IProps, IState> {
           <form className="form-create-pass" onSubmit={this.onSubmit}>
             <div className="input">
               <p className="required">Create password</p>
-              <Password password={password} onChange={this.onPasswordChange} />
+              <Password password={password} placeholder="Enter password" onChange={this.onPasswordChange} />
             </div>
             <div className="button-area ">
               <button className={`button ${isSubmitDisabled && 'disable'}`}>
