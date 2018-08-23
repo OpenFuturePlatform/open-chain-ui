@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { IThunkDispatch } from '../actions';
 import { getDelegates } from '../actions/delegates';
 import { IDelegate, IList, IStoreState } from '../configureStore';
@@ -20,9 +21,9 @@ class DelegatesComponent extends React.Component<IProps> {
   }
 
   public renderDelegates = (delegates: IDelegate[]) =>
-    delegates.map((delegate, index) => (
+    delegates.map(delegate => (
       <div key={delegate.id} className="delegate">
-        <p className="rank">{index + 1}</p>
+        <p className="rank">{delegate.rank}</p>
         <p className="address">{delegate.address}</p>
         <p className="amount">{delegate.votes}</p>
       </div>
@@ -34,10 +35,10 @@ class DelegatesComponent extends React.Component<IProps> {
       <div className="delegates-list">
         <div className="title">
           <h3>delegates</h3>
-          {/* <a href="#" className="button small">
+          <Link to="/wallet/delegates" className="button small">
             <div />
             <span>Vote</span>
-          </a> */}
+          </Link>
         </div>
         <div className="list">
           <div className="head">
@@ -45,10 +46,10 @@ class DelegatesComponent extends React.Component<IProps> {
             <p className="address">Address</p>
             <p className="amount">Amount of votes</p>
           </div>
-          {this.renderDelegates(delegates.list)}
-          {/* <a href="#" className="all">
-            View all delegates
-          </a> */}
+          {this.renderDelegates(delegates.list.slice(0, 10))}
+          <Link to="/wallet/delegates" className="all">
+            View all delegates <span>{delegates.totalCount}</span>
+          </Link>
         </div>
       </div>
     );

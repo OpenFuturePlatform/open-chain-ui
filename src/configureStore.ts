@@ -18,6 +18,7 @@ export interface IDelegate {
   readonly address: string;
   readonly id: number;
   readonly votes: number;
+  readonly rank: number;
 }
 
 export interface ITransactionCandidate {

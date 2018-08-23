@@ -3,7 +3,7 @@ export enum ErrorField {
   AMOUNT = 'amountError'
 }
 
-export const TransactionErrorMap = {
+export const transactionErrorMap = {
   INCORRECT_ADDRESS: { field: ErrorField.RECIPIENT, message: 'Transaction recipient address is incorrect' },
   INCORRECT_DELEGATE_KEY: { field: ErrorField.RECIPIENT, message: 'Delegate address is incorrect' },
   INCORRECT_HASH: { field: ErrorField.RECIPIENT, message: 'Transaction hash is incorrect' },
@@ -32,8 +32,9 @@ export const parseApiError = (e: IError) => {
   const defaultMessage = 'Something went wrong';
   if ('response' in e) {
     const type = e.response.data.payload.type || '';
-    const message = TransactionErrorMap[type].message || e.response.data.payload.message;
-    const field: ErrorField = TransactionErrorMap[type].field;
+    const transactionMap = transactionErrorMap[type] || null;
+    const message = transactionMap ? transactionMap.message : e.response.data.payload.message;
+    const field: ErrorField = transactionMap ? transactionMap.field : null;
 
     return { message, field };
   }
