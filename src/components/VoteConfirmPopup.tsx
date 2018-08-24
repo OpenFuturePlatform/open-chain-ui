@@ -1,22 +1,23 @@
 import * as React from 'react';
 import { PopupBackgroundArea } from '../components-ui/PopupBackgroundArea';
+import { withSuccessPopup } from './withSuccessPopup';
 
 interface IProps {
+  isVisible: boolean;
   delegate: string;
   fee: string;
-  onSubmit(): void;
+  onSubmit(): Promise<void>;
   onClose(): void;
 }
 
-export const VoteConfirmPopup = ({ delegate, fee, onClose, onSubmit }: IProps) => {
-  const onSubmitHandler = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit();
-  };
+const VoteConfirmPopupComponent = ({ isVisible, delegate, fee, onClose, onSubmit }: IProps) => {
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <PopupBackgroundArea onClick={onClose}>
-      <form className="popup" onSubmit={onSubmitHandler}>
+      <form className="popup" onSubmit={onSubmit}>
         <h2>Vote</h2>
         <div className="info">
           <span className="title">Delegate's address</span>
@@ -42,3 +43,5 @@ export const VoteConfirmPopup = ({ delegate, fee, onClose, onSubmit }: IProps) =
     </PopupBackgroundArea>
   );
 };
+
+export const VoteConfirmPopup = withSuccessPopup<IProps>(VoteConfirmPopupComponent);

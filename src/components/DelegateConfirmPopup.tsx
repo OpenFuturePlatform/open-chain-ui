@@ -1,21 +1,22 @@
 import * as React from 'react';
 import { PopupBackgroundArea } from '../components-ui/PopupBackgroundArea';
+import { withSuccessPopup } from './withSuccessPopup';
 
 interface IProps {
+  isVisible: boolean;
   fee: string;
-  onSubmit(): void;
+  onSubmit(): Promise<void>;
   onClose(): void;
 }
 
-export const DelegateConfirmConfirmPopup = ({ fee, onClose, onSubmit }: IProps) => {
-  const onSubmitHandler = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit();
-  };
+export const DelegateConfirmPopupComponent = ({ isVisible, fee, onClose, onSubmit }: IProps) => {
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <PopupBackgroundArea onClick={onClose}>
-      <form className="popup" onSubmit={onSubmitHandler}>
+      <form className="popup" onSubmit={onSubmit}>
         <h2>
           Become <br />a Delegate
         </h2>
@@ -45,3 +46,5 @@ export const DelegateConfirmConfirmPopup = ({ fee, onClose, onSubmit }: IProps) 
     </PopupBackgroundArea>
   );
 };
+
+export const DelegateConfirmPopup = withSuccessPopup<IProps>(DelegateConfirmPopupComponent);

@@ -42,3 +42,25 @@ export const createTransaction = (transactionCandidate: ITransactionCandidate) =
   await axios.post('/rpc/transactions/transfer', transaction);
   dispatch(getTransactions(wallet.address));
 };
+
+export const createVoteTransaction = () => async (dispatch: IThunkDispatch, getState: () => IStoreState) => {
+  const state = getState();
+  const wallet = state.wallet;
+
+  if (!wallet) {
+    throw new Error('>> Wallet not authorized');
+  }
+
+  console.log('>> Vote Transaction');
+};
+
+export const createDelegateTransaction = () => async (dispatch: IThunkDispatch, getState: () => IStoreState) => {
+  const state = getState();
+  const wallet = state.wallet;
+
+  if (!wallet) {
+    throw new Error('>> Wallet not authorized');
+  }
+
+  console.log('>> Delegate Transaction');
+};

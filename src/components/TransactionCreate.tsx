@@ -73,13 +73,9 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
   };
 
   public onConfirm = async (): Promise<void> => {
-    const { amount, recipientAddress, fee } = this.state;
     try {
-      await this.props.createTransaction({
-        amount: Number(amount),
-        fee: Number(fee),
-        recipientAddress
-      });
+      const transaction = this.getTransactionCandidate();
+      await this.props.createTransaction(transaction);
       this.setState(this.getDefaultState());
     } catch (e) {
       const { message, field } = parseApiError(e);
@@ -135,9 +131,9 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
         <TransactionConfirm
           address={wallet ? wallet.address : ''}
           transaction={transactionCandidate}
-          isConfirmVisible={previewPopup}
+          isVisible={previewPopup}
           onClose={this.hidePreviewPopup}
-          onConfirm={this.onConfirm}
+          onSubmit={this.onConfirm}
         />
       </React.Fragment>
     );

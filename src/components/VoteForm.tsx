@@ -1,20 +1,37 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { IThunkDispatch } from '../actions';
+import { createVoteTransaction } from '../actions/transactions';
 import { getNumbersOnly } from '../utils/getNumbersOnly';
+import { parseApiError } from '../utils/parseApiError';
 import { DelegateTabs } from './DelegateTabs';
 import { VoteConfirmPopup } from './VoteConfirmPopup';
 
+interface IDispatchProps {
+  createVoteTransaction(): Promise<void>;
+}
+
 interface IState {
   delegate: string;
+  delegateError: string;
   fee: string;
+  feeError: string;
   isShowConfirm: boolean;
 }
 
-export class VoteForm extends React.Component<{}, IState> {
-  public state = {
+class VoteFormComponent extends React.Component<IDispatchProps, IState> {
+  public constructor(props: IDispatchProps) {
+    super(props);
+    this.state = this.getDefaultState();
+  }
+
+  public getDefaultState = () => ({
     delegate: '',
+    delegateError: '',
     fee: '',
+    feeError: '',
     isShowConfirm: false
-  };
+  });
 
   public onDelegateChange = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ delegate: e.target.value });
   public onFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,14 +49,19 @@ export class VoteForm extends React.Component<{}, IState> {
   };
 
   public onSubmit = async () => {
-    console.log('submit');
+    try {
+      await this.props.createVoteTransaction();
+      this.setState(this.getDefaultState);
+    } catch (e) {
+      const { message } = parseApiError(e);
+      this.setState({ delegateError: message, isShowConfirm: false });
+      throw e;
+    }
   };
 
   public render() {
-    const { delegate, fee, isShowConfirm } = this.state;
+    const { delegate, delegateError, fee, feeError, isShowConfirm } = this.state;
     const confirmDisabled = this.isConfirmDisabled();
-    const delegateError = 'Delegate Error';
-    const feeError = 'Fee Error';
 
     return (
       <div className="left-section">
@@ -71,16 +93,32 @@ export class VoteForm extends React.Component<{}, IState> {
                 onChange={this.onFeeChange}
               />
             </div>
+            <div />
             <button className={`button mini ${confirmDisabled && 'disable'}`}>
               <div />
               <span>confirm</span>
             </button>
           </div>
         </form>
-        {isShowConfirm && (
-          <VoteConfirmPopup delegate={delegate} fee={fee} onSubmit={this.onSubmit} onClose={this.onCloseConfirm} />
-        )}
+        <VoteConfirmPopup
+          isVisible={isShowConfirm}
+          delegate={delegate}
+          fee={fee}
+          onSubmit={this.onSubmit}
+          onClose={this.onCloseConfirm}
+        />
       </div>
     );
   }
 }
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
+  createVoteTransaction: () => dispatch(createVoteTransaction())
+});
+
+export const VoteForm = connect<{}, IDispatchProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(VoteFormComponent);

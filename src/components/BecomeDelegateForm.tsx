@@ -1,18 +1,33 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { IThunkDispatch } from '../actions';
+import { createDelegateTransaction } from '../actions/transactions';
 import { getNumbersOnly } from '../utils/getNumbersOnly';
-import { DelegateConfirmConfirmPopup } from './DelegateConfirmPopup';
+import { parseApiError } from '../utils/parseApiError';
+import { DelegateConfirmPopup } from './DelegateConfirmPopup';
 import { DelegateTabs } from './DelegateTabs';
+
+interface IDispatchProps {
+  createDelegateTransaction(): Promise<void>;
+}
 
 interface IState {
   fee: string;
+  feeError: string;
   isShowConfirm: boolean;
 }
 
-export class BecomeDelegateForm extends React.Component<{}, IState> {
-  public state = {
+class BecomeDelegateFormComponent extends React.Component<IDispatchProps, IState> {
+  public constructor(props: IDispatchProps) {
+    super(props);
+    this.state = this.getDefaultState();
+  }
+
+  public getDefaultState = () => ({
     fee: '',
+    feeError: '',
     isShowConfirm: false
-  };
+  });
 
   public onFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const initial = e.target.value || '';
@@ -29,13 +44,19 @@ export class BecomeDelegateForm extends React.Component<{}, IState> {
   };
 
   public onSubmit = async () => {
-    console.log('submit');
+    try {
+      await this.props.createDelegateTransaction();
+      this.setState(this.getDefaultState());
+    } catch (e) {
+      const { message } = parseApiError(e);
+      this.setState({ feeError: message, isShowConfirm: false });
+      throw e;
+    }
   };
 
   public render() {
-    const { isShowConfirm, fee } = this.state;
+    const { isShowConfirm, fee, feeError } = this.state;
     const confirmDisabled = this.isConfirmDisabled();
-    const feeError = 'Fee Error';
 
     return (
       <div className="left-section">
@@ -72,10 +93,24 @@ export class BecomeDelegateForm extends React.Component<{}, IState> {
             <span>confirm</span>
           </button>
         </form>
-        {isShowConfirm && (
-          <DelegateConfirmConfirmPopup fee={fee} onClose={this.onCloseConfirm} onSubmit={this.onSubmit} />
-        )}
+        <DelegateConfirmPopup
+          isVisible={isShowConfirm}
+          fee={fee}
+          onClose={this.onCloseConfirm}
+          onSubmit={this.onSubmit}
+        />
       </div>
     );
   }
 }
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
+  createDelegateTransaction: () => dispatch(createDelegateTransaction())
+});
+
+export const BecomeDelegateForm = connect<{}, IDispatchProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(BecomeDelegateFormComponent);
