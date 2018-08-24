@@ -60,3 +60,8 @@ form .input.invalid .error {
 .list .all span {
   color: #b9dbfd;
 }
+
+.popup-area .info span.vote-address {
+  word-wrap: break-word;
+  width: 340px;
+}
