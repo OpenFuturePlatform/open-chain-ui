@@ -30,7 +30,11 @@ form .input .error {
   top: 0;
   color: #df4c4c;
   font-weight: 500;
-  display: none;
+  display: block;
+}
+
+.left-section form .input .error {
+  display: block;
 }
 
 form .input.invalid .error {
