@@ -33,10 +33,23 @@ export interface IUnsignedTransaction extends ITransactionCandidate {
   readonly timestamp: number;
 }
 
-export interface ITransaction extends IUnsignedTransaction {
+export interface ISignature {
   readonly senderSignature: string;
   readonly hash: string;
 }
+
+export interface ITransaction extends IUnsignedTransaction, ISignature {}
+
+export interface IDelegateCandidate {
+  readonly timestamp: number;
+  readonly fee: number;
+  readonly senderAddress: string;
+  readonly delegateKey: string;
+  readonly amount: number;
+  readonly senderPublicKey: string;
+}
+
+export interface IDelegateTransaction extends IDelegateCandidate, ISignature {}
 
 export interface IList<T> {
   readonly list: T[];

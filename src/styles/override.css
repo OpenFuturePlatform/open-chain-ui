@@ -61,7 +61,7 @@ form .input.invalid .error {
   color: #b9dbfd;
 }
 
-.popup-area .info span.vote-address {
+.popup-area .info span.wrapable-address {
   word-wrap: break-word;
   width: 340px;
 }

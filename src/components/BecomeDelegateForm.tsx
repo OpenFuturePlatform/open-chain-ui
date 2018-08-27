@@ -2,14 +2,23 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { IThunkDispatch } from '../actions';
 import { createDelegateTransaction } from '../actions/transactions';
+import { IStoreState } from '../configureStore';
+import { DELEGATE_AMOUNT, DELEGATE_FEE } from '../const/transactions';
+import { getDelegateKey } from '../utils/crypto';
 import { getNumbersOnly } from '../utils/getNumbersOnly';
 import { parseApiError } from '../utils/parseApiError';
 import { DelegateConfirmPopup } from './DelegateConfirmPopup';
 import { DelegateTabs } from './DelegateTabs';
 
+interface IStoreStateProps {
+  delegateKey: string;
+}
+
 interface IDispatchProps {
   createDelegateTransaction(): Promise<void>;
 }
+
+type IProps = IStoreStateProps & IDispatchProps;
 
 interface IState {
   fee: string;
@@ -17,8 +26,8 @@ interface IState {
   isShowConfirm: boolean;
 }
 
-class BecomeDelegateFormComponent extends React.Component<IDispatchProps, IState> {
-  public constructor(props: IDispatchProps) {
+class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
+  public constructor(props: IProps) {
     super(props);
     this.state = this.getDefaultState();
   }
@@ -34,8 +43,6 @@ class BecomeDelegateFormComponent extends React.Component<IDispatchProps, IState
     const fee = getNumbersOnly(initial);
     this.setState({ fee });
   };
-
-  public isConfirmDisabled = () => !this.state.fee;
 
   public onCloseConfirm = () => this.setState({ isShowConfirm: false });
   public onShowConfirm = (e: React.FormEvent) => {
@@ -55,8 +62,10 @@ class BecomeDelegateFormComponent extends React.Component<IDispatchProps, IState
   };
 
   public render() {
-    const { isShowConfirm, fee, feeError } = this.state;
-    const confirmDisabled = this.isConfirmDisabled();
+    const { delegateKey } = this.props;
+    const { isShowConfirm, feeError } = this.state;
+    const amount = DELEGATE_AMOUNT;
+    const fee = DELEGATE_FEE;
 
     return (
       <div className="left-section">
@@ -66,35 +75,29 @@ class BecomeDelegateFormComponent extends React.Component<IDispatchProps, IState
             <h2>
               Become <br />a Delegate
             </h2>
-            {/* <div className="input">
-              <p>FROM</p>
-              <input
-                className="disable"
-                type="text"
-                placeholder="Wallet Address"
-                value="0XFF7508C54D3EF2141D05F7EB1A0CC719"
-              />
-            </div> */}
-            <div className={`input ${feeError && 'invalid'}`}>
-              <p className="required">Fee Amount</p>
+            <div className="input">
+              <p>Delegate Key</p>
               <span className="error">{feeError}</span>
-              <input
-                className=""
-                type="text"
-                placeholder="Fee Amount"
-                required={true}
-                value={fee}
-                onChange={this.onFeeChange}
-              />
+              <input className="disable" type="text" placeholder="Wallet Address" value={delegateKey} />
+            </div>
+            <div className={`input ${feeError && 'invalid'}`}>
+              <p className="required">Amount</p>
+              <input className="disable" type="text" placeholder="Amount" required={true} value={amount} />
+            </div>
+            <div className="input">
+              <p className="required">Fee Amount</p>
+              <input className="disable" type="text" placeholder="Fee Amount" required={true} value={fee} />
             </div>
           </div>
-          <button className={`button mini ${confirmDisabled && 'disable'}`}>
+          <button className="button mini">
             <div />
             <span>confirm</span>
           </button>
         </form>
         <DelegateConfirmPopup
           isVisible={isShowConfirm}
+          delegateKey={delegateKey}
+          amount={amount}
           fee={fee}
           onClose={this.onCloseConfirm}
           onSubmit={this.onSubmit}
@@ -104,13 +107,13 @@ class BecomeDelegateFormComponent extends React.Component<IDispatchProps, IState
   }
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = ({ wallet }: IStoreState) => ({ delegateKey: wallet ? getDelegateKey(wallet) : '' });
 
 const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
   createDelegateTransaction: () => dispatch(createDelegateTransaction())
 });
 
-export const BecomeDelegateForm = connect<{}, IDispatchProps>(
+export const BecomeDelegateForm = connect<IStoreStateProps, IDispatchProps>(
   mapStateToProps,
   mapDispatchToProps
 )(BecomeDelegateFormComponent);

@@ -1,4 +1,13 @@
-import { IKeys, ITransaction, ITransactionCandidate, IUnsignedTransaction, IWallet } from '../configureStore';
+import {
+  IDelegateCandidate,
+  IDelegateTransaction,
+  IKeys,
+  ITransaction,
+  ITransactionCandidate,
+  IUnsignedTransaction,
+  IWallet
+} from '../configureStore';
+import { DELEGATE_AMOUNT, DELEGATE_FEE } from '../const/transactions';
 /* tslint:disable */
 const sha256 = require('js-sha256').sha256;
 const EC = require('elliptic').ec;
@@ -108,6 +117,40 @@ export const buildTransaction = (wallet: IWallet, transactionCandidate: ITransac
     timestamp
   };
   const hash = hashTransaction(unsignedTransaction);
+  const senderSignature = signByPrivateKey(hash, privateKey);
+  return { senderSignature, ...unsignedTransaction, hash };
+};
+
+export const getDelegateKey = (wallet: IWallet) => sha256(wallet.keys.publicKey);
+
+const hashDelegateTransaction = (unsignedTransaction: IDelegateCandidate): string => {
+  const { timestamp, fee, senderAddress, amount, delegateKey } = unsignedTransaction;
+  const byteArray = [
+    ...toByteArray(timestamp),
+    ...toByteArray(fee),
+    ...toByteArray(senderAddress),
+    ...sha256.array(toByteArray(delegateKey)),
+    ...toByteArray(amount)
+  ];
+  return sha256(sha256.array(byteArray));
+};
+
+export const buildDelegateTransaction = (wallet: IWallet): IDelegateTransaction => {
+  const { address: senderAddress, keys } = wallet;
+  const { publicKey: senderPublicKey, privateKey } = keys;
+  const delegateKey = getDelegateKey(wallet);
+  const timestamp = Date.now();
+
+  const unsignedTransaction: IDelegateCandidate = {
+    amount: DELEGATE_AMOUNT,
+    delegateKey,
+    fee: DELEGATE_FEE,
+    senderAddress,
+    senderPublicKey,
+    timestamp
+  };
+
+  const hash = hashDelegateTransaction(unsignedTransaction);
   const senderSignature = signByPrivateKey(hash, privateKey);
   return { senderSignature, ...unsignedTransaction, hash };
 };

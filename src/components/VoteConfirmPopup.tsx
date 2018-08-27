@@ -21,7 +21,7 @@ const VoteConfirmPopupComponent = ({ isVisible, delegate, fee, onClose, onSubmit
         <h2>Vote</h2>
         <div className="info">
           <span className="title">Delegate's address</span>
-          <span className="vote-address">{delegate}</span>
+          <span className="wrapable-address">{delegate}</span>
         </div>
         <div className="info">
           <span className="title">fee amount</span>

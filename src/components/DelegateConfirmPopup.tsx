@@ -4,12 +4,14 @@ import { withSuccessPopup } from './withSuccessPopup';
 
 interface IProps {
   isVisible: boolean;
-  fee: string;
+  delegateKey: string;
+  amount: number;
+  fee: number;
   onSubmit(): Promise<void>;
   onClose(): void;
 }
 
-export const DelegateConfirmPopupComponent = ({ isVisible, fee, onClose, onSubmit }: IProps) => {
+export const DelegateConfirmPopupComponent = ({ isVisible, amount, delegateKey, fee, onClose, onSubmit }: IProps) => {
   if (!isVisible) {
     return null;
   }
@@ -20,14 +22,14 @@ export const DelegateConfirmPopupComponent = ({ isVisible, fee, onClose, onSubmi
         <h2>
           Become <br />a Delegate
         </h2>
-        {/* <div className="info">
-          <span className="title">from</span>
-          <span>FF7508C54D3EF2141D05F7EB1A0CC71969</span>
+        <div className="info">
+          <span className="title">delegate key</span>
+          <span className="wrapable-address">{delegateKey}</span>
         </div>
         <div className="info">
-          <span className="title">to</span>
-          <span>FF7508C54D3EF2141D05F7EB1A</span>
-        </div> */}
+          <span className="title">amount</span>
+          <span>{amount}</span>
+        </div>
         <div className="info">
           <span className="title">fee amount</span>
           <span>{fee} open</span>

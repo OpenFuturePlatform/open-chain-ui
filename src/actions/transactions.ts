@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Dispatch } from 'redux';
-import { IStoreState, ITransaction, ITransactionCandidate } from '../configureStore';
-import { buildTransaction } from '../utils/crypto';
+import { IDelegateTransaction, IStoreState, ITransaction, ITransactionCandidate } from '../configureStore';
+import { buildDelegateTransaction, buildTransaction } from '../utils/crypto';
 import { ActionType } from './actionType';
 import { ActionCreator, IAction, IThunkAction, IThunkDispatch } from './index';
 
@@ -62,5 +62,7 @@ export const createDelegateTransaction = () => async (dispatch: IThunkDispatch, 
     throw new Error('>> Wallet not authorized');
   }
 
-  console.log('>> Delegate Transaction');
+  const delegateTransaction: IDelegateTransaction = buildDelegateTransaction(wallet);
+
+  await axios.post('/rpc/transactions/delegates', delegateTransaction);
 };
