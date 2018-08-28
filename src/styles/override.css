@@ -44,7 +44,6 @@ form .input.invalid .error {
 
 .form-content form .input p span {
   top: 0;
-  right: 0;
   left: auto;
 }
 
@@ -55,4 +54,12 @@ form .input.invalid .error {
 
 .list .all span {
   color: #b9dbfd;
+}
+.disclaimer .link {
+  color: #3193f5;
+  font-weight: 500;
+  cursor: pointer;
+}
+.disclaimer .link:hover {
+  opacity: 0.8;
 }
