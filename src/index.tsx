@@ -14,7 +14,9 @@ import { UsingWorkFlow } from './scenes/UsingWorkFlow';
 import './styles/index.css';
 import './styles/override.css';
 
-console.log('ui-version: ', process.env.REACT_APP_VERSION);
+import * as packageJSON from '../package.json';
+const version = (packageJSON as any).version;
+console.log('ui-version: ', version);
 
 export interface IRouterProps extends RouteComponentProps<any> {}
 
