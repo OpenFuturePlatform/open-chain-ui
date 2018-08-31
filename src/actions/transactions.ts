@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { Dispatch } from 'redux';
-import { IDelegateTransaction, IStoreState, ITransaction, ITransactionCandidate } from '../configureStore';
-import { buildDelegateTransaction, buildTransaction } from '../utils/crypto';
+import {
+  IDelegateTransaction,
+  IStoreState,
+  ITransaction,
+  ITransactionCandidate,
+  IVoteTransaction
+} from '../configureStore';
+import {buildDelegateTransaction, buildTransaction, buildVoteTransaction, buildRecallVoteTransaction} from '../utils/crypto';
 import { ActionType } from './actionType';
 import { ActionCreator, IAction, IThunkAction, IThunkDispatch } from './index';
 
@@ -43,7 +49,7 @@ export const createTransaction = (transactionCandidate: ITransactionCandidate) =
   dispatch(getTransactions(wallet.address));
 };
 
-export const createVoteTransaction = () => async (dispatch: IThunkDispatch, getState: () => IStoreState) => {
+export const createVoteTransaction = ({fee, delegate}: {fee: number, delegate: string}) => async (dispatch: IThunkDispatch, getState: () => IStoreState) => {
   const state = getState();
   const wallet = state.wallet;
 
@@ -51,7 +57,24 @@ export const createVoteTransaction = () => async (dispatch: IThunkDispatch, getS
     throw new Error('>> Wallet not authorized');
   }
 
-  console.log('>> Vote Transaction');
+  const voteTransaction: IVoteTransaction = buildVoteTransaction(wallet, fee, delegate);
+
+  console.log(state)
+  await axios.post('/rpc/transactions/vote', voteTransaction);
+};
+
+export const createRecallVoteTransaction = ({fee, delegate}: {fee: number, delegate: string}) => async (dispatch: IThunkDispatch, getState: () => IStoreState) => {
+  const state = getState();
+  const wallet = state.wallet;
+
+  if (!wallet) {
+    throw new Error('>> Wallet not authorized');
+  }
+
+  const voteTransaction: IVoteTransaction = buildRecallVoteTransaction(wallet, fee, delegate);
+
+  console.log(state)
+  await axios.post('/rpc/transactions/vote', voteTransaction);
 };
 
 export const createDelegateTransaction = () => async (dispatch: IThunkDispatch, getState: () => IStoreState) => {
@@ -64,5 +87,5 @@ export const createDelegateTransaction = () => async (dispatch: IThunkDispatch, 
 
   const delegateTransaction: IDelegateTransaction = buildDelegateTransaction(wallet);
 
-  await axios.post('/rpc/transactions/delegates', delegateTransaction);
+  await axios.post('/rpc/transactions/delegate', delegateTransaction);
 };

@@ -11,14 +11,14 @@ interface IGetDelegatesResponse {
 export type DelegateAction = SetDelegates;
 
 class SetDelegates extends ActionCreator implements IAction<IList<IDelegate>> {
-  public readonly type = ActionType.SET_DELEGATES;
+  public readonly type = ActionType.SET_CASTED_VOTES_DELEGATES;
   constructor(public readonly payload: IList<IDelegate>) {
     super();
   }
 }
 
-export const getDelegates = (): IThunkAction<DelegateAction> => async (dispatch: Dispatch<DelegateAction>) => {
-  const { data } = await axios.get<IGetDelegatesResponse>(`/rpc/delegates/view`);
+export const getCastedVotesDelegates = (address: string): IThunkAction<DelegateAction> => async (dispatch: Dispatch<DelegateAction>) => {
+  const { data } = await axios.get<IGetDelegatesResponse>(`/rpc/accounts/wallets/${address}/delegates`);
   const payload: IList<IDelegate> = data.payload;
   dispatch(new SetDelegates(payload));
 };

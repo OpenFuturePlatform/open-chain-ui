@@ -8,7 +8,7 @@ import { DelegateTabs } from './DelegateTabs';
 import { VoteConfirmPopup } from './VoteConfirmPopup';
 
 interface IDispatchProps {
-  createVoteTransaction(): Promise<void>;
+  createVoteTransaction({fee, delegate}: {fee: number, delegate: string}): Promise<void>;
 }
 
 interface IState {
@@ -49,8 +49,9 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
   };
 
   public onSubmit = async () => {
+    const {fee, delegate} = this.state;
     try {
-      await this.props.createVoteTransaction();
+      await this.props.createVoteTransaction({fee: +fee, delegate});
       this.setState(this.getDefaultState);
     } catch (e) {
       const { message } = parseApiError(e);
@@ -115,7 +116,7 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
-  createVoteTransaction: () => dispatch(createVoteTransaction())
+  createVoteTransaction: ({fee, delegate}: {fee: number, delegate: string}) => dispatch(createVoteTransaction({fee, delegate}))
 });
 
 export const VoteForm = connect<{}, IDispatchProps>(

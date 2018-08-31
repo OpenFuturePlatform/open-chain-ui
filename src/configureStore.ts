@@ -16,9 +16,11 @@ export interface IWallet {
 export interface IDelegate {
   readonly publicKey: string;
   readonly address: string;
+  readonly nodeId: string;
   readonly id: number;
-  readonly votes: number;
-  readonly rank: number;
+  readonly votesCount: number;
+  readonly rating: number;
+  readonly timestamp: number;
 }
 
 export interface ITransactionCandidate {
@@ -44,12 +46,23 @@ export interface IDelegateCandidate {
   readonly timestamp: number;
   readonly fee: number;
   readonly senderAddress: string;
-  readonly delegateKey: string;
+  readonly nodeId: string;
   readonly amount: number;
   readonly senderPublicKey: string;
 }
 
 export interface IDelegateTransaction extends IDelegateCandidate, ISignature {}
+
+export interface IVoteCandidate {
+  readonly timestamp: number;
+  readonly fee: number;
+  readonly senderAddress: string;
+  readonly voteTypeId: number;
+  readonly nodeId: string;
+  readonly senderPublicKey: string;
+}
+
+export interface IVoteTransaction extends IVoteCandidate, ISignature {}
 
 export interface IList<T> {
   readonly list: T[];
@@ -62,6 +75,7 @@ export interface IStoreState {
   readonly wallet: IWallet | null;
   readonly balance: string;
   readonly delegates: IList<IDelegate>;
+  readonly castedVotesDelegates: IList<IDelegate>;
   readonly transactions: ITransaction[];
 }
 
