@@ -19,7 +19,7 @@ export interface IDelegate {
   readonly nodeId: string;
   readonly id: number;
   readonly votesCount: number;
-  readonly rating: number;
+  readonly rank: number;
   readonly timestamp: number;
 }
 

@@ -12,7 +12,7 @@ export const Delegate = ({ delegate, isVoted }: IProps) => {
 
   return (
     <div className="delegate">
-      <p className="rank">{delegate.rating}</p>
+      <p className="rank">{delegate.rank}</p>
       <p className="address copy" onClick={() => onCopyHandler(delegate.address)}>{delegate.address}</p>
       <p className="node-id copy" onClick={() => onCopyHandler(delegate.nodeId)}>{delegate.nodeId}</p>
       <p className="amount-delegate">
