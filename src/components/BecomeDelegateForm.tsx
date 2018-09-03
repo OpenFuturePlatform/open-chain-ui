@@ -78,15 +78,18 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
             <div className="input">
               <p>Delegate Key</p>
               <span className="error">{feeError}</span>
-              <input className="disable" type="text" placeholder="Wallet Address" value={delegateKey} />
+              <input className="disable" type="text" placeholder="Wallet Address" value={delegateKey} onChange={() => null}
+                     disabled={true}/>
             </div>
             <div className={`input ${feeError && 'invalid'}`}>
               <p className="required">Amount</p>
-              <input className="disable" type="text" placeholder="Amount" required={true} value={amount} />
+              <input className="disable" type="text" placeholder="Amount" required={true} value={amount} onChange={() => null}
+                     disabled={true}/>
             </div>
             <div className="input">
               <p className="required">Fee Amount</p>
-              <input className="disable" type="text" placeholder="Fee Amount" required={true} value={fee} />
+              <input className="disable" type="text" placeholder="Fee Amount" required={true} value={fee} onChange={() => null}
+                     disabled={true}/>
             </div>
           </div>
           <button className="button mini">

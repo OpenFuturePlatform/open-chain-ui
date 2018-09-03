@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import { Dispatch } from 'redux';
 import {
   IDelegateTransaction,
@@ -13,6 +13,14 @@ import { ActionCreator, IAction, IThunkAction, IThunkDispatch } from './index';
 
 interface IGetTransactionsResponse {
   payload: ITransaction[];
+}
+
+interface IGetInfoResponse {
+  payload: IInfo
+}
+export interface IInfo {
+  host: string,
+  port: string
 }
 
 export type TransactionAction = SetTransactions;
@@ -85,7 +93,9 @@ export const createDelegateTransaction = () => async (dispatch: IThunkDispatch, 
     throw new Error('>> Wallet not authorized');
   }
 
-  const delegateTransaction: IDelegateTransaction = buildDelegateTransaction(wallet);
+  const {data}: AxiosResponse<IGetInfoResponse> = await axios.get('/rpc/info');
+
+  const delegateTransaction: IDelegateTransaction = buildDelegateTransaction(wallet, data.payload);
 
   await axios.post('/rpc/transactions/delegate', delegateTransaction);
 };

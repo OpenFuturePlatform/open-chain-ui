@@ -6,6 +6,7 @@ import { getNumbersOnly } from '../utils/getNumbersOnly';
 import { parseApiError } from '../utils/parseApiError';
 import { DelegateTabs } from './DelegateTabs';
 import { VoteConfirmPopup } from './VoteConfirmPopup';
+import {DELEGATE_FEE} from "../const/transactions";
 
 interface IDispatchProps {
   createVoteTransaction({fee, delegate}: {fee: number, delegate: string}): Promise<void>;
@@ -40,7 +41,7 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
     this.setState({ fee });
   };
 
-  public isConfirmDisabled = () => !this.state.delegate || !this.state.fee;
+  public isConfirmDisabled = () => !this.state.delegate;
 
   public onCloseConfirm = () => this.setState({ isShowConfirm: false });
   public onShowConfirm = (e: React.FormEvent) => {
@@ -61,8 +62,9 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
   };
 
   public render() {
-    const { delegate, delegateError, fee, feeError, isShowConfirm } = this.state;
+    const { delegate, delegateError, feeError, isShowConfirm } = this.state;
     const confirmDisabled = this.isConfirmDisabled();
+    const fee = DELEGATE_FEE.toString();
 
     return (
       <div className="left-section">
@@ -86,12 +88,13 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
               <p className="required">Fee Amount</p>
               <span className="error">{feeError}</span>
               <input
-                className=""
+                className="disable"
                 type="text"
                 placeholder="Fee Amount"
                 required={true}
                 value={fee}
                 onChange={this.onFeeChange}
+                disabled={true}
               />
             </div>
             <div />

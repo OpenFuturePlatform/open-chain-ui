@@ -49,6 +49,8 @@ export interface IDelegateCandidate {
   readonly nodeId: string;
   readonly amount: number;
   readonly senderPublicKey: string;
+  readonly senderHost: string;
+  readonly senderPort: string;
 }
 
 export interface IDelegateTransaction extends IDelegateCandidate, ISignature {}
