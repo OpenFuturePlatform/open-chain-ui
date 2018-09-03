@@ -20,6 +20,7 @@ export interface IDelegate {
   readonly id: number;
   readonly votesCount: number;
   readonly rank: number;
+  readonly rating: number;
   readonly timestamp: number;
 }
 
@@ -49,8 +50,9 @@ export interface IDelegateCandidate {
   readonly nodeId: string;
   readonly amount: number;
   readonly senderPublicKey: string;
-  readonly senderHost: string;
-  readonly senderPort: string;
+  readonly nodeKey: string;
+  readonly nodeHost: string;
+  readonly nodePort: string;
 }
 
 export interface IDelegateTransaction extends IDelegateCandidate, ISignature {}

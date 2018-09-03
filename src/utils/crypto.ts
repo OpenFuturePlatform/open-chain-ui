@@ -129,15 +129,16 @@ export const buildTransaction = (wallet: IWallet, transactionCandidate: ITransac
 export const getDelegateKey = (wallet: IWallet) => sha256(wallet.keys.publicKey);
 
 const hashDelegateTransaction = (unsignedTransaction: IDelegateCandidate): string => {
-  const { timestamp, fee, senderAddress, amount, nodeId, senderHost, senderPort } = unsignedTransaction;
+  const { timestamp, fee, senderAddress, amount, nodeId, nodeHost, nodePort, nodeKey } = unsignedTransaction;
   const byteArray = [
     ...toByteArray(timestamp),
     ...toByteArray(fee),
     ...toByteArray(senderAddress),
     ...toByteArray(nodeId),
+    ...toByteArray(nodeKey),
+    ...toByteArray(nodeHost),
+    ...toByteArray(nodePort),
     ...toByteArray(amount),
-    ...toByteArray(senderHost),
-    ...toByteArray(senderPort),
   ];
   return sha256(sha256.array(byteArray));
 };
@@ -154,9 +155,10 @@ export const buildDelegateTransaction = (wallet: IWallet, info: IInfo): IDelegat
     nodeId,
     senderAddress,
     senderPublicKey,
+    nodeKey: info.publicKey,
     timestamp,
-    senderHost: info.host,
-    senderPort: info.port
+    nodeHost: info.host,
+    nodePort: info.port
   };
 
   const hash = hashDelegateTransaction(unsignedTransaction);

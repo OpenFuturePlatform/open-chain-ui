@@ -19,8 +19,9 @@ interface IGetInfoResponse {
   payload: IInfo
 }
 export interface IInfo {
-  host: string,
+  host: string
   port: string
+  publicKey: string
 }
 
 export type TransactionAction = SetTransactions;
