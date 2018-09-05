@@ -1,47 +1,41 @@
 import * as React from 'react';
 import { PopupBackgroundArea } from '../components-ui/PopupBackgroundArea';
-import { ITransactionCandidate } from '../configureStore';
 import { withSuccessPopup } from './withSuccessPopup';
 
 interface IProps {
   isVisible: boolean;
-  address: string;
-  transaction: ITransactionCandidate;
+  delegateKey: string;
+  amount: number;
+  fee: number;
   onSubmit(): Promise<void>;
   onClose(): void;
 }
 
-const TransactionConfirmComponent = ({ isVisible, transaction, address, onSubmit, onClose }: IProps) => {
+export const DelegateConfirmPopupComponent = ({ isVisible, amount, delegateKey, fee, onClose, onSubmit }: IProps) => {
   if (!isVisible) {
     return null;
   }
 
   return (
     <PopupBackgroundArea onClick={onClose}>
-      <form className="popup">
+      <form className="popup" onSubmit={onSubmit}>
         <h2>
-          Confirm <br /> transaction
+          Become <br />a Delegate
         </h2>
         <div className="info">
-          <span className="title">from</span>
-          <span>{address}</span>
-        </div>
-        <div className="info">
-          <span className="title">to</span>
-          <span>{transaction.recipientAddress}</span>
+          <span className="title">delegate key</span>
+          <span className="wrapable-address">{delegateKey}</span>
         </div>
         <div className="info">
           <span className="title">amount</span>
-          <span>
-            <p>{transaction.amount} OPEN</p>
-          </span>
+          <span>{amount}</span>
         </div>
         <div className="info">
           <span className="title">fee amount</span>
-          <span>{transaction.fee} OPEN</span>
+          <span>{fee} open</span>
         </div>
         <div className="button-area">
-          <button className="button mini" onClick={onSubmit}>
+          <button className="button mini">
             <div />
             <span>Confirm</span>
           </button>
@@ -55,4 +49,4 @@ const TransactionConfirmComponent = ({ isVisible, transaction, address, onSubmit
   );
 };
 
-export const TransactionConfirm = withSuccessPopup<IProps>(TransactionConfirmComponent);
+export const DelegateConfirmPopup = withSuccessPopup<IProps>(DelegateConfirmPopupComponent);

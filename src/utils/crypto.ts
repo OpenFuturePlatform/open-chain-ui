@@ -1,4 +1,14 @@
-import { IKeys, ITransaction, ITransactionCandidate, IUnsignedTransaction, IWallet } from '../configureStore';
+import {
+  IDelegateCandidate,
+  IDelegateTransaction,
+  IKeys,
+  ITransaction,
+  ITransactionCandidate,
+  IUnsignedTransaction, IVoteCandidate, IVoteTransaction,
+  IWallet
+} from '../configureStore';
+import { DELEGATE_AMOUNT, DELEGATE_FEE } from '../const/transactions';
+import {IInfo} from "../actions/transactions";
 /* tslint:disable */
 const sha256 = require('js-sha256').sha256;
 const EC = require('elliptic').ec;
@@ -84,6 +94,10 @@ const toByteArray = (data: string | number): number[] => {
   return data.split('').map(char => char.charCodeAt(0));
 };
 
+const to4Array = (data: number): number[] => {
+    return new BN(data).toArray(8, 4);
+};
+
 const hashTransaction = (unsignedTransaction: IUnsignedTransaction): string => {
   const { timestamp, fee, senderAddress, amount, recipientAddress } = unsignedTransaction;
   const byteArray = [
@@ -108,6 +122,97 @@ export const buildTransaction = (wallet: IWallet, transactionCandidate: ITransac
     timestamp
   };
   const hash = hashTransaction(unsignedTransaction);
+  const senderSignature = signByPrivateKey(hash, privateKey);
+  return { senderSignature, ...unsignedTransaction, hash };
+};
+
+export const getDelegateKey = (wallet: IWallet) => sha256(wallet.keys.publicKey);
+
+const hashDelegateTransaction = (unsignedTransaction: IDelegateCandidate): string => {
+  const { timestamp, fee, senderAddress, amount, nodeId, nodeHost, nodePort, nodeKey } = unsignedTransaction;
+  const byteArray = [
+    ...toByteArray(timestamp),
+    ...toByteArray(fee),
+    ...toByteArray(senderAddress),
+    ...toByteArray(nodeId),
+    ...toByteArray(nodeKey),
+    ...toByteArray(nodeHost),
+    ...toByteArray(nodePort),
+    ...toByteArray(amount),
+  ];
+  return sha256(sha256.array(byteArray));
+};
+
+export const buildDelegateTransaction = (wallet: IWallet, info: IInfo): IDelegateTransaction => {
+  const { address: senderAddress, keys } = wallet;
+  const { publicKey: senderPublicKey, privateKey } = keys;
+  const nodeId = getDelegateKey(wallet);
+  const timestamp = Date.now();
+
+  const unsignedTransaction: IDelegateCandidate = {
+    amount: DELEGATE_AMOUNT,
+    fee: DELEGATE_FEE,
+    nodeId,
+    senderAddress,
+    senderPublicKey,
+    nodeKey: info.publicKey,
+    timestamp,
+    nodeHost: info.host,
+    nodePort: info.port
+  };
+
+  const hash = hashDelegateTransaction(unsignedTransaction);
+  const senderSignature = signByPrivateKey(hash, privateKey);
+  return { senderSignature, ...unsignedTransaction, hash };
+};
+
+const hashVoteTransaction = (unsignedTransaction: IVoteCandidate): string => {
+  const { timestamp, fee, senderAddress, voteTypeId, nodeId } = unsignedTransaction;
+  const byteArray = [
+    ...toByteArray(timestamp),
+    ...toByteArray(fee),
+    ...toByteArray(senderAddress),
+    ...to4Array(voteTypeId),
+    ...toByteArray(nodeId)
+  ];
+  console.log(byteArray, voteTypeId)
+  return sha256(sha256.array(byteArray));
+};
+
+export const buildVoteTransaction = (wallet: IWallet, fee: number, nodeId: string): IVoteTransaction => {
+  const { address: senderAddress, keys } = wallet;
+  const { publicKey: senderPublicKey, privateKey } = keys;
+  const timestamp = Date.now();
+
+  const unsignedTransaction: IVoteCandidate = {
+    fee,
+    nodeId,
+    senderAddress,
+    senderPublicKey,
+    timestamp,
+    voteTypeId: 1
+  };
+
+  const hash = hashVoteTransaction(unsignedTransaction);
+  const senderSignature = signByPrivateKey(hash, privateKey);
+  return { senderSignature, ...unsignedTransaction, hash };
+};
+
+export const buildRecallVoteTransaction = (wallet: IWallet, fee: number, nodeId: string): IVoteTransaction => {
+  const { address: senderAddress, keys } = wallet;
+  const { publicKey: senderPublicKey, privateKey } = keys;
+  const timestamp = Date.now();
+
+  const unsignedTransaction: IVoteCandidate = {
+    fee,
+    nodeId,
+    senderAddress,
+    senderPublicKey,
+    timestamp,
+    voteTypeId: 2
+  };
+
+  const hash = hashVoteTransaction(unsignedTransaction);
   const senderSignature = signByPrivateKey(hash, privateKey);
   return { senderSignature, ...unsignedTransaction, hash };
 };

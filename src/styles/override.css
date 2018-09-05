@@ -30,7 +30,11 @@ form .input .error {
   top: 0;
   color: #df4c4c;
   font-weight: 500;
-  display: none;
+  display: block;
+}
+
+.left-section form .input .error {
+  display: block;
 }
 
 form .input.invalid .error {
@@ -62,4 +66,8 @@ form .input.invalid .error {
 }
 .disclaimer .link:hover {
   opacity: 0.8;
+}
+.popup-area .info span.wrapable-address {
+    word-wrap: break-word;
+    width: 340px;
 }

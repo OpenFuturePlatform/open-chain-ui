@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-export const DelegatesHeader = () => (
+export const CastedVotesDelegateHeader = () => (
   <div className="head">
-    <p className="rank">Rank</p>
-    <p className="address">Address</p>
+    <p className="address">Delegate's address</p>
     <p className="node-id">Node ID</p>
     <p className="amount-delegate">Amount of votes</p>
     <p className="date-delegate">Date</p>
+    <p className="btn"/>
   </div>
 );
