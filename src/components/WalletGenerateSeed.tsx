@@ -64,9 +64,9 @@ export class WalletGenerateSeedComponent extends React.Component<IProps, IState>
                 <h3>Seed Phrase</h3>
                 <p>
                   When you registering an account, you will be asked to save your secret phrase (Seed) which contains 12
-                  English words with spaces between each word. Please make sure that you are using the correct seed
+                  English words with spaces between each word.<br/>Please make sure that you are using the correct seed
                   phrase, even a single space or character (even if you click on the Return/Enter button when you are
-                  importing the seed phrase) will generate another Open address Also please make sure that the original
+                  importing the seed phrase) will generate another Open address<br/>Also please make sure that the original
                   phrase doesn't have any white spaces or line breaks at the end of the line because wallet doesn't
                   recognise any additional non default symbols at the begin and at the end of the phrase.
                 </p>

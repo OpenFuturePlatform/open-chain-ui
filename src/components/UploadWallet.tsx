@@ -83,7 +83,7 @@ class UploadWalletComponent extends React.Component<IProps, IState> {
             <div className={`input ${passwordError && 'invalid'}`}>
               <p className="required">Enter password</p>
               <span className="error">{passwordError}</span>
-              <Password password={password} onChange={this.onPasswordChange} />
+              <Password password={password} placeholder="Enter password" onChange={this.onPasswordChange} />
             </div>
             <button onClick={this.handleOnConfirm} className={`button ${isConfirmDisabled && 'disable'}`}>
               <div />

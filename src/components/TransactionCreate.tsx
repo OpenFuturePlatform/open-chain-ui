@@ -120,7 +120,7 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
             <input type="text" placeholder="Amount" required={true} value={amount} onChange={this.onAmountChange} />
           </div>
           <div className="input">
-            <p className="required">Fee</p>
+            <p className="required">Fee Amount</p>
             <input type="text" placeholder="Fee" required={true} value={fee} onChange={this.onFeeChange} />
           </div>
           <button className={`button mini ${confirmDisabled ? 'disable' : ''}`}>
