@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { IDelegate } from '../configureStore';
 import { copy2Clipboard } from '../utils/copy2Clipboard';
+import {formatDate} from "../utils/format-date";
 
 interface IProps {
   delegate: IDelegate
@@ -17,7 +18,7 @@ export const CastedVotesDelegate = ({ delegate, recallVoteDelegate }: IProps) =>
       <p className="amount-delegate">
         {delegate.votesCount}
       </p>
-      <p className="date-delegate">{delegate.timestamp}</p>
+      <p className="date-delegate">{formatDate(delegate.timestamp)}</p>
       <a className="btn" onClick={() => recallVoteDelegate({nodeId: delegate.nodeId, fee: 1})}><span>Recall</span></a>
     </div>
   )
