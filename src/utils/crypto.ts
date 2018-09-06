@@ -146,13 +146,12 @@ const hashDelegateTransaction = (unsignedTransaction: IDelegateCandidate): strin
 export const buildDelegateTransaction = (wallet: IWallet, info: IInfo): IDelegateTransaction => {
   const { address: senderAddress, keys } = wallet;
   const { publicKey: senderPublicKey, privateKey } = keys;
-  const nodeId = getDelegateKey(wallet);
   const timestamp = Date.now();
 
   const unsignedTransaction: IDelegateCandidate = {
     amount: DELEGATE_AMOUNT,
     fee: DELEGATE_FEE,
-    nodeId,
+    nodeId: info.nodeId,
     senderAddress,
     senderPublicKey,
     nodeKey: info.publicKey,

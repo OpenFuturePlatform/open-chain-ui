@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IThunkDispatch } from '../actions';
 import { getTransactions } from '../actions/transactions';
-import { IStoreState, ITransaction, IWallet } from '../configureStore';
+import {IList, IStoreState, ITransaction, IWallet} from '../configureStore';
 import { Transaction } from './Transaction';
 import { TransactionsHeader } from './TransactionsHeader';
 
 interface IStoreStateProps {
   wallet: IWallet | null;
-  transactions: ITransaction[];
+  transactions: IList<ITransaction>;
 }
 
 interface IDispatchProps {
@@ -27,21 +27,10 @@ export class LastTransactionsComponent extends React.Component<IProps> {
   }
 
   public render() {
-    const transactions: ITransaction[] = this.props.transactions.slice(0, 15);
+    const transactions: ITransaction[] = this.props.transactions.list.slice(0, 15);
     const transactionList = transactions.map(transaction => (
-      <Transaction key={transaction.senderAddress + transaction.recipientAddress} transaction={transaction} />
+      <Transaction key={transaction.hash} transaction={transaction} />
     ));
-    // const transactions = [
-    //   {
-    //     amount: 1000,
-    //     fee: 20,
-    //     recipientAddress: '0xC2d5a01Cc22295fF4cC49dB5A0013cE911D9A5cb',
-    //     senderAddress: '0x8A1D90a716DB145ef5677553fAc096608416eEE9',
-    //     senderPublicKey: '02b28915709de8260a529155fb83bc487fe076d933f864b3e37f953fd8d0cbfd20',
-    //     senderSignature: '02f4cafe456378101d7f8660dda0fa2a3811b183707510030ee36a2e744dd57e77',
-    //     timestamp: 1534149753000
-    //   }
-    // ];
     return (
       <div className="table-section">
         <div className="title">

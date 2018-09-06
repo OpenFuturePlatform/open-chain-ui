@@ -1,7 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
 import { Dispatch } from 'redux';
 import {
-  IDelegateTransaction,
+  IDelegate,
+  IDelegateTransaction, IList,
   IStoreState,
   ITransaction,
   ITransactionCandidate,
@@ -10,9 +11,10 @@ import {
 import {buildDelegateTransaction, buildTransaction, buildVoteTransaction, buildRecallVoteTransaction} from '../utils/crypto';
 import { ActionType } from './actionType';
 import { ActionCreator, IAction, IThunkAction, IThunkDispatch } from './index';
+import Pageable from "../common/pageable";
 
 interface IGetTransactionsResponse {
-  payload: ITransaction[];
+  payload: IList<ITransaction>;
 }
 
 interface IGetInfoResponse {
@@ -22,13 +24,14 @@ export interface IInfo {
   host: string
   port: string
   publicKey: string
+  nodeId: string
 }
 
 export type TransactionAction = SetTransactions;
 
-class SetTransactions extends ActionCreator implements IAction<ITransaction[]> {
+class SetTransactions extends ActionCreator implements IAction<IList<ITransaction>> {
   public readonly type = ActionType.SET_TRANSACTIONS;
-  constructor(public readonly payload: ITransaction[]) {
+  constructor(public readonly payload: IList<ITransaction>) {
     super();
   }
 }
@@ -36,9 +39,29 @@ class SetTransactions extends ActionCreator implements IAction<ITransaction[]> {
 export const getTransactions = (address: string): IThunkAction<TransactionAction> => async (
   dispatch: Dispatch<TransactionAction>
 ) => {
-  const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`);
-  const payload: ITransaction[] = data.payload;
+  const page = new Pageable(0);
+  const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`, {params: page});
+  const payload: IList<ITransaction> = data.payload;
   dispatch(new SetTransactions(payload));
+};
+
+export type AppendToTransactionsAction = SetAppendToTransactions;
+
+class SetAppendToTransactions extends ActionCreator implements IAction<IList<ITransaction>> {
+  public readonly type = ActionType.SET_APPEND_TO_TRANSACTIONS;
+  constructor(public readonly payload: IList<ITransaction>) {
+    super();
+  }
+}
+
+export const appendToTransactions = (address: string): IThunkAction<AppendToTransactionsAction> => async (
+  dispatch: Dispatch<AppendToTransactionsAction>, getState: () => IStoreState
+) => {
+  const state = getState();
+  const page = new Pageable(state.transactions.list.length);
+  const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`, {params: page});
+  const payload: IList<ITransaction> = data.payload;
+  dispatch(new SetAppendToTransactions(payload));
 };
 
 export const createTransaction = (transactionCandidate: ITransactionCandidate) => async (

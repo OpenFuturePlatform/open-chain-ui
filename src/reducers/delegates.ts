@@ -1,5 +1,5 @@
 import { ActionType } from '../actions/actionType';
-import { DelegateAction } from '../actions/delegates';
+import {AppendToDelegateAction, DelegateAction} from '../actions/delegates';
 import { IDelegate, IList } from '../configureStore';
 
 const initState: IList<IDelegate> = {
@@ -7,10 +7,12 @@ const initState: IList<IDelegate> = {
   totalCount: 0
 };
 
-export const delegates = (state = initState, action: DelegateAction) => {
+export const delegates = (state = initState, action: DelegateAction | AppendToDelegateAction) => {
   switch (action.type) {
     case ActionType.SET_DELEGATES:
       return action.payload;
+    case ActionType.SET_APPEND_TO_DELEGATES:
+      return {totalCount: action.payload.totalCount, list: [...state.list, ...action.payload.list]};
     default:
       return state;
   }

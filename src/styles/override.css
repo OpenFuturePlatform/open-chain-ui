@@ -68,6 +68,10 @@ form .input.invalid .error {
   opacity: 0.8;
 }
 .popup-area .info span.wrapable-address {
-    word-wrap: break-word;
-    width: 340px;
+  word-wrap: break-word;
+  width: 340px;
+}
+.infinity-scroll-container {
+  overflow-y: auto;
+  max-height: calc(100vh - 90px - 42px - 40px - 24px - 111px - 46px);
 }
