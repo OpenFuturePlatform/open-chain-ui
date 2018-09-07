@@ -50,9 +50,10 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
   };
 
   public onSubmit = async () => {
-    const {fee, delegate} = this.state;
+    const {delegate} = this.state;
+    const fee = DELEGATE_FEE;
     try {
-      await this.props.createVoteTransaction({fee: +fee, delegate});
+      await this.props.createVoteTransaction({fee, delegate});
       this.setState(this.getDefaultState);
     } catch (e) {
       const { message } = parseApiError(e);

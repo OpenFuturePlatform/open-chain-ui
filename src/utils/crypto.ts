@@ -137,7 +137,7 @@ const hashDelegateTransaction = (unsignedTransaction: IDelegateCandidate): strin
     ...toByteArray(nodeId),
     ...toByteArray(nodeKey),
     ...toByteArray(nodeHost),
-    ...toByteArray(nodePort),
+    ...to4Array(+nodePort),
     ...toByteArray(amount),
   ];
   return sha256(sha256.array(byteArray));
