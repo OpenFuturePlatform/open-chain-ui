@@ -10,6 +10,9 @@ import { CastedVotesDelegateHeader } from './CastedVotesDelegateHeader';
 import {DelegateTableTabs} from './DelegateTableTabs';
 import {IRouterProps} from "../index";
 import {withRouter} from "react-router";
+import {InfiniteScrollComponent} from "./InfiniteScroll";
+import {appendToDelegates} from "../actions/delegates";
+import {appendToCastedVotesDelegates} from "../actions/castedVotesDelegates";
 
 interface IStoreStateProps {
   wallet: IWallet | null;
@@ -19,6 +22,8 @@ interface IStoreStateProps {
 
 interface IDispatchProps {
   getTransactions(address: string): void;
+  appendToDelegates(): void;
+  appendToCastedVotesDelegates(address: string): void;
   createRecallVoteTransaction({fee, delegate}: {fee: number, delegate: string}): Promise<void>;
 }
 
@@ -53,6 +58,17 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     }
   }
 
+  public onLoadMore = () => {
+    this.props.appendToDelegates();
+  }
+
+  public onLoadMoreCastedVotesDelegates = () => {
+    const { wallet } = this.props;
+    if (wallet) {
+      this.props.appendToCastedVotesDelegates(wallet.address);
+    }
+  }
+
   public renderDelegateList = () => {
     const delegates: IList<IDelegate> = this.props.delegates;
     const castedVotesDelegates: IList<IDelegate> = this.props.castedVotesDelegates;
@@ -60,10 +76,12 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       return (
         <div className="list corner-fix">
           <DelegatesHeader />
-          {delegates.list && delegates.list.map(delegate => {
-            const isVoted = !!castedVotesDelegates.list.find(i => delegate.publicKey === i.publicKey);
-            return <Delegate key={delegate.publicKey} isVoted={isVoted} delegate={delegate} />
-          })}
+          <InfiniteScrollComponent data={delegates} onLoadMore={this.onLoadMore}>
+            {delegates.list && delegates.list.map((delegate, index) => {
+              const isVoted = !!castedVotesDelegates.list.find((item) => delegate.publicKey === item.publicKey);
+              return <Delegate key={delegate.publicKey} isVoted={isVoted} delegate={delegate} rank={index + 1}/>
+            })}
+          </InfiniteScrollComponent>
         </div>
       )
     } else {
@@ -71,10 +89,11 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       return (
         <div className="list list-votes corner-fix">
           <CastedVotesDelegateHeader />
-          {castedVotesDelegates.list &&
-          castedVotesDelegates.list.map(delegate => <CastedVotesDelegate key={delegate.publicKey}
-                                                                         delegate={delegate}
-                                                                         recallVoteDelegate={this.recallVoteDelegate}/>)}
+          <InfiniteScrollComponent data={castedVotesDelegates} onLoadMore={this.onLoadMoreCastedVotesDelegates}>
+            {castedVotesDelegates.list && castedVotesDelegates.list.map(delegate => {
+              return <CastedVotesDelegate key={delegate.publicKey} delegate={delegate} recallVoteDelegate={this.recallVoteDelegate}/>
+            })}
+          </InfiniteScrollComponent>
         </div>
       )
     }
@@ -101,6 +120,8 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
 const mapStateToProps = ({ delegates, wallet, castedVotesDelegates }: IStoreState) => ({ delegates, wallet, castedVotesDelegates });
 
 const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
+  appendToDelegates: () => dispatch(appendToDelegates()),
+  appendToCastedVotesDelegates: (address: string) => dispatch(appendToCastedVotesDelegates(address)),
   getTransactions: (address: string) => dispatch(getTransactions(address)),
   createRecallVoteTransaction: ({fee, delegate}: {fee: number, delegate: string}) => dispatch(createRecallVoteTransaction({fee, delegate}))
 });

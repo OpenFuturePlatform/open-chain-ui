@@ -19,7 +19,6 @@ export interface IDelegate {
   readonly nodeId: string;
   readonly id: number;
   readonly votesCount: number;
-  readonly rank: number;
   readonly rating: number;
   readonly timestamp: number;
 }
@@ -78,9 +77,10 @@ export interface IStoreState {
   readonly seed: string;
   readonly wallet: IWallet | null;
   readonly balance: string;
+  readonly info: any;
   readonly delegates: IList<IDelegate>;
   readonly castedVotesDelegates: IList<IDelegate>;
-  readonly transactions: ITransaction[];
+  readonly transactions: IList<ITransaction>;
 }
 
 const initState = {};

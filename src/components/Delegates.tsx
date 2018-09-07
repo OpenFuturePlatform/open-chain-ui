@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { IThunkDispatch } from '../actions';
 import { getCastedVotesDelegates } from '../actions/castedVotesDelegates';
 import { getDelegates } from '../actions/delegates';
+import { getInfo } from '../actions/info';
 import {IDelegate, IList, IStoreState, IWallet} from '../configureStore';
 
 interface IStoreStateProps {
@@ -14,6 +15,7 @@ interface IStoreStateProps {
 interface IDispatchProps {
   getCastedVotesDelegates(address: string): void;
   getDelegates(): void;
+  getInfo(): void;
 }
 
 type IProps = IStoreStateProps & IDispatchProps;
@@ -21,15 +23,16 @@ type IProps = IStoreStateProps & IDispatchProps;
 class DelegatesComponent extends React.Component<IProps> {
   public componentDidMount() {
     this.props.getDelegates();
+    this.props.getInfo();
     if (this.props.wallet) {
       this.props.getCastedVotesDelegates(this.props.wallet.address);
     }
   }
 
   public renderDelegates = (delegates: IDelegate[]) =>
-    delegates.map(delegate => (
+    delegates.map((delegate, index) => (
       <div key={delegate.publicKey} className="delegate">
-        <p className="rank">{delegate.rank}</p>
+        <p className="rank">{index + 1}</p>
         <p className="address">{delegate.address}</p>
         <p className="amount">{delegate.votesCount}</p>
       </div>
@@ -52,7 +55,7 @@ class DelegatesComponent extends React.Component<IProps> {
             <p className="address">Address</p>
             <p className="amount">Amount of votes</p>
           </div>
-          {this.renderDelegates(delegates.list.slice(0, 10))}
+          {this.renderDelegates(delegates.list.slice(0, 4))}
           <Link to="/wallet/delegates" className="all">
             View all delegates <span>{delegates.totalCount}</span>
           </Link>
@@ -64,8 +67,9 @@ class DelegatesComponent extends React.Component<IProps> {
 
 const mapStateToProps = ({ delegates, wallet }: IStoreState) => ({ delegates, wallet });
 
-const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
+const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
   getDelegates: () => dispatch(getDelegates()),
+  getInfo: () => dispatch(getInfo()),
   getCastedVotesDelegates: (address: string) => dispatch(getCastedVotesDelegates(address))
 });
 
