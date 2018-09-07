@@ -44,7 +44,7 @@ export class LastTransactionsComponent extends React.Component<IProps> {
           <TransactionsHeader />
           {transactionList}
           <Link to="/wallet/transactions" className="all">
-            View All Transactions <span>{transactions.length}</span>
+            View All Transactions <span>{this.props.transactions.totalCount}</span>
           </Link>
         </div>
       </div>
