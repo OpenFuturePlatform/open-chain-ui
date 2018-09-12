@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { IDelegate } from '../configureStore';
 import { copy2Clipboard } from '../utils/copy2Clipboard';
+import {formatDate} from "../utils/format-date";
 
 interface IProps {
   delegate: IDelegate
@@ -25,7 +26,7 @@ export const Delegate = ({ delegate, isVoted, rank }: IProps) => {
           </a>
         }
       </p>
-      <p className="date-delegate">{delegate.timestamp}</p>
+      <p className="date-delegate">{formatDate(delegate.timestamp)}</p>
     </div>
   )
 };
