@@ -74,7 +74,7 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
           <div className="vote-section">
             <h2>Vote</h2>
             <div className={`input ${delegateError && 'invalid'}`}>
-              <p className="required">Delegate's address</p>
+              <p className="required">Node ID</p>
               <span className="error">{delegateError}</span>
               <input
                 className=""
