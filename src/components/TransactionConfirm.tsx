@@ -37,7 +37,7 @@ const TransactionConfirmComponent = ({ isVisible, transaction, address, onSubmit
           </span>
         </div>
         <div className="info">
-          <span className="title">fee amount</span>
+          <span className="title">fee</span>
           <span>{transaction.fee} OPEN</span>
         </div>
         <div className="button-area">

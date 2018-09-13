@@ -84,6 +84,7 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
       } else {
         this.setState({ recipientError: message });
       }
+      this.setState({previewPopup: false})
       throw e;
     }
   };
@@ -119,8 +120,8 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
             <span className="error">{amountError}</span>
             <input type="text" placeholder="Amount" required={true} value={amount} onChange={this.onAmountChange} />
           </div>
-          <div className="input">
-            <p className="required">Fee Amount</p>
+          <div className={`input ${amountError && 'invalid'}`}>
+            <p className="required">Fee</p>
             <input type="text" placeholder="Fee" required={true} value={fee} onChange={this.onFeeChange} />
           </div>
           <button className={`button mini ${confirmDisabled ? 'disable' : ''}`}>
