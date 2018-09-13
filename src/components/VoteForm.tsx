@@ -86,7 +86,7 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
               />
             </div>
             <div className={`input ${feeError && 'invalid'}`}>
-              <p className="required">Fee Amount</p>
+              <p className="required">Fee</p>
               <span className="error">{feeError}</span>
               <input
                 className="disable"
