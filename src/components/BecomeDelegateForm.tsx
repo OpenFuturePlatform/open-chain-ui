@@ -87,7 +87,7 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
                      disabled={true}/>
             </div>
             <div className="input">
-              <p className="required">Fee Amount</p>
+              <p className="required">Fee</p>
               <input className="disable" type="text" placeholder="Fee Amount" required={true} value={fee} onChange={() => null}
                      disabled={true}/>
             </div>
