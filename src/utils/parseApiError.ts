@@ -10,6 +10,7 @@ export const transactionErrorMap = {
   INCORRECT_SIGNATURE: { field: ErrorField.RECIPIENT, message: 'Transaction signature is incorrect' },
   INCORRECT_VOTES_COUNT: { field: ErrorField.RECIPIENT, message: 'Votes number is incorrect' },
   ALREADY_VOTED_FOR_DELEGATE: { field: ErrorField.RECIPIENT, message: 'This node is already a delegate' },
+  ALREADY_DELEGATE: { field: ErrorField.RECIPIENT, message: 'This node is already a delegate' },
   INSUFFICIENT_ACTUAL_BALANCE: {
     field: ErrorField.AMOUNT,
     message: 'Insufficient actual balance'

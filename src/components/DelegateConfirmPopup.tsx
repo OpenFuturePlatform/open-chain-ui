@@ -31,7 +31,7 @@ export const DelegateConfirmPopupComponent = ({ isVisible, amount, nodeId, fee, 
           <span>{amount}</span>
         </div>
         <div className="info">
-          <span className="title">fee amount</span>
+          <span className="title">fee</span>
           <span>{fee} open</span>
         </div>
         <div className="button-area">
