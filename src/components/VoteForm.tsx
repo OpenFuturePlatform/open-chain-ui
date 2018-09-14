@@ -91,7 +91,7 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
               <input
                 className="disable"
                 type="text"
-                placeholder="Fee Amount"
+                placeholder="Fee"
                 required={true}
                 value={fee}
                 onChange={this.onFeeChange}
