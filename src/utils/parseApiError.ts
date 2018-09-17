@@ -9,7 +9,8 @@ export const transactionErrorMap = {
   INCORRECT_HASH: { field: ErrorField.RECIPIENT, message: 'Transaction hash is incorrect' },
   INCORRECT_SIGNATURE: { field: ErrorField.RECIPIENT, message: 'Transaction signature is incorrect' },
   INCORRECT_VOTES_COUNT: { field: ErrorField.RECIPIENT, message: 'Votes number is incorrect' },
-  ALREADY_VOTED_FOR_DELEGATE: { field: ErrorField.RECIPIENT, message: 'This node is already a delegate' },
+  ALREADY_VOTED_FOR_DELEGATE: { field: ErrorField.RECIPIENT, message: 'You already voted for this delegate' },
+  ALREADY_SENT_VOTE: { field: ErrorField.RECIPIENT, message: 'You already voted for this delegate' },
   ALREADY_DELEGATE: { field: ErrorField.RECIPIENT, message: 'This node is already a delegate' },
   INSUFFICIENT_ACTUAL_BALANCE: {
     field: ErrorField.AMOUNT,
