@@ -63,7 +63,7 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
   public onAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const initial = e.target.value || '';
     const amount = getNumbersOnly(initial);
-    this.setState({ amount });
+    this.setState({ amount: +initial === 0 ? '' : amount});
   };
 
   public onFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
