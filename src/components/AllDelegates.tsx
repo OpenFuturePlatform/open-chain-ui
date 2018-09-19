@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { IThunkDispatch } from '../actions';
 import { getTransactions, createRecallVoteTransaction } from '../actions/transactions';
-import { IDelegate, IList, IStoreState, IWallet } from '../configureStore';
+import {ICastedVotesDelegate, IDelegate, IList, IStoreState, IWallet} from '../configureStore';
 import { Delegate } from './Delegate';
 import { CastedVotesDelegate } from './CastedVotesDelegate';
 import { DelegatesHeader } from './DelegatesHeader';
@@ -13,14 +13,16 @@ import {withRouter} from "react-router";
 import {InfiniteScrollComponent} from "./InfiniteScroll";
 import {appendToDelegates} from "../actions/delegates";
 import {appendToCastedVotesDelegates} from "../actions/castedVotesDelegates";
+import { getCastedVotesDelegates } from '../actions/castedVotesDelegates';
 
 interface IStoreStateProps {
   wallet: IWallet | null;
   delegates: IList<IDelegate>;
-  castedVotesDelegates: IList<IDelegate>;
+  castedVotesDelegates: IList<ICastedVotesDelegate>;
 }
 
 interface IDispatchProps {
+  getCastedVotesDelegates(address: string): void;
   getTransactions(address: string): void;
   appendToDelegates(): void;
   appendToCastedVotesDelegates(address: string): void;
@@ -44,15 +46,19 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     const { wallet } = this.props;
     if (wallet) {
       this.props.getTransactions(wallet.address);
+      this.props.getCastedVotesDelegates(wallet.address);
     }
   }
   public onAllDelegatesTabClick = (value: boolean) => {
     this.setState({isAllDelegates: value})
-  };
+  }
 
   public recallVoteDelegate = async ({nodeId, fee}: {nodeId: string, fee: number}) => {
     try {
       await this.props.createRecallVoteTransaction({fee, delegate: nodeId});
+      if (this.props.wallet) {
+        this.props.getCastedVotesDelegates(this.props.wallet.address);
+      }
     } catch (e) {
       console.error(e)
     }
@@ -71,7 +77,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
 
   public renderDelegateList = () => {
     const delegates: IList<IDelegate> = this.props.delegates;
-    const castedVotesDelegates: IList<IDelegate> = this.props.castedVotesDelegates;
+    const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
     if (this.state.isAllDelegates) {
       return (
         <div className="list corner-fix">
@@ -101,7 +107,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
 
   public render() {
     const delegates: IList<IDelegate> = this.props.delegates;
-    const castedVotesDelegates: IList<IDelegate> = this.props.castedVotesDelegates;
+    const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
 
     return (
       <div className="table-section">
@@ -123,7 +129,8 @@ const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreSta
   appendToDelegates: () => dispatch(appendToDelegates()),
   appendToCastedVotesDelegates: (address: string) => dispatch(appendToCastedVotesDelegates(address)),
   getTransactions: (address: string) => dispatch(getTransactions(address)),
-  createRecallVoteTransaction: ({fee, delegate}: {fee: number, delegate: string}) => dispatch(createRecallVoteTransaction({fee, delegate}))
+  createRecallVoteTransaction: ({fee, delegate}: {fee: number, delegate: string}) => dispatch(createRecallVoteTransaction({fee, delegate})),
+  getCastedVotesDelegates: (address: string) => dispatch(getCastedVotesDelegates(address))
 });
 
 export const AllDelegates = connect<IStoreStateProps, IDispatchProps>(

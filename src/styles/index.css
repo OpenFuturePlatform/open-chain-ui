@@ -1519,6 +1519,14 @@ nav .profile-info .logout {
     text-transform: uppercase;
     cursor: pointer;
 }
+.table-section .list .delegate .btn .pending {
+    box-shadow: none;
+    background: #dcdcf0;
+    color: #fff;
+    cursor: default;
+
+    pointer-events: none;
+}
 .table-section .list .transaction .from, .table-section .list .delegate .from, .table-section .list .transaction .to, .table-section .list .delegate .to {
     width: calc(24%);
     position: absolute;

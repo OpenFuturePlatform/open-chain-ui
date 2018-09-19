@@ -2,7 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IThunkDispatch } from '../actions';
-import { getCastedVotesDelegates } from '../actions/castedVotesDelegates';
 import { getDelegates } from '../actions/delegates';
 import { getInfo } from '../actions/info';
 import {IDelegate, IList, IStoreState, IWallet} from '../configureStore';
@@ -13,7 +12,6 @@ interface IStoreStateProps {
 }
 
 interface IDispatchProps {
-  getCastedVotesDelegates(address: string): void;
   getDelegates(): void;
   getInfo(): void;
 }
@@ -24,9 +22,6 @@ class DelegatesComponent extends React.Component<IProps> {
   public componentDidMount() {
     this.props.getDelegates();
     this.props.getInfo();
-    if (this.props.wallet) {
-      this.props.getCastedVotesDelegates(this.props.wallet.address);
-    }
   }
 
   public renderDelegates = (delegates: IDelegate[]) =>
@@ -70,7 +65,6 @@ const mapStateToProps = ({ delegates, wallet }: IStoreState) => ({ delegates, wa
 const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
   getDelegates: () => dispatch(getDelegates()),
   getInfo: () => dispatch(getInfo()),
-  getCastedVotesDelegates: (address: string) => dispatch(getCastedVotesDelegates(address))
 });
 
 export const Delegates = connect<IStoreStateProps, IDispatchProps>(

@@ -1,8 +1,8 @@
 import { ActionType } from '../actions/actionType';
 import { DelegateAction, AppendToDelegateAction } from '../actions/castedVotesDelegates';
-import { IDelegate, IList } from '../configureStore';
+import {ICastedVotesDelegate, IList} from '../configureStore';
 
-const initState: IList<IDelegate> = {
+const initState: IList<ICastedVotesDelegate> = {
   list: [],
   totalCount: 0
 };

@@ -23,6 +23,10 @@ export interface IDelegate {
   readonly timestamp: number;
 }
 
+export interface ICastedVotesDelegate extends IDelegate {
+  readonly recalled: boolean
+}
+
 export interface ITransactionCandidate {
   readonly fee: number;
   readonly amount: number;
@@ -79,7 +83,7 @@ export interface IStoreState {
   readonly balance: string;
   readonly info: any;
   readonly delegates: IList<IDelegate>;
-  readonly castedVotesDelegates: IList<IDelegate>;
+  readonly castedVotesDelegates: IList<ICastedVotesDelegate>;
   readonly transactions: IList<ITransaction>;
 }
 
