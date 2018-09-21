@@ -48,6 +48,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       this.props.getTransactions(wallet.address);
       this.props.getCastedVotesDelegates(wallet.address);
     }
+    this.props.appendToDelegates();
   }
   public onAllDelegatesTabClick = (value: boolean) => {
     this.setState({isAllDelegates: value})
