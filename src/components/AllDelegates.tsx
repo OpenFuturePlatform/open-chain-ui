@@ -11,7 +11,7 @@ import {DelegateTableTabs} from './DelegateTableTabs';
 import {IRouterProps} from "../index";
 import {withRouter} from "react-router";
 import {InfiniteScrollComponent} from "./InfiniteScroll";
-import {appendToDelegates} from "../actions/delegates";
+import {appendToDelegates, getDelegates} from "../actions/delegates";
 import {appendToCastedVotesDelegates} from "../actions/castedVotesDelegates";
 import { getCastedVotesDelegates } from '../actions/castedVotesDelegates';
 
@@ -24,6 +24,7 @@ interface IStoreStateProps {
 interface IDispatchProps {
   getCastedVotesDelegates(address: string): void;
   getTransactions(address: string): void;
+  getDelegates(): void;
   appendToDelegates(): void;
   appendToCastedVotesDelegates(address: string): void;
   createRecallVoteTransaction({fee, delegate}: {fee: number, delegate: string}): Promise<void>;
@@ -48,7 +49,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       this.props.getTransactions(wallet.address);
       this.props.getCastedVotesDelegates(wallet.address);
     }
-    this.props.appendToDelegates();
+    this.props.getDelegates();
   }
   public onAllDelegatesTabClick = (value: boolean) => {
     this.setState({isAllDelegates: value})
@@ -128,6 +129,7 @@ const mapStateToProps = ({ delegates, wallet, castedVotesDelegates }: IStoreStat
 
 const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
   appendToDelegates: () => dispatch(appendToDelegates()),
+  getDelegates: () => dispatch(getDelegates()),
   appendToCastedVotesDelegates: (address: string) => dispatch(appendToCastedVotesDelegates(address)),
   getTransactions: (address: string) => dispatch(getTransactions(address)),
   createRecallVoteTransaction: ({fee, delegate}: {fee: number, delegate: string}) => dispatch(createRecallVoteTransaction({fee, delegate})),
