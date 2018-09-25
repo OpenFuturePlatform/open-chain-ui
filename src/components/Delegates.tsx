@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { IThunkDispatch } from '../actions';
 import { getDelegates } from '../actions/delegates';
+import { getBalance } from '../actions/balance';
 import { getInfo } from '../actions/info';
 import {IDelegate, IList, IStoreState, IWallet} from '../configureStore';
 
@@ -14,6 +15,7 @@ interface IStoreStateProps {
 interface IDispatchProps {
   getDelegates(): void;
   getInfo(): void;
+  getBalance(address: string): void;
 }
 
 type IProps = IStoreStateProps & IDispatchProps;
@@ -22,6 +24,9 @@ class DelegatesComponent extends React.Component<IProps> {
   public componentDidMount() {
     this.props.getDelegates();
     this.props.getInfo();
+    if (this.props.wallet) {
+      this.props.getBalance(this.props.wallet.address);
+    }
   }
 
   public renderDelegates = (delegates: IDelegate[]) =>
@@ -64,6 +69,7 @@ const mapStateToProps = ({ delegates, wallet }: IStoreState) => ({ delegates, wa
 
 const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
   getDelegates: () => dispatch(getDelegates()),
+  getBalance: (address: string) => dispatch(getBalance(address)),
   getInfo: () => dispatch(getInfo()),
 });
 

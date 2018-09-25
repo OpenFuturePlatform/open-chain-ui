@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { IThunkDispatch } from '../actions';
 import { getTransactions, appendToTransactions } from '../actions/transactions';
+import { getBalance } from '../actions/balance';
 import {IList, IStoreState, ITransaction, IWallet} from '../configureStore';
 import { Transaction } from './Transaction';
 import { TransactionsHeader } from './TransactionsHeader';
@@ -15,6 +16,7 @@ interface IStoreStateProps {
 interface IDispatchProps {
   getTransactions(address: string): void;
   appendToTransactions(address: string): void;
+  getBalance(address: string): void;
 }
 
 type IProps = IStoreStateProps & IDispatchProps;
@@ -24,6 +26,7 @@ export class AllTransactionsComponent extends React.Component<IProps> {
     const { wallet } = this.props;
     if (wallet) {
       this.props.getTransactions(wallet.address);
+      this.props.getBalance(wallet.address);
     }
   }
 
@@ -59,7 +62,8 @@ const mapStateToProps = ({ transactions, wallet }: IStoreState) => ({ transactio
 
 const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
   getTransactions: (address: string) => dispatch(getTransactions(address)),
-  appendToTransactions: (address: string) => dispatch(appendToTransactions(address))
+  appendToTransactions: (address: string) => dispatch(appendToTransactions(address)),
+  getBalance: (address: string) => dispatch(getBalance(address))
 });
 
 export const AllTransactions = connect<IStoreStateProps, IDispatchProps>(
