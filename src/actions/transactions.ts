@@ -40,7 +40,7 @@ export const getTransactions = (address: string): IThunkAction<TransactionAction
   dispatch: Dispatch<TransactionAction>
 ) => {
   const page = new Pageable(0);
-  const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`, {params: page});
+  const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`, {params: {...page, sortDirection: 'DESC'}});
   const payload: IList<ITransaction> = data.payload;
   dispatch(new SetTransactions(payload));
 };
@@ -59,7 +59,7 @@ export const appendToTransactions = (address: string): IThunkAction<AppendToTran
 ) => {
   const state = getState();
   const page = new Pageable(state.transactions.list.length);
-  const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`, {params: page});
+  const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`, {params: {...page, sortDirection: 'DESC'}});
   const payload: IList<ITransaction> = data.payload;
   dispatch(new SetAppendToTransactions(payload));
 };
