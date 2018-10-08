@@ -19,6 +19,7 @@ interface IStoreStateProps {
   wallet: IWallet | null;
   delegates: IList<IDelegate>;
   castedVotesDelegates: IList<ICastedVotesDelegate>;
+  balance: string;
 }
 
 interface IDispatchProps {
@@ -62,7 +63,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
         this.props.getCastedVotesDelegates(this.props.wallet.address);
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   }
 
@@ -80,6 +81,8 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
   public renderDelegateList = () => {
     const delegates: IList<IDelegate> = this.props.delegates;
     const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
+    const isRecallButtonVisible = +this.props.balance < 1;
+
     if (this.state.isAllDelegates) {
       return (
         <div className="list corner-fix">
@@ -99,7 +102,8 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <CastedVotesDelegateHeader />
           <InfiniteScrollComponent data={castedVotesDelegates} onLoadMore={this.onLoadMoreCastedVotesDelegates}>
             {castedVotesDelegates.list && castedVotesDelegates.list.map(delegate => {
-              return <CastedVotesDelegate key={delegate.publicKey} delegate={delegate} recallVoteDelegate={this.recallVoteDelegate}/>
+              return <CastedVotesDelegate key={delegate.publicKey} delegate={delegate} recallVoteDelegate={this.recallVoteDelegate}
+                                          isRecallButtonVisible={isRecallButtonVisible}/>
             })}
           </InfiniteScrollComponent>
         </div>
@@ -125,7 +129,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
   }
 }
 
-const mapStateToProps = ({ delegates, wallet, castedVotesDelegates }: IStoreState) => ({ delegates, wallet, castedVotesDelegates });
+const mapStateToProps = ({ delegates, wallet, castedVotesDelegates, balance }: IStoreState) => ({ delegates, wallet, castedVotesDelegates, balance });
 
 const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
   appendToDelegates: () => dispatch(appendToDelegates()),
