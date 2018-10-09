@@ -17,6 +17,7 @@ import { getCastedVotesDelegates } from '../actions/castedVotesDelegates';
 import { RecallConfirmPopup } from './RecallConfirmPopup';
 import {parseApiError} from "../utils/parseApiError";
 import {ErrorPopup} from "./ErrorPopup";
+import {RecallVoteSuccess} from "./RecallVoteSuccess";
 
 interface IStoreStateProps {
   wallet: IWallet | null;
@@ -42,6 +43,7 @@ interface IState {
   recallFee: number
   recallNodeId: string
   isShowError: boolean
+  isShowSuccess: boolean
   errorPopupMessage: string
 };
 
@@ -54,6 +56,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       recallFee: 0,
       recallNodeId: '',
       isShowError: false,
+      isShowSuccess: false,
       errorPopupMessage: ''
     }
   }
@@ -74,14 +77,19 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
 
   public onCloseConfirm = () => this.setState({ isShowConfirm: false });
   public onCloseError = () => this.setState({ isShowError: false });
+  public onCloseSuccess = () => this.setState({ isShowSuccess: false });
 
-  public recallVoteDelegate = async () => {
+  public recallVoteDelegate = async (e?: MouseEvent | React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
     const {recallFee, recallNodeId} = this.state;
     try {
       await this.props.createRecallVoteTransaction({fee: recallFee, delegate: recallNodeId});
       if (this.props.wallet) {
         this.props.getCastedVotesDelegates(this.props.wallet.address);
       }
+      this.setState({ isShowConfirm: false, isShowSuccess: true });
     } catch (e) {
       console.error(e);
       const { message } = parseApiError(e);
@@ -135,12 +143,12 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
   }
 
   public render() {
-    const {isShowConfirm, recallNodeId, recallFee, isAllDelegates, isShowError, errorPopupMessage} = this.state;
+    const {isShowConfirm, recallNodeId, recallFee, isAllDelegates, isShowError, errorPopupMessage, isShowSuccess} = this.state;
     const delegates: IList<IDelegate> = this.props.delegates;
     const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
 
     return (
-      <div className={`table-section ${(isShowConfirm || isShowError) && 'z-index-3'}`}>
+      <div className={`table-section ${(isShowConfirm || isShowError || isShowSuccess) && 'z-index-3'}`}>
         <div className="title">
           <h3>delegates</h3>
         </div>
@@ -156,6 +164,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           onClose={this.onCloseConfirm}
         />
         <ErrorPopup isVisible={isShowError} errorMessage={errorPopupMessage} onClose={this.onCloseError}/>
+        <RecallVoteSuccess isVisible={isShowSuccess} onClose={this.onCloseSuccess}/>
       </div>
     );
   }

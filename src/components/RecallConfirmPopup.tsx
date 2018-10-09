@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { PopupBackgroundArea } from '../components-ui/PopupBackgroundArea';
-import { withSuccessPopup } from './withSuccessPopup';
 
 interface IProps {
   isVisible: boolean;
@@ -10,7 +9,7 @@ interface IProps {
   onClose(): void;
 }
 
-const RecallConfirmPopupComponent = ({ isVisible, delegate, fee, onClose, onSubmit }: IProps) => {
+export const RecallConfirmPopup = ({ isVisible, delegate, fee, onClose, onSubmit }: IProps) => {
   if (!isVisible) {
     return null;
   }
@@ -43,5 +42,3 @@ const RecallConfirmPopupComponent = ({ isVisible, delegate, fee, onClose, onSubm
     </PopupBackgroundArea>
   );
 };
-
-export const RecallConfirmPopup = withSuccessPopup<IProps>(RecallConfirmPopupComponent);

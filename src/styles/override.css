@@ -99,3 +99,13 @@ form .input.invalid .error {
   font-size: 1.2em;
   color: #df4c4c;
 }
+.success-recall-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.success-recall-popup .success-popup-message {
+  color: #3193f5;
+  padding-bottom: 40px;
+  font-size: 1.6em;
+}

@@ -7,6 +7,7 @@ import { parseApiError } from '../utils/parseApiError';
 import { DelegateTabs } from './DelegateTabs';
 import { VoteConfirmPopup } from './VoteConfirmPopup';
 import {DELEGATE_FEE} from "../const/transactions";
+import {ErrorPopup} from "./ErrorPopup";
 
 interface IDispatchProps {
   createVoteTransaction({fee, delegate}: {fee: number, delegate: string}): Promise<void>;
@@ -17,7 +18,9 @@ interface IState {
   delegateError: string;
   fee: string;
   feeError: string;
+  errorPopupMessage: string;
   isShowConfirm: boolean;
+  isShowError: boolean
 }
 
 class VoteFormComponent extends React.Component<IDispatchProps, IState> {
@@ -31,7 +34,9 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
     delegateError: '',
     fee: '',
     feeError: '',
-    isShowConfirm: false
+    errorPopupMessage: '',
+    isShowConfirm: false,
+    isShowError: false,
   });
 
   public onDelegateChange = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({ delegate: e.target.value });
@@ -49,6 +54,8 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
     this.setState({ isShowConfirm: true });
   };
 
+  public onCloseError = () => this.setState({ isShowError: false });
+
   public onSubmit = async () => {
     const {delegate} = this.state;
     const fee = DELEGATE_FEE;
@@ -57,13 +64,18 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
       this.setState(this.getDefaultState);
     } catch (e) {
       const { message } = parseApiError(e);
-      this.setState({ delegateError: message, isShowConfirm: false });
+      this.setState({ isShowConfirm: false, isShowError: true });
+      if (message === 'Blockchain is synchronizing') {
+        this.setState({ errorPopupMessage: message });
+      } else {
+        this.setState({ delegateError: message });
+      }
       throw e;
     }
   };
 
   public render() {
-    const { delegate, delegateError, feeError, isShowConfirm } = this.state;
+    const { delegate, delegateError, feeError, isShowConfirm, isShowError, errorPopupMessage } = this.state;
     const confirmDisabled = this.isConfirmDisabled();
     const fee = DELEGATE_FEE.toString();
 
@@ -112,6 +124,7 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
           onSubmit={this.onSubmit}
           onClose={this.onCloseConfirm}
         />
+        <ErrorPopup isVisible={isShowError} errorMessage={errorPopupMessage} onClose={this.onCloseError}/>
       </div>
     );
   }
