@@ -14,6 +14,9 @@ import {InfiniteScrollComponent} from "./InfiniteScroll";
 import {appendToDelegates, getDelegates} from "../actions/delegates";
 import {appendToCastedVotesDelegates} from "../actions/castedVotesDelegates";
 import { getCastedVotesDelegates } from '../actions/castedVotesDelegates';
+import { RecallConfirmPopup } from './RecallConfirmPopup';
+import {parseApiError} from "../utils/parseApiError";
+import {ErrorPopup} from "./ErrorPopup";
 
 interface IStoreStateProps {
   wallet: IWallet | null;
@@ -35,13 +38,23 @@ type IProps = IStoreStateProps & IDispatchProps & IRouterProps;
 
 interface IState {
   isAllDelegates: boolean
+  isShowConfirm: boolean
+  recallFee: number
+  recallNodeId: string
+  isShowError: boolean
+  errorPopupMessage: string
 };
 
 export class AllDelegatesComponent extends React.Component<IProps, IState> {
   public constructor(props: IProps) {
     super(props);
     this.state = {
-      isAllDelegates: true
+      isAllDelegates: true,
+      isShowConfirm: false,
+      recallFee: 0,
+      recallNodeId: '',
+      isShowError: false,
+      errorPopupMessage: ''
     }
   }
   public componentDidMount() {
@@ -56,14 +69,24 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     this.setState({isAllDelegates: value})
   }
 
-  public recallVoteDelegate = async ({nodeId, fee}: {nodeId: string, fee: number}) => {
+  public onShowConfirm = ({nodeId, fee}: {nodeId: string, fee: number}) =>
+    this.setState({ isShowConfirm: true, recallNodeId: nodeId, recallFee: fee });
+
+  public onCloseConfirm = () => this.setState({ isShowConfirm: false });
+  public onCloseError = () => this.setState({ isShowError: false });
+
+  public recallVoteDelegate = async () => {
+    const {recallFee, recallNodeId} = this.state;
     try {
-      await this.props.createRecallVoteTransaction({fee, delegate: nodeId});
+      await this.props.createRecallVoteTransaction({fee: recallFee, delegate: recallNodeId});
       if (this.props.wallet) {
         this.props.getCastedVotesDelegates(this.props.wallet.address);
       }
     } catch (e) {
       console.error(e);
+      const { message } = parseApiError(e);
+      this.setState({ isShowConfirm: false, isShowError: true, errorPopupMessage: message });
+      throw e;
     }
   }
 
@@ -102,7 +125,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <CastedVotesDelegateHeader />
           <InfiniteScrollComponent data={castedVotesDelegates} onLoadMore={this.onLoadMoreCastedVotesDelegates}>
             {castedVotesDelegates.list && castedVotesDelegates.list.map(delegate => {
-              return <CastedVotesDelegate key={delegate.publicKey} delegate={delegate} recallVoteDelegate={this.recallVoteDelegate}
+              return <CastedVotesDelegate key={delegate.publicKey} delegate={delegate} recallVoteDelegate={this.onShowConfirm}
                                           isRecallButtonVisible={isRecallButtonVisible}/>
             })}
           </InfiniteScrollComponent>
@@ -112,18 +135,27 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
   }
 
   public render() {
+    const {isShowConfirm, recallNodeId, recallFee, isAllDelegates, isShowError, errorPopupMessage} = this.state;
     const delegates: IList<IDelegate> = this.props.delegates;
     const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
 
     return (
-      <div className="table-section">
+      <div className={`table-section ${(isShowConfirm || isShowError) && 'z-index-3'}`}>
         <div className="title">
           <h3>delegates</h3>
         </div>
-        <DelegateTableTabs delegatesCount={delegates.list.length} isAllDelegates={this.state.isAllDelegates}
+        <DelegateTableTabs delegatesCount={delegates.list.length} isAllDelegates={isAllDelegates}
                            onAllDelegatesTabClick={this.onAllDelegatesTabClick} castedVotesDelegatesCount={castedVotesDelegates.list.length}/>
 
         {this.renderDelegateList()}
+        <RecallConfirmPopup
+          isVisible={isShowConfirm}
+          delegate={recallNodeId}
+          fee={recallFee}
+          onSubmit={this.recallVoteDelegate}
+          onClose={this.onCloseConfirm}
+        />
+        <ErrorPopup isVisible={isShowError} errorMessage={errorPopupMessage} onClose={this.onCloseError}/>
       </div>
     );
   }
