@@ -9,6 +9,7 @@ import { getNumbersOnly } from '../utils/getNumbersOnly';
 import { parseApiError } from '../utils/parseApiError';
 import { DelegateConfirmPopup } from './DelegateConfirmPopup';
 import { DelegateTabs } from './DelegateTabs';
+import {ErrorPopup} from "./ErrorPopup";
 
 interface IStoreStateProps {
   nodeId: string;
@@ -22,8 +23,10 @@ type IProps = IStoreStateProps & IDispatchProps;
 
 interface IState {
   fee: string;
-  feeError: string;
+  amountError: string;
   isShowConfirm: boolean;
+  isShowError: boolean;
+  errorPopupMessage: string;
 }
 
 class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
@@ -34,8 +37,10 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
 
   public getDefaultState = () => ({
     fee: '',
-    feeError: '',
-    isShowConfirm: false
+    amountError: '',
+    isShowConfirm: false,
+    isShowError: false,
+    errorPopupMessage: '',
   });
 
   public onFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,20 +55,29 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
     this.setState({ isShowConfirm: true });
   };
 
+  public onCloseError = () => this.setState({ isShowError: false });
+
   public onSubmit = async () => {
     try {
       await this.props.createDelegateTransaction();
       this.setState(this.getDefaultState());
     } catch (e) {
-      const { message } = parseApiError(e);
-      this.setState({ feeError: message, isShowConfirm: false });
+      const {message, field} = parseApiError(e);
+
+      this.setState({ isShowConfirm: false });
+      if (field) {
+        this.setState({ amountError: message });
+      } else {
+        this.setState({ errorPopupMessage: message, isShowError: true  });
+      }
+
       throw e;
     }
   };
 
   public render() {
     const { nodeId } = this.props;
-    const { isShowConfirm, feeError } = this.state;
+    const { isShowConfirm, amountError, isShowError, errorPopupMessage } = this.state;
     const amount = DELEGATE_AMOUNT;
     const fee = DELEGATE_FEE;
 
@@ -77,16 +91,16 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
             </h2>
             <div className="input">
               <p>Node ID</p>
-              <span className="error">{feeError}</span>
               <input className="disable" type="text" placeholder="Wallet Address" value={nodeId} onChange={() => null}
                      disabled={true}/>
             </div>
-            <div className={`input ${feeError && 'invalid'}`}>
+            <div className={`input ${amountError && 'invalid'}`}>
               <p className="required">Amount</p>
+              <span className="error">{amountError}</span>
               <input className="disable" type="text" placeholder="Amount" required={true} value={amount} onChange={() => null}
                      disabled={true}/>
             </div>
-            <div className="input">
+            <div className={`input ${amountError && 'invalid'}`}>
               <p className="required">Fee</p>
               <input className="disable" type="text" placeholder="Fee" required={true} value={fee} onChange={() => null}
                      disabled={true}/>
@@ -105,6 +119,7 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
           onClose={this.onCloseConfirm}
           onSubmit={this.onSubmit}
         />
+        <ErrorPopup isVisible={isShowError} errorMessage={errorPopupMessage} onClose={this.onCloseError}/>
       </div>
     );
   }

@@ -6,6 +6,7 @@ import { IStoreState, ITransactionCandidate, IWallet } from '../configureStore';
 import { getNumbersOnly } from '../utils/getNumbersOnly';
 import { ErrorField, parseApiError } from '../utils/parseApiError';
 import { TransactionConfirm } from './TransactionConfirm';
+import {ErrorPopup} from "./ErrorPopup";
 
 interface IStoreStateProps {
   wallet: IWallet | null;
@@ -24,6 +25,8 @@ interface IState {
   fee: string;
   amountError: string;
   recipientError: string;
+  isShowError: boolean;
+  errorPopupMessage: string;
 }
 
 export class TransactionCreateComponent extends React.Component<IProps, IState> {
@@ -38,7 +41,9 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
     fee: '',
     previewPopup: false,
     recipientAddress: '',
-    recipientError: ''
+    recipientError: '',
+    isShowError: false,
+    errorPopupMessage: '',
   });
 
   public isConfirmDisabled = () => !this.state.amount || !this.state.fee || !this.state.recipientAddress;
@@ -72,6 +77,8 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
     this.setState({ fee });
   };
 
+  public onCloseError = () => this.setState({ isShowError: false });
+
   public onConfirm = async (): Promise<void> => {
     try {
       const transaction = this.getTransactionCandidate();
@@ -79,18 +86,23 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
       this.setState(this.getDefaultState());
     } catch (e) {
       const { message, field } = parseApiError(e);
-      if (field === ErrorField.AMOUNT) {
-        this.setState({ amountError: message });
-      } else {
-        this.setState({ recipientError: message });
+      this.setState({previewPopup: false});
+      switch (field) {
+        case ErrorField.RECIPIENT:
+          this.setState({ recipientError: message });
+          throw e;
+        case ErrorField.AMOUNT:
+          this.setState({ amountError: message });
+          throw e;
+        default:
+          this.setState({ errorPopupMessage: message, isShowError: true  });
+          throw e;
       }
-      this.setState({previewPopup: false})
-      throw e;
     }
   };
 
   public render() {
-    const { recipientAddress, amount, fee, recipientError, amountError, previewPopup } = this.state;
+    const { recipientAddress, amount, fee, recipientError, amountError, previewPopup, isShowError, errorPopupMessage } = this.state;
     const { wallet } = this.props;
     const senderAddress = wallet ? wallet.address : '';
     const confirmDisabled = this.isConfirmDisabled();
@@ -136,6 +148,7 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
           onClose={this.hidePreviewPopup}
           onSubmit={this.onConfirm}
         />
+        <ErrorPopup isVisible={isShowError} errorMessage={errorPopupMessage} onClose={this.onCloseError}/>
       </React.Fragment>
     );
   }

@@ -1010,7 +1010,7 @@ nav .profile-info .logout {
     margin-bottom: 30px;
 }
 .left-section form .input.invalid > input {
-    border-color: #df4c4c;
+    border-color: #df4c4c !important;
 }
 .left-section form .input.invalid .error {
     display: block;

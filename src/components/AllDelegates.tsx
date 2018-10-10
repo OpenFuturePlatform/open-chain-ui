@@ -93,7 +93,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     } catch (e) {
       console.error(e);
       const { message } = parseApiError(e);
-      this.setState({ isShowConfirm: false, isShowError: true, errorPopupMessage: message });
+      this.setState({ isShowConfirm: false, isShowError: true, errorPopupMessage: message, recallNodeId: '', recallFee: 0 });
       throw e;
     }
   }
@@ -112,7 +112,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
   public renderDelegateList = () => {
     const delegates: IList<IDelegate> = this.props.delegates;
     const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
-    const isRecallButtonVisible = +this.props.balance < 1;
+    const isRecallButtonDisabled = +this.props.balance < 1;
 
     if (this.state.isAllDelegates) {
       return (
@@ -134,7 +134,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <InfiniteScrollComponent data={castedVotesDelegates} onLoadMore={this.onLoadMoreCastedVotesDelegates}>
             {castedVotesDelegates.list && castedVotesDelegates.list.map(delegate => {
               return <CastedVotesDelegate key={delegate.publicKey} delegate={delegate} recallVoteDelegate={this.onShowConfirm}
-                                          isRecallButtonVisible={isRecallButtonVisible}/>
+                                          isRecallButtonDisabled={isRecallButtonDisabled || (this.state.recallNodeId === delegate.nodeId)}/>
             })}
           </InfiniteScrollComponent>
         </div>
