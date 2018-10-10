@@ -79,3 +79,33 @@ form .input.invalid .error {
 .left-section .wallet-info .title {
   text-transform: uppercase;
 }
+
+.z-index-3 {
+  z-index: 3;
+}
+
+.recall-popup .recall-info-fee>span {
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+.error-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.error-popup-message {
+  padding-bottom: 40px;
+  font-size: 1.2em;
+  color: #df4c4c;
+}
+.success-recall-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.success-recall-popup .success-popup-message {
+  color: #3193f5;
+  padding-bottom: 40px;
+  font-size: 1.6em;
+}
