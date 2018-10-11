@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { IThunkDispatch } from '../actions';
 import { createVoteTransaction } from '../actions/transactions';
 import { getNumbersOnly } from '../utils/getNumbersOnly';
-import { parseApiError } from '../utils/parseApiError';
+import {ErrorField, parseApiError} from '../utils/parseApiError';
 import { DelegateTabs } from './DelegateTabs';
 import { VoteConfirmPopup } from './VoteConfirmPopup';
 import {DELEGATE_FEE} from "../const/transactions";
@@ -20,7 +20,7 @@ interface IState {
   feeError: string;
   errorPopupMessage: string;
   isShowConfirm: boolean;
-  isShowError: boolean
+  isShowError: boolean;
 }
 
 class VoteFormComponent extends React.Component<IDispatchProps, IState> {
@@ -63,14 +63,21 @@ class VoteFormComponent extends React.Component<IDispatchProps, IState> {
       await this.props.createVoteTransaction({fee, delegate});
       this.setState(this.getDefaultState);
     } catch (e) {
-      const { message } = parseApiError(e);
-      this.setState({ isShowConfirm: false, isShowError: true });
-      if (message === 'Blockchain is synchronizing') {
-        this.setState({ errorPopupMessage: message });
-      } else {
-        this.setState({ delegateError: message });
+      const {message, field} = parseApiError(e);
+      this.setState({ isShowConfirm: false });
+
+      switch (field) {
+        case ErrorField.RECIPIENT:
+          this.setState({ delegateError: message });
+          throw e;
+        case ErrorField.AMOUNT:
+          this.setState({ feeError: message });
+          throw e;
+        default:
+          this.setState({ errorPopupMessage: message, isShowError: true  });
+          throw e;
       }
-      throw e;
+
     }
   };
 

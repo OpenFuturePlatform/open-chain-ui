@@ -4,12 +4,12 @@ import { copy2Clipboard } from '../utils/copy2Clipboard';
 import {formatDate} from "../utils/format-date";
 
 interface IProps {
-  isRecallButtonVisible: boolean
+  isRecallButtonDisabled: boolean
   delegate: ICastedVotesDelegate
   recallVoteDelegate({nodeId, fee}: {nodeId: string, fee: number}): void
 }
 
-export const CastedVotesDelegate = ({ delegate, recallVoteDelegate, isRecallButtonVisible }: IProps) => {
+export const CastedVotesDelegate = ({ delegate, recallVoteDelegate, isRecallButtonDisabled }: IProps) => {
   const onCopyHandler = (value: string) => copy2Clipboard(value);
 
   return (
@@ -21,7 +21,7 @@ export const CastedVotesDelegate = ({ delegate, recallVoteDelegate, isRecallButt
       </p>
       <p className="date-delegate">{formatDate(delegate.timestamp)}</p>
       <a className="btn" onClick={() => recallVoteDelegate({nodeId: delegate.nodeId, fee: 1})}>
-        <span className={`${delegate.recalled || isRecallButtonVisible && 'pending'}`}>{delegate.recalled ? 'Pending' : 'Recall'}</span>
+        <span className={`${delegate.recalled || isRecallButtonDisabled && 'pending'}`}>{delegate.recalled ? 'Pending' : 'Recall'}</span>
       </a>
     </div>
   )
