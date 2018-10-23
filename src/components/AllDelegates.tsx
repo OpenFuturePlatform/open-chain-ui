@@ -75,7 +75,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
   public onShowConfirm = ({nodeId, fee}: {nodeId: string, fee: number}) =>
     this.setState({ isShowConfirm: true, recallNodeId: nodeId, recallFee: fee });
 
-  public onCloseConfirm = () => this.setState({ isShowConfirm: false });
+  public onCloseConfirm = () => this.setState({ isShowConfirm: false, recallNodeId: '' });
   public onCloseError = () => this.setState({ isShowError: false });
   public onCloseSuccess = () => this.setState({ isShowSuccess: false });
 

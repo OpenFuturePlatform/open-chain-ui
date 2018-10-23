@@ -6,7 +6,7 @@ import { IStoreState } from '../configureStore';
 import { DELEGATE_AMOUNT, DELEGATE_FEE } from '../const/transactions';
 import { getDelegateKey } from '../utils/crypto';
 import { getNumbersOnly } from '../utils/getNumbersOnly';
-import { parseApiError } from '../utils/parseApiError';
+import {ErrorField, parseApiError} from '../utils/parseApiError';
 import { DelegateConfirmPopup } from './DelegateConfirmPopup';
 import { DelegateTabs } from './DelegateTabs';
 import {ErrorPopup} from "./ErrorPopup";
@@ -24,6 +24,7 @@ type IProps = IStoreStateProps & IDispatchProps;
 interface IState {
   fee: string;
   amountError: string;
+  delegateError: string;
   isShowConfirm: boolean;
   isShowError: boolean;
   errorPopupMessage: string;
@@ -38,6 +39,7 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
   public getDefaultState = () => ({
     fee: '',
     amountError: '',
+    delegateError: '',
     isShowConfirm: false,
     isShowError: false,
     errorPopupMessage: '',
@@ -65,10 +67,17 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
       const {message, field} = parseApiError(e);
 
       this.setState({ isShowConfirm: false });
-      if (field) {
-        this.setState({ amountError: message });
-      } else {
-        this.setState({ errorPopupMessage: message, isShowError: true  });
+
+      switch (field) {
+        case ErrorField.RECIPIENT:
+          this.setState({ delegateError: message });
+          throw e;
+        case ErrorField.AMOUNT:
+          this.setState({ amountError: message });
+          throw e;
+        default:
+          this.setState({ errorPopupMessage: message, isShowError: true  });
+          throw e;
       }
 
       throw e;
@@ -77,7 +86,7 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
 
   public render() {
     const { nodeId } = this.props;
-    const { isShowConfirm, amountError, isShowError, errorPopupMessage } = this.state;
+    const { isShowConfirm, amountError, isShowError, errorPopupMessage, delegateError } = this.state;
     const amount = DELEGATE_AMOUNT;
     const fee = DELEGATE_FEE;
 
@@ -89,8 +98,9 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
             <h2>
               Become <br />a Delegate
             </h2>
-            <div className="input">
+            <div className={`input ${delegateError && 'invalid'}`}>
               <p>Node ID</p>
+              <span className="error">{delegateError}</span>
               <input className="disable" type="text" placeholder="Wallet Address" value={nodeId} onChange={() => null}
                      disabled={true}/>
             </div>
