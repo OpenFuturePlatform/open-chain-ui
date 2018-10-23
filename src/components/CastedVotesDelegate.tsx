@@ -21,7 +21,7 @@ export const CastedVotesDelegate = ({ delegate, recallVoteDelegate, isRecallButt
       </p>
       <p className="date-delegate">{formatDate(delegate.timestamp)}</p>
       <a className="btn" onClick={() => recallVoteDelegate({nodeId: delegate.nodeId, fee: 1})}>
-        <span className={`${delegate.recalled || isRecallButtonDisabled && 'pending'}`}>{delegate.recalled ? 'Pending' : 'Recall'}</span>
+        <span className={`${(delegate.recalled || isRecallButtonDisabled) && 'pending'}`}>{delegate.recalled ? 'Pending' : 'Recall'}</span>
       </a>
     </div>
   )
