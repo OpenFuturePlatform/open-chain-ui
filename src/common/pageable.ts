@@ -1,5 +1,5 @@
 export default class Pageable {
   constructor(private offset: number = 0,
-              private limit: number = 10) {
+              private limit: number = 15) {
   }
 }
