@@ -5,7 +5,7 @@ export enum ErrorField {
 
 export const transactionErrorMap = {
   INCORRECT_ADDRESS: { field: ErrorField.RECIPIENT, message: 'Transaction recipient address is incorrect' },
-  INCORRECT_DELEGATE_KEY: { field: ErrorField.RECIPIENT, message: 'Delegate node id is incorrect' },
+  INCORRECT_DELEGATE_KEY: { field: ErrorField.RECIPIENT, message: 'Delegate key is incorrect' },
   INCORRECT_HASH: { field: ErrorField.RECIPIENT, message: 'Transaction hash is incorrect' },
   INCORRECT_SIGNATURE: { field: ErrorField.RECIPIENT, message: 'Transaction signature is incorrect' },
   INCORRECT_VOTES_COUNT: { message: 'Votes number is incorrect' },

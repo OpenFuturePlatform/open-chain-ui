@@ -99,7 +99,7 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
               Become <br />a Delegate
             </h2>
             <div className={`input ${delegateError && 'invalid'}`}>
-              <p>Node ID</p>
+              <p>Delegate key</p>
               <span className="error">{delegateError}</span>
               <input className="disable" type="text" placeholder="Wallet Address" value={publicKey} onChange={() => null}
                      disabled={true}/>
