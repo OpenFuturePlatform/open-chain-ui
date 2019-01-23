@@ -16,7 +16,7 @@ export const Delegate = ({ delegate, isVoted, rank }: IProps) => {
     <div className="delegate">
       <p className="rank">{rank}</p>
       <p className="address copy" onClick={() => onCopyHandler(delegate.address)}>{delegate.address}</p>
-      <p className="node-id copy" onClick={() => onCopyHandler(delegate.nodeId)}>{delegate.nodeId}</p>
+      <p className="node-id copy" onClick={() => onCopyHandler(delegate.delegateKey)}>{delegate.delegateKey}</p>
       <p className="amount-delegate">
         {delegate.votesCount}
         {

@@ -129,15 +129,12 @@ export const buildTransaction = (wallet: IWallet, transactionCandidate: ITransac
 export const getDelegateKey = (wallet: IWallet) => sha256(wallet.keys.publicKey);
 
 const hashDelegateTransaction = (unsignedTransaction: IDelegateCandidate): string => {
-  const { timestamp, fee, senderAddress, amount, nodeId, nodeHost, nodePort, nodeKey } = unsignedTransaction;
+  const { timestamp, fee, senderAddress, amount, delegateKey } = unsignedTransaction;
   const byteArray = [
     ...toByteArray(timestamp),
     ...toByteArray(fee),
     ...toByteArray(senderAddress),
-    ...toByteArray(nodeId),
-    ...toByteArray(nodeKey),
-    ...toByteArray(nodeHost),
-    ...to4Array(+nodePort),
+    ...toByteArray(delegateKey),
     ...toByteArray(amount),
   ];
   return sha256(sha256.array(byteArray));
@@ -151,13 +148,10 @@ export const buildDelegateTransaction = (wallet: IWallet, info: IInfo): IDelegat
   const unsignedTransaction: IDelegateCandidate = {
     amount: DELEGATE_AMOUNT,
     fee: DELEGATE_FEE,
-    nodeId: info.nodeId,
     senderAddress,
     senderPublicKey,
-    nodeKey: info.publicKey,
+    delegateKey: info.publicKey,
     timestamp,
-    nodeHost: info.host,
-    nodePort: info.port
   };
 
   const hash = hashDelegateTransaction(unsignedTransaction);
@@ -166,26 +160,26 @@ export const buildDelegateTransaction = (wallet: IWallet, info: IInfo): IDelegat
 };
 
 const hashVoteTransaction = (unsignedTransaction: IVoteCandidate): string => {
-  const { timestamp, fee, senderAddress, voteTypeId, nodeId } = unsignedTransaction;
+  const { timestamp, fee, senderAddress, voteTypeId, delegateKey } = unsignedTransaction;
   const byteArray = [
     ...toByteArray(timestamp),
     ...toByteArray(fee),
     ...toByteArray(senderAddress),
     ...to4Array(voteTypeId),
-    ...toByteArray(nodeId)
+    ...toByteArray(delegateKey)
   ];
   console.log(byteArray, voteTypeId)
   return sha256(sha256.array(byteArray));
 };
 
-export const buildVoteTransaction = (wallet: IWallet, fee: number, nodeId: string): IVoteTransaction => {
+export const buildVoteTransaction = (wallet: IWallet, fee: number, delegateKey: string): IVoteTransaction => {
   const { address: senderAddress, keys } = wallet;
   const { publicKey: senderPublicKey, privateKey } = keys;
   const timestamp = Date.now();
 
   const unsignedTransaction: IVoteCandidate = {
     fee,
-    nodeId,
+    delegateKey,
     senderAddress,
     senderPublicKey,
     timestamp,
@@ -197,14 +191,14 @@ export const buildVoteTransaction = (wallet: IWallet, fee: number, nodeId: strin
   return { senderSignature, ...unsignedTransaction, hash };
 };
 
-export const buildRecallVoteTransaction = (wallet: IWallet, fee: number, nodeId: string): IVoteTransaction => {
+export const buildRecallVoteTransaction = (wallet: IWallet, fee: number, delegateKey: string): IVoteTransaction => {
   const { address: senderAddress, keys } = wallet;
   const { publicKey: senderPublicKey, privateKey } = keys;
   const timestamp = Date.now();
 
   const unsignedTransaction: IVoteCandidate = {
     fee,
-    nodeId,
+    delegateKey,
     senderAddress,
     senderPublicKey,
     timestamp,

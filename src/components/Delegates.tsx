@@ -31,7 +31,7 @@ class DelegatesComponent extends React.Component<IProps> {
 
   public renderDelegates = (delegates: IDelegate[]) =>
     delegates.map((delegate, index) => (
-      <div key={delegate.publicKey} className="delegate">
+      <div key={delegate.delegateKey} className="delegate">
         <p className="rank">{index + 1}</p>
         <p className="address">{delegate.address}</p>
         <p className="amount">{delegate.votesCount}</p>

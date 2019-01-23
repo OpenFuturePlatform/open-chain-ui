@@ -72,8 +72,8 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     this.setState({isAllDelegates: value})
   }
 
-  public onShowConfirm = ({nodeId, fee}: {nodeId: string, fee: number}) =>
-    this.setState({ isShowConfirm: true, recallNodeId: nodeId, recallFee: fee });
+  public onShowConfirm = ({delegateKey, fee}: {delegateKey: string, fee: number}) =>
+    this.setState({ isShowConfirm: true, recallNodeId: delegateKey, recallFee: fee });
 
   public onCloseConfirm = () => this.setState({ isShowConfirm: false, recallNodeId: '' });
   public onCloseError = () => this.setState({ isShowError: false });
@@ -120,8 +120,8 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <DelegatesHeader />
           <InfiniteScrollComponent data={delegates} onLoadMore={this.onLoadMore}>
             {delegates.list && delegates.list.map((delegate, index) => {
-              const isVoted = !!castedVotesDelegates.list.find((item) => delegate.publicKey === item.publicKey);
-              return <Delegate key={delegate.publicKey} isVoted={isVoted} delegate={delegate} rank={index + 1}/>
+              const isVoted = !!castedVotesDelegates.list.find((item) => delegate.delegateKey === item.delegateKey);
+              return <Delegate key={delegate.delegateKey} isVoted={isVoted} delegate={delegate} rank={index + 1}/>
             })}
           </InfiniteScrollComponent>
         </div>
@@ -133,8 +133,8 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <CastedVotesDelegateHeader />
           <InfiniteScrollComponent data={castedVotesDelegates} onLoadMore={this.onLoadMoreCastedVotesDelegates}>
             {castedVotesDelegates.list && castedVotesDelegates.list.map(delegate => {
-              return <CastedVotesDelegate key={delegate.publicKey} delegate={delegate} recallVoteDelegate={this.onShowConfirm}
-                                          isRecallButtonDisabled={isRecallButtonDisabled || (this.state.recallNodeId === delegate.nodeId)}/>
+              return <CastedVotesDelegate key={delegate.delegateKey} delegate={delegate} recallVoteDelegate={this.onShowConfirm}
+                                          isRecallButtonDisabled={isRecallButtonDisabled || (this.state.recallNodeId === delegate.delegateKey)}/>
             })}
           </InfiniteScrollComponent>
         </div>

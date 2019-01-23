@@ -14,9 +14,10 @@ export interface IWallet {
 }
 
 export interface IDelegate {
-  readonly publicKey: string;
+  // readonly publicKey: string;
+  readonly delegateKey: string;
   readonly address: string;
-  readonly nodeId: string;
+  // readonly nodeId: string;
   readonly id: number;
   readonly votesCount: number;
   readonly rating: number;
@@ -50,12 +51,9 @@ export interface IDelegateCandidate {
   readonly timestamp: number;
   readonly fee: number;
   readonly senderAddress: string;
-  readonly nodeId: string;
+  readonly delegateKey: string;
   readonly amount: number;
   readonly senderPublicKey: string;
-  readonly nodeKey: string;
-  readonly nodeHost: string;
-  readonly nodePort: string;
 }
 
 export interface IDelegateTransaction extends IDelegateCandidate, ISignature {}
@@ -65,7 +63,7 @@ export interface IVoteCandidate {
   readonly fee: number;
   readonly senderAddress: string;
   readonly voteTypeId: number;
-  readonly nodeId: string;
+  readonly delegateKey: string;
   readonly senderPublicKey: string;
 }
 
