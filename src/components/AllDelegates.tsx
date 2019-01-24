@@ -39,7 +39,7 @@ interface IState {
   isAllDelegates: boolean
   isShowConfirm: boolean
   recallFee: number
-  recallNodeId: string
+  recallDelegateKey: string
   isShowError: boolean
   isShowSuccess: boolean
   errorPopupMessage: string
@@ -52,7 +52,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       isAllDelegates: true,
       isShowConfirm: false,
       recallFee: 0,
-      recallNodeId: '',
+      recallDelegateKey: '',
       isShowError: false,
       isShowSuccess: false,
       errorPopupMessage: ''
@@ -71,9 +71,9 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
   }
 
   public onShowConfirm = ({delegateKey, fee}: {delegateKey: string, fee: number}) =>
-    this.setState({ isShowConfirm: true, recallNodeId: delegateKey, recallFee: fee });
+    this.setState({ isShowConfirm: true, recallDelegateKey: delegateKey, recallFee: fee });
 
-  public onCloseConfirm = () => this.setState({ isShowConfirm: false, recallNodeId: '' });
+  public onCloseConfirm = () => this.setState({ isShowConfirm: false, recallDelegateKey: '' });
   public onCloseError = () => this.setState({ isShowError: false });
   public onCloseSuccess = () => this.setState({ isShowSuccess: false });
 
@@ -81,9 +81,9 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     if (e) {
       e.preventDefault();
     }
-    const {recallFee, recallNodeId} = this.state;
+    const {recallFee, recallDelegateKey} = this.state;
     try {
-      await this.props.createRecallVoteTransaction({fee: recallFee, delegate: recallNodeId});
+      await this.props.createRecallVoteTransaction({fee: recallFee, delegate: recallDelegateKey});
       if (this.props.wallet) {
         this.props.getCastedVotesDelegates(this.props.wallet.address);
       }
@@ -91,7 +91,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     } catch (e) {
       console.error(e);
       const { message } = parseApiError(e);
-      this.setState({ isShowConfirm: false, isShowError: true, errorPopupMessage: message, recallNodeId: '', recallFee: 0 });
+      this.setState({ isShowConfirm: false, isShowError: true, errorPopupMessage: message, recallDelegateKey: '', recallFee: 0 });
       throw e;
     }
   }
@@ -100,7 +100,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     this.props.appendToDelegates();
   }
 
-  public renderDelegateList = () => {
+  public renderDelegates = () => {
     const delegates: IList<IDelegate> = this.props.delegates;
     const castedVotesDelegate: ICastedVotesDelegate = this.props.castedVotesDelegates;
     const isRecallButtonDisabled = +this.props.balance < 1;
@@ -122,15 +122,15 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       return (
         <div className="list list-votes corner-fix">
           <CastedVotesDelegateHeader />
-            <CastedVotesDelegate key={castedVotesDelegate.delegateKey} delegate={castedVotesDelegate} recallVoteDelegate={this.onShowConfirm}
-                                 isRecallButtonDisabled={isRecallButtonDisabled || (this.state.recallNodeId === castedVotesDelegate.delegateKey)}/>
+            <CastedVotesDelegate delegate={castedVotesDelegate} recallVoteDelegate={this.onShowConfirm}
+                                 isRecallButtonDisabled={isRecallButtonDisabled || (castedVotesDelegate && this.state.recallDelegateKey === castedVotesDelegate.delegateKey)}/>
         </div>
       )
     }
   }
 
   public render() {
-    const {isShowConfirm, recallNodeId, recallFee, isAllDelegates, isShowError, errorPopupMessage, isShowSuccess} = this.state;
+    const {isShowConfirm, recallDelegateKey, recallFee, isAllDelegates, isShowError, errorPopupMessage, isShowSuccess} = this.state;
     const delegates: IList<IDelegate> = this.props.delegates;
 
     return (
@@ -139,12 +139,12 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <h3>delegates</h3>
         </div>
         <DelegateTableTabs delegatesCount={delegates.list.length} isAllDelegates={isAllDelegates}
-                           onAllDelegatesTabClick={this.onAllDelegatesTabClick} castedVotesDelegatesCount={1}/>
+                           onAllDelegatesTabClick={this.onAllDelegatesTabClick}/>
 
-        {this.renderDelegateList()}
+        {this.renderDelegates()}
         <RecallConfirmPopup
           isVisible={isShowConfirm}
-          delegate={recallNodeId}
+          delegate={recallDelegateKey}
           fee={recallFee}
           onSubmit={this.recallVoteDelegate}
           onClose={this.onCloseConfirm}
