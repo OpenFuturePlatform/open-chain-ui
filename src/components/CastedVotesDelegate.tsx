@@ -10,6 +10,7 @@ interface IProps {
 }
 
 export const CastedVotesDelegate = ({ delegate, recallVoteDelegate, isRecallButtonDisabled }: IProps) => {
+  if(!delegate) return null;
   const onCopyHandler = (value: string) => copy2Clipboard(value);
 
   return (

@@ -12,7 +12,6 @@ import {IRouterProps} from "../index";
 import {withRouter} from "react-router";
 import {InfiniteScrollComponent} from "./InfiniteScroll";
 import {appendToDelegates, getDelegates} from "../actions/delegates";
-import {appendToCastedVotesDelegates} from "../actions/castedVotesDelegates";
 import { getCastedVotesDelegates } from '../actions/castedVotesDelegates';
 import { RecallConfirmPopup } from './RecallConfirmPopup';
 import {parseApiError} from "../utils/parseApiError";
@@ -22,7 +21,7 @@ import {RecallVoteSuccess} from "./RecallVoteSuccess";
 interface IStoreStateProps {
   wallet: IWallet | null;
   delegates: IList<IDelegate>;
-  castedVotesDelegates: IList<ICastedVotesDelegate>;
+  castedVotesDelegates: ICastedVotesDelegate;
   balance: string;
 }
 
@@ -31,7 +30,6 @@ interface IDispatchProps {
   getTransactions(address: string): void;
   getDelegates(): void;
   appendToDelegates(): void;
-  appendToCastedVotesDelegates(address: string): void;
   createRecallVoteTransaction({fee, delegate}: {fee: number, delegate: string}): Promise<void>;
 }
 
@@ -102,16 +100,9 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     this.props.appendToDelegates();
   }
 
-  public onLoadMoreCastedVotesDelegates = () => {
-    const { wallet } = this.props;
-    if (wallet) {
-      this.props.appendToCastedVotesDelegates(wallet.address);
-    }
-  }
-
   public renderDelegateList = () => {
     const delegates: IList<IDelegate> = this.props.delegates;
-    const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
+    const castedVotesDelegate: ICastedVotesDelegate = this.props.castedVotesDelegates;
     const isRecallButtonDisabled = +this.props.balance < 1;
 
     if (this.state.isAllDelegates) {
@@ -120,7 +111,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <DelegatesHeader />
           <InfiniteScrollComponent data={delegates} onLoadMore={this.onLoadMore}>
             {delegates.list && delegates.list.map((delegate, index) => {
-              const isVoted = !!castedVotesDelegates.list.find((item) => delegate.delegateKey === item.delegateKey);
+              const isVoted = castedVotesDelegate && castedVotesDelegate.delegateKey === delegate.delegateKey;
               return <Delegate key={delegate.delegateKey} isVoted={isVoted} delegate={delegate} rank={index + 1}/>
             })}
           </InfiniteScrollComponent>
@@ -131,12 +122,8 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       return (
         <div className="list list-votes corner-fix">
           <CastedVotesDelegateHeader />
-          <InfiniteScrollComponent data={castedVotesDelegates} onLoadMore={this.onLoadMoreCastedVotesDelegates}>
-            {castedVotesDelegates.list && castedVotesDelegates.list.map(delegate => {
-              return <CastedVotesDelegate key={delegate.delegateKey} delegate={delegate} recallVoteDelegate={this.onShowConfirm}
-                                          isRecallButtonDisabled={isRecallButtonDisabled || (this.state.recallNodeId === delegate.delegateKey)}/>
-            })}
-          </InfiniteScrollComponent>
+            <CastedVotesDelegate key={castedVotesDelegate.delegateKey} delegate={castedVotesDelegate} recallVoteDelegate={this.onShowConfirm}
+                                 isRecallButtonDisabled={isRecallButtonDisabled || (this.state.recallNodeId === castedVotesDelegate.delegateKey)}/>
         </div>
       )
     }
@@ -145,7 +132,6 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
   public render() {
     const {isShowConfirm, recallNodeId, recallFee, isAllDelegates, isShowError, errorPopupMessage, isShowSuccess} = this.state;
     const delegates: IList<IDelegate> = this.props.delegates;
-    const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
 
     return (
       <div className={`table-section ${(isShowConfirm || isShowError || isShowSuccess) && 'z-index-3'}`}>
@@ -153,7 +139,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <h3>delegates</h3>
         </div>
         <DelegateTableTabs delegatesCount={delegates.list.length} isAllDelegates={isAllDelegates}
-                           onAllDelegatesTabClick={this.onAllDelegatesTabClick} castedVotesDelegatesCount={castedVotesDelegates.list.length}/>
+                           onAllDelegatesTabClick={this.onAllDelegatesTabClick} castedVotesDelegatesCount={1}/>
 
         {this.renderDelegateList()}
         <RecallConfirmPopup
@@ -175,7 +161,6 @@ const mapStateToProps = ({ delegates, wallet, castedVotesDelegates, balance }: I
 const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
   appendToDelegates: () => dispatch(appendToDelegates()),
   getDelegates: () => dispatch(getDelegates()),
-  appendToCastedVotesDelegates: (address: string) => dispatch(appendToCastedVotesDelegates(address)),
   getTransactions: (address: string) => dispatch(getTransactions(address)),
   createRecallVoteTransaction: ({fee, delegate}: {fee: number, delegate: string}) => dispatch(createRecallVoteTransaction({fee, delegate})),
   getCastedVotesDelegates: (address: string) => dispatch(getCastedVotesDelegates(address))

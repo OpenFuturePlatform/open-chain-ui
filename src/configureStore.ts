@@ -81,7 +81,7 @@ export interface IStoreState {
   readonly balance: string;
   readonly info: any;
   readonly delegates: IList<IDelegate>;
-  readonly castedVotesDelegates: IList<ICastedVotesDelegate>;
+  readonly castedVotesDelegates: ICastedVotesDelegate;
   readonly transactions: IList<ITransaction>;
 }
 
