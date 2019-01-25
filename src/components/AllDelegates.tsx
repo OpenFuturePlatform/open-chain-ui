@@ -12,7 +12,6 @@ import {IRouterProps} from "../index";
 import {withRouter} from "react-router";
 import {InfiniteScrollComponent} from "./InfiniteScroll";
 import {appendToDelegates, getDelegates} from "../actions/delegates";
-import {appendToCastedVotesDelegates} from "../actions/castedVotesDelegates";
 import { getCastedVotesDelegates } from '../actions/castedVotesDelegates';
 import { RecallConfirmPopup } from './RecallConfirmPopup';
 import {parseApiError} from "../utils/parseApiError";
@@ -22,7 +21,7 @@ import {RecallVoteSuccess} from "./RecallVoteSuccess";
 interface IStoreStateProps {
   wallet: IWallet | null;
   delegates: IList<IDelegate>;
-  castedVotesDelegates: IList<ICastedVotesDelegate>;
+  castedVotesDelegates: ICastedVotesDelegate;
   balance: string;
 }
 
@@ -31,7 +30,6 @@ interface IDispatchProps {
   getTransactions(address: string): void;
   getDelegates(): void;
   appendToDelegates(): void;
-  appendToCastedVotesDelegates(address: string): void;
   createRecallVoteTransaction({fee, delegate}: {fee: number, delegate: string}): Promise<void>;
 }
 
@@ -41,7 +39,7 @@ interface IState {
   isAllDelegates: boolean
   isShowConfirm: boolean
   recallFee: number
-  recallNodeId: string
+  recallDelegateKey: string
   isShowError: boolean
   isShowSuccess: boolean
   errorPopupMessage: string
@@ -54,7 +52,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       isAllDelegates: true,
       isShowConfirm: false,
       recallFee: 0,
-      recallNodeId: '',
+      recallDelegateKey: '',
       isShowError: false,
       isShowSuccess: false,
       errorPopupMessage: ''
@@ -72,10 +70,10 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     this.setState({isAllDelegates: value})
   }
 
-  public onShowConfirm = ({nodeId, fee}: {nodeId: string, fee: number}) =>
-    this.setState({ isShowConfirm: true, recallNodeId: nodeId, recallFee: fee });
+  public onShowConfirm = ({delegateKey, fee}: {delegateKey: string, fee: number}) =>
+    this.setState({ isShowConfirm: true, recallDelegateKey: delegateKey, recallFee: fee });
 
-  public onCloseConfirm = () => this.setState({ isShowConfirm: false, recallNodeId: '' });
+  public onCloseConfirm = () => this.setState({ isShowConfirm: false, recallDelegateKey: '' });
   public onCloseError = () => this.setState({ isShowError: false });
   public onCloseSuccess = () => this.setState({ isShowSuccess: false });
 
@@ -83,9 +81,9 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     if (e) {
       e.preventDefault();
     }
-    const {recallFee, recallNodeId} = this.state;
+    const {recallFee, recallDelegateKey} = this.state;
     try {
-      await this.props.createRecallVoteTransaction({fee: recallFee, delegate: recallNodeId});
+      await this.props.createRecallVoteTransaction({fee: recallFee, delegate: recallDelegateKey});
       if (this.props.wallet) {
         this.props.getCastedVotesDelegates(this.props.wallet.address);
       }
@@ -93,7 +91,7 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     } catch (e) {
       console.error(e);
       const { message } = parseApiError(e);
-      this.setState({ isShowConfirm: false, isShowError: true, errorPopupMessage: message, recallNodeId: '', recallFee: 0 });
+      this.setState({ isShowConfirm: false, isShowError: true, errorPopupMessage: message, recallDelegateKey: '', recallFee: 0 });
       throw e;
     }
   }
@@ -102,16 +100,9 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
     this.props.appendToDelegates();
   }
 
-  public onLoadMoreCastedVotesDelegates = () => {
-    const { wallet } = this.props;
-    if (wallet) {
-      this.props.appendToCastedVotesDelegates(wallet.address);
-    }
-  }
-
-  public renderDelegateList = () => {
+  public renderDelegates = () => {
     const delegates: IList<IDelegate> = this.props.delegates;
-    const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
+    const castedVotesDelegate: ICastedVotesDelegate = this.props.castedVotesDelegates;
     const isRecallButtonDisabled = +this.props.balance < 1;
 
     if (this.state.isAllDelegates) {
@@ -120,8 +111,8 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <DelegatesHeader />
           <InfiniteScrollComponent data={delegates} onLoadMore={this.onLoadMore}>
             {delegates.list && delegates.list.map((delegate, index) => {
-              const isVoted = !!castedVotesDelegates.list.find((item) => delegate.publicKey === item.publicKey);
-              return <Delegate key={delegate.publicKey} isVoted={isVoted} delegate={delegate} rank={index + 1}/>
+              const isVoted = castedVotesDelegate && castedVotesDelegate.delegateKey === delegate.delegateKey;
+              return <Delegate key={delegate.delegateKey} isVoted={isVoted} delegate={delegate} rank={index + 1}/>
             })}
           </InfiniteScrollComponent>
         </div>
@@ -131,21 +122,16 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
       return (
         <div className="list list-votes corner-fix">
           <CastedVotesDelegateHeader />
-          <InfiniteScrollComponent data={castedVotesDelegates} onLoadMore={this.onLoadMoreCastedVotesDelegates}>
-            {castedVotesDelegates.list && castedVotesDelegates.list.map(delegate => {
-              return <CastedVotesDelegate key={delegate.publicKey} delegate={delegate} recallVoteDelegate={this.onShowConfirm}
-                                          isRecallButtonDisabled={isRecallButtonDisabled || (this.state.recallNodeId === delegate.nodeId)}/>
-            })}
-          </InfiniteScrollComponent>
+            <CastedVotesDelegate delegate={castedVotesDelegate} recallVoteDelegate={this.onShowConfirm}
+                                 isRecallButtonDisabled={isRecallButtonDisabled || (castedVotesDelegate && this.state.recallDelegateKey === castedVotesDelegate.delegateKey)}/>
         </div>
       )
     }
   }
 
   public render() {
-    const {isShowConfirm, recallNodeId, recallFee, isAllDelegates, isShowError, errorPopupMessage, isShowSuccess} = this.state;
+    const {isShowConfirm, recallDelegateKey, recallFee, isAllDelegates, isShowError, errorPopupMessage, isShowSuccess} = this.state;
     const delegates: IList<IDelegate> = this.props.delegates;
-    const castedVotesDelegates: IList<ICastedVotesDelegate> = this.props.castedVotesDelegates;
 
     return (
       <div className={`table-section ${(isShowConfirm || isShowError || isShowSuccess) && 'z-index-3'}`}>
@@ -153,12 +139,12 @@ export class AllDelegatesComponent extends React.Component<IProps, IState> {
           <h3>delegates</h3>
         </div>
         <DelegateTableTabs delegatesCount={delegates.list.length} isAllDelegates={isAllDelegates}
-                           onAllDelegatesTabClick={this.onAllDelegatesTabClick} castedVotesDelegatesCount={castedVotesDelegates.list.length}/>
+                           onAllDelegatesTabClick={this.onAllDelegatesTabClick}/>
 
-        {this.renderDelegateList()}
+        {this.renderDelegates()}
         <RecallConfirmPopup
           isVisible={isShowConfirm}
-          delegate={recallNodeId}
+          delegate={recallDelegateKey}
           fee={recallFee}
           onSubmit={this.recallVoteDelegate}
           onClose={this.onCloseConfirm}
@@ -175,7 +161,6 @@ const mapStateToProps = ({ delegates, wallet, castedVotesDelegates, balance }: I
 const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
   appendToDelegates: () => dispatch(appendToDelegates()),
   getDelegates: () => dispatch(getDelegates()),
-  appendToCastedVotesDelegates: (address: string) => dispatch(appendToCastedVotesDelegates(address)),
   getTransactions: (address: string) => dispatch(getTransactions(address)),
   createRecallVoteTransaction: ({fee, delegate}: {fee: number, delegate: string}) => dispatch(createRecallVoteTransaction({fee, delegate})),
   getCastedVotesDelegates: (address: string) => dispatch(getCastedVotesDelegates(address))

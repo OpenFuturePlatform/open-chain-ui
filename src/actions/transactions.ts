@@ -24,7 +24,7 @@ export interface IInfo {
   host: string
   port: string
   publicKey: string
-  nodeId: string
+  // nodeId: string
 }
 
 export type TransactionAction = SetTransactions;

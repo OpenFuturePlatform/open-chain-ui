@@ -12,7 +12,7 @@ import { DelegateTabs } from './DelegateTabs';
 import {ErrorPopup} from "./ErrorPopup";
 
 interface IStoreStateProps {
-  nodeId: string;
+  publicKey: string;
 }
 
 interface IDispatchProps {
@@ -85,7 +85,7 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
   };
 
   public render() {
-    const { nodeId } = this.props;
+    const { publicKey } = this.props;
     const { isShowConfirm, amountError, isShowError, errorPopupMessage, delegateError } = this.state;
     const amount = DELEGATE_AMOUNT;
     const fee = DELEGATE_FEE;
@@ -99,9 +99,9 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
               Become <br />a Delegate
             </h2>
             <div className={`input ${delegateError && 'invalid'}`}>
-              <p>Node ID</p>
+              <p>Delegate key</p>
               <span className="error">{delegateError}</span>
-              <input className="disable" type="text" placeholder="Wallet Address" value={nodeId} onChange={() => null}
+              <input className="disable" type="text" placeholder="Wallet Address" value={publicKey} onChange={() => null}
                      disabled={true}/>
             </div>
             <div className={`input ${amountError && 'invalid'}`}>
@@ -123,7 +123,7 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
         </form>
         <DelegateConfirmPopup
           isVisible={isShowConfirm}
-          nodeId={nodeId}
+          publicKey={publicKey}
           amount={amount}
           fee={fee}
           onClose={this.onCloseConfirm}
@@ -136,7 +136,7 @@ class BecomeDelegateFormComponent extends React.Component<IProps, IState> {
 }
 
 const mapStateToProps = ({ wallet, info }: IStoreState) => ({ delegateKey: wallet ? getDelegateKey(wallet) : '',
-                                                              nodeId: info ? info.nodeId : ''});
+    publicKey: info ? info.publicKey : ''});
 
 const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
   createDelegateTransaction: () => dispatch(createDelegateTransaction())
