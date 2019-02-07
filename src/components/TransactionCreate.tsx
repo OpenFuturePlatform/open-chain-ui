@@ -54,8 +54,8 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
   public getTransactionCandidate = () => ({
     amount: Number(this.state.amount),
     fee: Number(this.state.fee),
-    recipientAddress: this.state.recipientAddress,
-    data: this.state.data
+    recipientAddress: this.state.recipientAddress || null,
+    data: this.state.data || null
   });
 
   public showPreviewPopup = (e?: React.FormEvent | React.MouseEvent) => {

@@ -99,14 +99,20 @@ const to4Array = (data: number): number[] => {
 };
 
 const hashTransaction = (unsignedTransaction: IUnsignedTransaction): string => {
-  const { timestamp, fee, senderAddress, amount, recipientAddress } = unsignedTransaction;
-  const byteArray = [
+  const { timestamp, fee, senderAddress, amount, recipientAddress, data } = unsignedTransaction;
+
+  let byteArray = [
     ...toByteArray(timestamp),
     ...toByteArray(fee),
     ...toByteArray(senderAddress),
-    ...toByteArray(amount),
-    ...toByteArray(recipientAddress)
+    ...toByteArray(amount)
   ];
+  if (recipientAddress) {
+    byteArray = [...byteArray, ...toByteArray(recipientAddress)]
+  }
+  if (data) {
+    byteArray = [...byteArray, ...toByteArray(data)]
+  }
   return sha256(sha256.array(byteArray));
 };
 
