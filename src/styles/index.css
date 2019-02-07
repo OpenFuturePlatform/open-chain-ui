@@ -1630,6 +1630,9 @@ nav .profile-info .logout {
     width: max-content;
     text-align: right;
     text-transform: uppercase;
+    max-width: 420px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .popup-area .popup .info .title {
     text-align: left;
