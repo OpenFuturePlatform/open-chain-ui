@@ -1124,7 +1124,7 @@ nav .profile-info .logout {
     cursor: pointer;
 }
 .left-section .create-transaction {
-    padding: 30px 30px 60px;
+    padding: 30px;
     border-radius: 15px;
     overflow: hidden;
     background: #fff;
