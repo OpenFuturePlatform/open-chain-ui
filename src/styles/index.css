@@ -1124,7 +1124,7 @@ nav .profile-info .logout {
     cursor: pointer;
 }
 .left-section .create-transaction {
-    padding: 30px 30px 60px;
+    padding: 30px;
     border-radius: 15px;
     overflow: hidden;
     background: #fff;
@@ -1630,6 +1630,11 @@ nav .profile-info .logout {
     width: max-content;
     text-align: right;
     text-transform: uppercase;
+    max-width: 420px;
+    height: max-content;
+    max-height: 100px;
+    word-wrap: break-word;
+    overflow-y: auto;
 }
 .popup-area .popup .info .title {
     text-align: left;

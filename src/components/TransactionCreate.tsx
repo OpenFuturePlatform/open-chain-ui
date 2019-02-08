@@ -21,6 +21,7 @@ type IProps = IStoreStateProps & IDispatchProps;
 interface IState {
   previewPopup: boolean;
   recipientAddress: string;
+  data: string;
   amount: string;
   fee: string;
   amountError: string;
@@ -41,17 +42,20 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
     fee: '',
     previewPopup: false,
     recipientAddress: '',
+    data: '',
     recipientError: '',
     isShowError: false,
     errorPopupMessage: '',
   });
 
-  public isConfirmDisabled = () => !this.state.amount || !this.state.fee || !this.state.recipientAddress;
+  public isConfirmDisabled = () =>
+      !this.state.amount || !this.state.fee || (!this.state.recipientAddress && !this.state.data);
 
   public getTransactionCandidate = () => ({
     amount: Number(this.state.amount),
     fee: Number(this.state.fee),
-    recipientAddress: this.state.recipientAddress
+    recipientAddress: this.state.recipientAddress || null,
+    data: this.state.data || null
   });
 
   public showPreviewPopup = (e?: React.FormEvent | React.MouseEvent) => {
@@ -65,10 +69,13 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
   public onAddressChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState({ recipientAddress: e.target.value });
 
+  public onDataChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState({ data: e.target.value });
+
   public onAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const initial = e.target.value || '';
     const amount = getNumbersOnly(initial);
-    this.setState({ amount: +initial === 0 ? '' : amount});
+    this.setState({ amount });
   };
 
   public onFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +109,7 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
   };
 
   public render() {
-    const { recipientAddress, amount, fee, recipientError, amountError, previewPopup, isShowError, errorPopupMessage } = this.state;
+    const { recipientAddress, amount, fee, recipientError, amountError, previewPopup, isShowError, errorPopupMessage, data } = this.state;
     const { wallet } = this.props;
     const senderAddress = wallet ? wallet.address : '';
     const confirmDisabled = this.isConfirmDisabled();
@@ -117,14 +124,24 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
             <input type="text" placeholder="Wallet Address" className="disable" value={senderAddress} readOnly={true} />
           </div>
           <div className={`input ${recipientError && 'invalid'}`}>
-            <p className="required">To</p>
+            <p>To</p>
             <span className="error">{recipientError}</span>
             <input
               type="text"
               placeholder="Wallet Address"
-              required={true}
+              required={false}
               value={recipientAddress}
               onChange={this.onAddressChange}
+            />
+          </div>
+          <div className={`input`}>
+            <p>Data</p>
+            <input
+              type="text"
+              placeholder="Data"
+              required={false}
+              value={data}
+              onChange={this.onDataChange}
             />
           </div>
           <div className={`input ${amountError && 'invalid'}`}>

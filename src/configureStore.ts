@@ -32,6 +32,7 @@ export interface ITransactionCandidate {
   readonly fee: number;
   readonly amount: number;
   readonly recipientAddress: string;
+  readonly data: string;
 }
 
 export interface IUnsignedTransaction extends ITransactionCandidate {
