@@ -1631,7 +1631,9 @@ nav .profile-info .logout {
     text-align: right;
     text-transform: uppercase;
     max-width: 420px;
-    height: 100px;
+    height: max-content;
+    max-height: 100px;
+    word-wrap: break-word;
     overflow-y: auto;
 }
 .popup-area .popup .info .title {
