@@ -116,16 +116,13 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
       }
 
       const response = await estimation(data);
-      this.setState({fee: response.data.payload})
+      this.setState({fee: response.data.payload, recipientError: ''})
     } catch (e) {
       const { message, field } = parseApiError(e);
       this.setState({previewPopup: false});
       switch (field) {
         case ErrorField.RECIPIENT:
           this.setState({ recipientError: message });
-          throw e;
-        case ErrorField.AMOUNT:
-          this.setState({ amountError: message });
           throw e;
         default:
           this.setState({ errorPopupMessage: message, isShowError: true  });
