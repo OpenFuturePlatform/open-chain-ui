@@ -9,6 +9,8 @@ import { transactions } from './transactions';
 import { version } from './version';
 import { wallet } from './wallet';
 import { info } from './info';
+import { transaction } from './transaction';
+
 
 export const mainReducer = combineReducers<IStoreState, IAction<any>>({
   balance,
@@ -18,7 +20,8 @@ export const mainReducer = combineReducers<IStoreState, IAction<any>>({
   transactions,
   version,
   wallet,
-  info
+  info,
+  transaction
 });
 
 export const walletSelector = (state: IStoreState) => state.wallet;

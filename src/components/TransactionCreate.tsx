@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { IThunkDispatch } from '../actions';
-import { createTransaction } from '../actions/transactions';
+import {createTransaction, estimation} from '../actions/transactions';
 import { IStoreState, ITransactionCandidate, IWallet } from '../configureStore';
 import { getNumbersOnly } from '../utils/getNumbersOnly';
 import { ErrorField, parseApiError } from '../utils/parseApiError';
@@ -21,6 +21,7 @@ type IProps = IStoreStateProps & IDispatchProps;
 interface IState {
   previewPopup: boolean;
   recipientAddress: string;
+  data: string;
   amount: string;
   fee: string;
   amountError: string;
@@ -41,17 +42,20 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
     fee: '',
     previewPopup: false,
     recipientAddress: '',
+    data: '',
     recipientError: '',
     isShowError: false,
     errorPopupMessage: '',
   });
 
-  public isConfirmDisabled = () => !this.state.amount || !this.state.fee || !this.state.recipientAddress;
+  public isConfirmDisabled = () =>
+      !this.state.amount || !this.state.fee || (!this.state.recipientAddress && !this.state.data);
 
   public getTransactionCandidate = () => ({
     amount: Number(this.state.amount),
     fee: Number(this.state.fee),
-    recipientAddress: this.state.recipientAddress
+    recipientAddress: this.state.recipientAddress || null,
+    data: this.state.data || null
   });
 
   public showPreviewPopup = (e?: React.FormEvent | React.MouseEvent) => {
@@ -65,10 +69,13 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
   public onAddressChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState({ recipientAddress: e.target.value });
 
+  public onDataChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState({ data: e.target.value });
+
   public onAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const initial = e.target.value || '';
     const amount = getNumbersOnly(initial);
-    this.setState({ amount: +initial === 0 ? '' : amount});
+    this.setState({ amount });
   };
 
   public onFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,8 +108,34 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
     }
   };
 
+  public onEstimateClick = async (): Promise<void> => {
+    try {
+      const data = {
+        recipientAddress: this.state.recipientAddress,
+        data: this.state.data
+      }
+
+      const response = await estimation(data);
+      this.setState({fee: response.data.payload})
+    } catch (e) {
+      const { message, field } = parseApiError(e);
+      this.setState({previewPopup: false});
+      switch (field) {
+        case ErrorField.RECIPIENT:
+          this.setState({ recipientError: message });
+          throw e;
+        case ErrorField.AMOUNT:
+          this.setState({ amountError: message });
+          throw e;
+        default:
+          this.setState({ errorPopupMessage: message, isShowError: true  });
+          throw e;
+      }
+    }
+  };
+
   public render() {
-    const { recipientAddress, amount, fee, recipientError, amountError, previewPopup, isShowError, errorPopupMessage } = this.state;
+    const { recipientAddress, amount, fee, recipientError, amountError, previewPopup, isShowError, errorPopupMessage, data } = this.state;
     const { wallet } = this.props;
     const senderAddress = wallet ? wallet.address : '';
     const confirmDisabled = this.isConfirmDisabled();
@@ -117,23 +150,40 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
             <input type="text" placeholder="Wallet Address" className="disable" value={senderAddress} readOnly={true} />
           </div>
           <div className={`input ${recipientError && 'invalid'}`}>
-            <p className="required">To</p>
+            <p>To</p>
             <span className="error">{recipientError}</span>
             <input
               type="text"
               placeholder="Wallet Address"
-              required={true}
+              required={false}
               value={recipientAddress}
               onChange={this.onAddressChange}
             />
           </div>
+            <div className={`input`}>
+                <p>Data</p>
+                <div className={`input data-input-block`}>
+                    <input
+                        type="text"
+                        placeholder="Data"
+                        required={false}
+                        value={data}
+                        onChange={this.onDataChange}
+                    />
+                    <div onClick={this.onEstimateClick} className={`button mini ${!data ? 'disable' : ''}`}>
+                        <div />
+                        <span>estimate</span>
+                    </div>
+                </div>
+
+            </div>
           <div className={`input ${amountError && 'invalid'}`}>
             <p className="required">Amount</p>
             <span className="error">{amountError}</span>
             <input type="text" placeholder="Amount" required={true} value={amount} onChange={this.onAmountChange} />
           </div>
           <div className={`input ${amountError && 'invalid'}`}>
-            <p className="required">Fee</p>
+            <p className="required">Fee {data && <span className='input-fee-tip'> test </span>} </p>
             <input type="text" placeholder="Fee" required={true} value={fee} onChange={this.onFeeChange} />
           </div>
           <button className={`button mini ${confirmDisabled ? 'disable' : ''}`}>

@@ -2,6 +2,7 @@ import * as React from 'react';
 
 export const TransactionsHeader = () => (
   <div className="head">
+    <p className="hash-title">Hash</p>
     <p className="from">From</p>
     <p className="to">To</p>
     <p className="date">Date</p>

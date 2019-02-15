@@ -15,7 +15,7 @@ export const DelegateTableTabs = (props: IProps) => {
         <span>{props.delegatesCount}</span>
       </div>
       <div onClick={() => props.onAllDelegatesTabClick(false)} className={`tab ${!props.isAllDelegates && 'active'}`}>
-        <span>Casted vote</span>
+        <span>Casted votes</span>
       </div>
     </div>
   );

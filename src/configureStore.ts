@@ -32,6 +32,8 @@ export interface ITransactionCandidate {
   readonly fee: number;
   readonly amount: number;
   readonly recipientAddress: string;
+  readonly data: string;
+  readonly status?: boolean;
 }
 
 export interface IUnsignedTransaction extends ITransactionCandidate {
@@ -83,6 +85,7 @@ export interface IStoreState {
   readonly delegates: IList<IDelegate>;
   readonly castedVotesDelegates: ICastedVotesDelegate;
   readonly transactions: IList<ITransaction>;
+  readonly transaction: ITransaction | null;
 }
 
 const initState = {};
