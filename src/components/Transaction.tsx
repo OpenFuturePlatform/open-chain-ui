@@ -10,7 +10,7 @@ const getToField = (transaction: ITransaction) => {
         return `Contract: ${transaction.recipientAddress}`;
     }
     if (!transaction.recipientAddress) {
-        return 'Deploy contract';
+        return 'Smart contract deploy';
     }
     return transaction.recipientAddress;
 }

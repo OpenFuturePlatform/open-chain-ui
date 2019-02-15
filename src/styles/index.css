@@ -1543,6 +1543,9 @@ nav .profile-info .logout {
 .table-section .list .transaction .hash-row-failed {
   color: rgb(223, 67, 63);
 }
+.table-section .list .transaction .hash-row {
+  color: #3193f5;
+}
 .table-section .list .transaction .hash-row, .table-section .list .delegate .hash-row {
   width: 16%;
   left: 18px;
@@ -2298,4 +2301,7 @@ nav .profile-info .logout {
 }
 .input-fee-tip {
   color: #3193f5 !important;
+}
+.no-upper-case {
+  text-transform: none !important;
 }

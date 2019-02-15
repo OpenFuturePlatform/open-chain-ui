@@ -78,8 +78,8 @@ const InfoPopup = ({title, subTitle, list, closePopup, transactionResults}: IPro
                 {
                     list.map(i => (
                         <div key={i.value + Math.random()} className="info">
-                            <span className="title">{i.title}</span>
-                            <span>{i.value}</span>
+                            <span className='title'>{i.title}</span>
+                            <span className={`${(i.title === 'from' || i.title === 'to') && 'no-upper-case'}`}>{i.value}</span>
                         </div>
                     ))
                 }
@@ -88,10 +88,10 @@ const InfoPopup = ({title, subTitle, list, closePopup, transactionResults}: IPro
                     {
                         transactionResults && transactionResults.map((item, index) =>
                             <div className="transaction-result-block" key={index}>
-                                <div className="results-info"><span className="results-title">from: </span><span>{item.from}</span></div>
-                                { item.to && <div className="results-info"><span className="results-title">to: </span><span>{item.to}</span></div> }
+                                <div className="results-info"><span className="results-title">from: </span><span className="no-upper-case">{item.from}</span></div>
+                                { item.to && <div className="results-info"><span className="results-title">to: </span><span className="no-upper-case">{item.to}</span></div> }
                                 <div className="results-info"><span className="results-title">amount: </span><span>{item.amount}</span></div>
-                                { item.data && <div className="results-info"><span className="results-title">data: </span><span>{item.data}</span></div> }
+                                { item.data && <div className="results-info"><span className="results-title">data: </span><span className="no-upper-case">{item.data}</span></div> }
                             </div>)
                     }
                 </div>
