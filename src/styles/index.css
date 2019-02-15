@@ -1540,9 +1540,6 @@ nav .profile-info .logout {
 .table-section .list .head .hash-title {
   width: 16%;
 }
-.table-section .list .transaction .hash-row-failed {
-  color: rgb(223, 67, 63);
-}
 .table-section .list .transaction .hash-row {
   color: #3193f5;
 }
@@ -1552,6 +1549,9 @@ nav .profile-info .logout {
   top: 9px;
   position: absolute;
   padding-right: 12px !important;
+}
+.table-section .list .transaction .hash-row-failed {
+  color: rgb(223, 67, 63);
 }
 .table-section .list .transaction .hash-row.copy:after, .table-section .list .delegate .hash-row.copy:after {
   display: none !important;
