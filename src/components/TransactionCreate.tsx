@@ -111,7 +111,7 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
   public onEstimateClick = async (): Promise<void> => {
     try {
       const data = {
-        recipientAddress: this.state.recipientAddress,
+        recipientAddress: this.state.recipientAddress ? this.state.recipientAddress : null,
         data: this.state.data
       }
 
