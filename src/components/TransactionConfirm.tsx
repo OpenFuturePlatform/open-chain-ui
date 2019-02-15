@@ -26,10 +26,20 @@ const TransactionConfirmComponent = ({ isVisible, transaction, address, onSubmit
           <span className="title">from</span>
           <span>{address}</span>
         </div>
-        <div className="info">
-          <span className="title">to</span>
-          <span>{transaction.recipientAddress}</span>
-        </div>
+        {
+          transaction.recipientAddress &&
+          <div className="info">
+            <span className="title">to</span>
+            <span>{transaction.recipientAddress}</span>
+          </div>
+        }
+        {
+          transaction.data &&
+          <div className="info">
+            <span className="title">data</span>
+            <span>{transaction.data}</span>
+          </div>
+        }
         <div className="info">
           <span className="title">amount</span>
           <span>
