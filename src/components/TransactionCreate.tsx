@@ -183,7 +183,7 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
             <input type="text" placeholder="Amount" required={true} value={amount} onChange={this.onAmountChange} />
           </div>
           <div className={`input ${amountError && 'invalid'}`}>
-            <p className="required">Fee {data && <span className='input-fee-tip'> test </span>} </p>
+            <p className="required">Fee {data && <span className='input-fee-tip'> Remember to estimate </span>} </p>
             <input type="text" placeholder="Fee" required={true} value={fee} onChange={this.onFeeChange} />
           </div>
           <button className={`button mini ${confirmDisabled ? 'disable' : ''}`}>
