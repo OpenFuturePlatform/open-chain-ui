@@ -66,6 +66,13 @@ export const getTransaction = (hash: string): IThunkAction<TransactionAction> =>
     dispatch(new SetTransaction(payload));
 };
 
+export const resetTransaction = (): IThunkAction<TransactionAction> => async (
+    dispatch: Dispatch<TransactionAction>
+) => {
+    const payload: ITransaction = null;
+    dispatch(new SetTransaction(payload));
+};
+
 export type AppendToTransactionsAction = SetAppendToTransactions;
 
 class SetAppendToTransactions extends ActionCreator implements IAction<IList<ITransaction>> {

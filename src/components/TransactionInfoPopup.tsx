@@ -5,6 +5,7 @@ import cancel from '../static/images/cancel.svg';
 import {IStoreState, ITransaction} from "../configureStore";
 import {IThunkDispatch} from "../actions";
 import {connect} from "react-redux";
+import {resetTransaction} from "../actions/transactions";
 
 const getToField = (transaction: any) => {
     if (!transaction) {
@@ -102,6 +103,10 @@ const InfoPopup = ({title, subTitle, list, closePopup, transactionResults}: IPro
 
 class TransactionInfo extends React.Component<any, any> {
 
+    public componentWillUnmount() {
+      this.props.resetTransaction()
+    }
+
     public render() {
         const title = 'transaction info';
 
@@ -122,6 +127,7 @@ class TransactionInfo extends React.Component<any, any> {
 const mapStateToProps = ({ transaction }: IStoreState) => ({ transaction });
 
 const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
+    resetTransaction: () => dispatch(resetTransaction()),
 });
 
 interface IStoreStateProps {
