@@ -66,14 +66,14 @@ export class WalletNewKeys extends React.Component<IStoreStateProps, object> {
             </div>
             <div className="key-area mgb54">
               <div className="title">
-                <p>wallet adress</p>
+                <p>wallet address</p>
                 <div className="popover-area2">
                   <input type="checkbox" id="popover2" />
                   <label htmlFor="popover2">
                     <div className="close-wrapper" />
                   </label>
                   <div className="popover">
-                    <h3>Wallet Adress</h3>
+                    <h3>Wallet Address</h3>
                     <p>Wallet addresses are what you share with others when you want to receive funds.</p>
                   </div>
                 </div>

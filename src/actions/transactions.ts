@@ -17,6 +17,10 @@ interface IGetTransactionsResponse {
   payload: IList<ITransaction>;
 }
 
+interface IGetTransactionResponse {
+  payload: ITransaction;
+}
+
 interface IGetInfoResponse {
   payload: IInfo
 }
@@ -27,7 +31,7 @@ export interface IInfo {
   // nodeId: string
 }
 
-export type TransactionAction = SetTransactions;
+export type TransactionsAction = SetTransactions;
 
 class SetTransactions extends ActionCreator implements IAction<IList<ITransaction>> {
   public readonly type = ActionType.SET_TRANSACTIONS;
@@ -36,13 +40,37 @@ class SetTransactions extends ActionCreator implements IAction<IList<ITransactio
   }
 }
 
-export const getTransactions = (address: string): IThunkAction<TransactionAction> => async (
-  dispatch: Dispatch<TransactionAction>
+export const getTransactions = (address: string): IThunkAction<TransactionsAction> => async (
+  dispatch: Dispatch<TransactionsAction>
 ) => {
   const page = new Pageable(0);
   const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`, {params: {...page, sortBy: 'timestamp', sortDirection: 'DESC'}});
   const payload: IList<ITransaction> = data.payload;
   dispatch(new SetTransactions(payload));
+};
+
+export type TransactionAction = SetTransaction;
+
+class SetTransaction extends ActionCreator implements IAction<ITransaction> {
+    public readonly type = ActionType.SET_TRANSACTION;
+    constructor(public readonly payload: ITransaction) {
+        super();
+    }
+}
+
+export const getTransaction = (hash: string): IThunkAction<TransactionAction> => async (
+    dispatch: Dispatch<TransactionAction>
+) => {
+    const { data } = await axios.get<IGetTransactionResponse>(`/rpc/transactions/transfer/${hash}`);
+    const payload: ITransaction = data.payload;
+    dispatch(new SetTransaction(payload));
+};
+
+export const resetTransaction = (): IThunkAction<TransactionAction> => async (
+    dispatch: Dispatch<TransactionAction>
+) => {
+    const payload: ITransaction = null;
+    dispatch(new SetTransaction(payload));
 };
 
 export type AppendToTransactionsAction = SetAppendToTransactions;
@@ -122,4 +150,8 @@ export const createDelegateTransaction = () => async (dispatch: IThunkDispatch, 
   const delegateTransaction: IDelegateTransaction = buildDelegateTransaction(wallet, data.payload);
 
   await axios.post('/rpc/transactions/delegate', delegateTransaction);
+};
+
+export const estimation = async (data: {recipientAddress: string, data: string}) => {
+  return await axios.post('/rpc/contracts/estimation', data);
 };

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { IThunkDispatch } from '../actions';
-import { createTransaction } from '../actions/transactions';
+import {createTransaction, estimation} from '../actions/transactions';
 import { IStoreState, ITransactionCandidate, IWallet } from '../configureStore';
 import { getNumbersOnly } from '../utils/getNumbersOnly';
 import { ErrorField, parseApiError } from '../utils/parseApiError';
@@ -108,6 +108,29 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
     }
   };
 
+  public onEstimateClick = async (): Promise<void> => {
+    try {
+      const data = {
+        recipientAddress: this.state.recipientAddress ? this.state.recipientAddress : null,
+        data: this.state.data
+      }
+
+      const response = await estimation(data);
+      this.setState({fee: response.data.payload, recipientError: ''})
+    } catch (e) {
+      const { message, field } = parseApiError(e);
+      this.setState({previewPopup: false});
+      switch (field) {
+        case ErrorField.RECIPIENT:
+          this.setState({ recipientError: message });
+          throw e;
+        default:
+          this.setState({ errorPopupMessage: message, isShowError: true  });
+          throw e;
+      }
+    }
+  };
+
   public render() {
     const { recipientAddress, amount, fee, recipientError, amountError, previewPopup, isShowError, errorPopupMessage, data } = this.state;
     const { wallet } = this.props;
@@ -134,23 +157,30 @@ export class TransactionCreateComponent extends React.Component<IProps, IState> 
               onChange={this.onAddressChange}
             />
           </div>
-          <div className={`input`}>
-            <p>Data</p>
-            <input
-              type="text"
-              placeholder="Data"
-              required={false}
-              value={data}
-              onChange={this.onDataChange}
-            />
-          </div>
+            <div className={`input`}>
+                <p>Data</p>
+                <div className={`input data-input-block`}>
+                    <input
+                        type="text"
+                        placeholder="Data"
+                        required={false}
+                        value={data}
+                        onChange={this.onDataChange}
+                    />
+                    <div onClick={this.onEstimateClick} className={`button mini ${!data ? 'disable' : ''}`}>
+                        <div />
+                        <span>estimate</span>
+                    </div>
+                </div>
+
+            </div>
           <div className={`input ${amountError && 'invalid'}`}>
             <p className="required">Amount</p>
             <span className="error">{amountError}</span>
             <input type="text" placeholder="Amount" required={true} value={amount} onChange={this.onAmountChange} />
           </div>
           <div className={`input ${amountError && 'invalid'}`}>
-            <p className="required">Fee</p>
+            <p className="required">Fee {data && <span className='input-fee-tip'> Remember to estimate </span>} </p>
             <input type="text" placeholder="Fee" required={true} value={fee} onChange={this.onFeeChange} />
           </div>
           <button className={`button mini ${confirmDisabled ? 'disable' : ''}`}>
