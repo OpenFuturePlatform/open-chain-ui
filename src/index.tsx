@@ -15,6 +15,7 @@ import './styles/index.css';
 import './styles/override.css';
 
 import * as packageJSON from '../package.json';
+import {ContractDeploy} from "./scenes/ContractDeploy";
 const version = (packageJSON as any).version;
 console.log('ui-version: ', version);
 
@@ -37,6 +38,7 @@ ReactDOM.render(
           <Route exact={true} path="/" component={withStartBackground(WalletEnter)} />
           <Route path="/login" component={withBackground(WalletLoginType)} />
           <Route path="/new" component={withBackground(CreateWorkFlow)} />
+          <Route path="/contract-deploy" component={withBackground(ContractDeploy)} />
           <Route path="/" component={withBackground(UsingWorkFlow)} />
           <Redirect from="*" to="/" />
         </Switch>
