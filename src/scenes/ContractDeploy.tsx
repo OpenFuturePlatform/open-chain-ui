@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {IThunkDispatch} from '../actions';
 import {createTransaction, estimation} from '../actions/transactions';
 import {IStoreState, ITransactionCandidate, IWallet} from '../configureStore';
-import {getNumbersOnly} from '../utils/getNumbersOnly';
 import {ErrorField, parseApiError} from '../utils/parseApiError';
 import {getWalletByPrivateKey} from '../actions/wallet';
 import {Password} from "../components-ui/Password";
@@ -35,7 +34,6 @@ interface IState {
     key: string;
     keyError: string;
     isLoginShown: boolean;
-    isFormShown: boolean;
 }
 
 export class ContractDeployComponent extends React.Component<IProps, IState> {
@@ -46,14 +44,12 @@ export class ContractDeployComponent extends React.Component<IProps, IState> {
 
     public componentDidMount(): void {
         window.addEventListener('message', (event: any) => {
-            const byteCode = event.data.byteCode;
-
-            if (byteCode === undefined || byteCode === null) {
-                return;
-            }
-
-            this.deployContract(byteCode);
+            this.handleEvent(event);
         });
+
+        window.onscroll = () => {
+            window.scrollTo(0, document.body.scrollHeight);
+        };
     };
 
     public getDefaultState = () => ({
@@ -68,13 +64,17 @@ export class ContractDeployComponent extends React.Component<IProps, IState> {
         errorPopupMessage: '',
         key: '',
         keyError: '',
-        isLoginShown: false,
-        isFormShown: false
+        isLoginShown: false
     });
 
-    public isConfirmDisabled = () =>
-        // !this.state.amount ||
-        !this.state.fee || (!this.state.recipientAddress && !this.state.data);
+    public getPostMessageData = () => ({
+        hash: '',
+        blockHash: '',
+        senderAddress: '',
+        senderPublicKey: '',
+        timestamp: '',
+        error: {}
+    });
 
     public getTransactionCandidate = () => ({
         amount: Number(this.state.amount),
@@ -83,66 +83,63 @@ export class ContractDeployComponent extends React.Component<IProps, IState> {
         data: this.state.data || null
     });
 
-    public showPreviewPopup = (e?: React.FormEvent | React.MouseEvent) => {
-        if (e) {
-            e.preventDefault();
+    public handleEvent = (event: any) => {
+        const byteCode = event.data.byteCode;
+
+        if (byteCode === undefined || byteCode === null) {
+            return;
         }
-        this.setState(() => ({previewPopup: true}));
+
+        this.prepareContractDeploying(byteCode);
     };
-    public hidePreviewPopup = () => this.setState(() => ({previewPopup: false}));
 
-    public onAddressChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-        this.setState({recipientAddress: e.target.value});
-
-    public onDataChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-        this.setState({data: e.target.value});
+    public hidePreviewPopup = () => {
+        this.setState(() => ({previewPopup: false}));
+        this.postSuccessfulMessage();
+        this.scrollToBottom();
+    };
 
     public onKeyChange = (e: React.ChangeEvent<HTMLInputElement>) =>
         this.setState({key: e.target.value});
 
-    public onLoginClick = async (): Promise<void> => {
+    public onAuthorizeClick = async (): Promise<void> => {
         const {key} = this.state;
         const keyError = this.getKeyError(key);
+
         if (keyError) {
+            this.postFailMessage(keyError);
             return this.setState({keyError});
         }
+
         try {
             await this.props.getWalletByPrivateKey(key);
-            this.setState({isLoginShown: true});
+            this.setState({isLoginShown: false});
             this.setState({keyError: ''});
-            this.setState({key: ''});
+            this.setState({previewPopup: true});
+            this.scrollToBottom();
         } catch (e) {
             this.setState({keyError: parseApiError(e).message});
+            this.scrollToBottom();
+            this.postFailMessage(parseApiError(e).message);
         }
-    };
-
-    public onAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const initial = e.target.value || '';
-        const amount = getNumbersOnly(initial);
-        this.setState({amount});
-    };
-
-    public onFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const initial = e.target.value || '';
-        const fee = getNumbersOnly(initial);
-        this.setState({fee});
     };
 
     public onCloseError = () => this.setState({isShowError: false});
 
-    // 123
     public onConfirm = async (): Promise<void> => {
         try {
             const {key} = this.state;
-            const keyError = this.getKeyError(key);
             await this.props.getWalletByPrivateKey(key);
-
             const transaction = this.getTransactionCandidate();
             await this.props.createTransaction(transaction);
             this.setState(this.getDefaultState());
+            this.scrollToBottom();
+            this.postSuccessfulMessage();
         } catch (e) {
             const {message, field} = parseApiError(e);
             this.setState({previewPopup: false});
+            this.scrollToBottom();
+            this.postFailMessage(message);
             switch (field) {
                 case ErrorField.RECIPIENT:
                     this.setState({recipientError: message});
@@ -157,6 +154,32 @@ export class ContractDeployComponent extends React.Component<IProps, IState> {
         }
     };
 
+    public postSuccessfulMessage = () => {
+        const data = this.getPostMessageData();
+        // data.hash = ;
+        // data.blockHash = ;
+        // data.senderAddress = ;
+        // data.senderPublicKey = ;
+        // data.timestamp = ;
+        this.postMessage(data);
+    };
+
+    public postFailMessage = (err: string) => {
+        const data = this.getPostMessageData();
+        data.error = err;
+        this.postMessage(data);
+    };
+
+    public postMessage = (data: any) => {
+        setTimeout(() => {
+            window.top.postMessage(data, '*');
+        }, 1000);
+    };
+
+    public scrollToBottom = () => {
+        window.scrollTo(0, document.body.scrollHeight);
+    };
+
     public getKeyError = (key: string) => {
         if (key.length !== 64) {
             return 'Private Key needs to include 64 symbols';
@@ -168,106 +191,33 @@ export class ContractDeployComponent extends React.Component<IProps, IState> {
         return '';
     };
 
-    public onEstimateClick = async (): Promise<void> => {
-        try {
-            const data = {
-                recipientAddress: this.state.recipientAddress ? this.state.recipientAddress : null,
-                data: this.state.data
-            };
-
-            const response = await estimation(data);
-            this.setState({fee: response.data.payload, recipientError: ''})
-        } catch (e) {
-            const {message, field} = parseApiError(e);
-            this.setState({previewPopup: false});
-            switch (field) {
-                case ErrorField.RECIPIENT:
-                    this.setState({recipientError: message});
-                    throw e;
-                default:
-                    this.setState({errorPopupMessage: message, isShowError: true});
-                    throw e;
-            }
-        }
-    };
-
-    public deployContract = async (byteCode: string): Promise<void> => {
+    public prepareContractDeploying = async (byteCode: string): Promise<void> => {
         try {
             const data = {
                 recipientAddress: null,
                 data: byteCode
             };
             const response = await estimation(data);
-            this.setState({fee: response.data.payload, recipientError: ''})
+            this.setState({fee: response.data.payload, recipientError: ''});
+            this.setState({data: byteCode});
             this.setState({isLoginShown: true});
-
         } catch (e) {
-            this.setState({errorPopupMessage: "Invalid bytecode", isShowError: true});
+            this.setState({errorPopupMessage: 'Invalid bytecode', isShowError: true});
+            this.postFailMessage('Invalid bytecode');
+            this.scrollToBottom();
             throw e;
         }
     };
 
     public render() {
-        const {recipientAddress, amount, fee, recipientError, amountError, previewPopup, isShowError, errorPopupMessage, data} = this.state;
+        const {previewPopup, isShowError, errorPopupMessage} = this.state;
         const {wallet} = this.props;
-        const {key, keyError, isLoginShown, isFormShown} = this.state;
-        const senderAddress = wallet ? wallet.address : '';
-        const confirmDisabled = this.isConfirmDisabled();
+        const {key, keyError, isLoginShown} = this.state;
         const transactionCandidate: ITransactionCandidate = this.getTransactionCandidate();
 
         return (
             <section>
                 <div className="form-content">
-                    {isFormShown &&
-                    <div>
-                        <form className="create-transaction">
-
-                            <h3>Deploy Contract</h3>
-                            <br/><br/>
-
-                            <div className="input">
-                                <p>From</p>
-                                <input type="text" placeholder="Wallet Address" className="disable"
-                                       value={senderAddress}
-                                       readOnly={true}/>
-                            </div>
-                            <div className={`input`}>
-                                <p>Bytecode</p>
-                                <div className={`input data-input-block`}>
-                                    <input
-                                        type="text"
-                                        placeholder="Bytecode"
-                                        required={false}
-                                        value={data}
-                                        onChange={this.onDataChange}
-                                    />
-                                    <div onClick={this.onEstimateClick}
-                                         className={`button mini ${!data ? 'disable' : ''}`}>
-                                        <div/>
-                                        <span>estimate</span>
-                                    </div>
-                                </div>
-
-                            </div>
-                            {/*<div className={`input ${amountError && 'invalid'}`}>*/}
-                            {/*    <p className="required">Amount</p>*/}
-                            {/*    <span className="error">{amountError}</span>*/}
-                            {/*    <input type="text" placeholder="Amount" required={true} value={amount} onChange={this.onAmountChange} />*/}
-                            {/*</div>*/}
-                            <div className={`input ${amountError && 'invalid'}`}>
-                                <p className="required">Fee {data &&
-                                <span className='input-fee-tip'> Remember to estimate </span>} </p>
-                                <input type="text" placeholder="Fee" required={true} value={fee}
-                                       onChange={this.onFeeChange}
-                                       readOnly={true}/>
-                            </div>
-                            <button className={`button mini ${confirmDisabled ? 'disable' : ''}`}>
-                                <div/>
-                                <span>deploy</span>
-                            </button>
-                        </form>
-                    </div>
-                    }
 
                     {isLoginShown &&
                     <form>
@@ -283,9 +233,9 @@ export class ContractDeployComponent extends React.Component<IProps, IState> {
                         <button
                             className="button mini"
                             type="button"
-                            onClick={this.onLoginClick}>
+                            onClick={this.onAuthorizeClick}>
                             <div/>
-                            <span>Login</span>
+                            <span>Authorize</span>
                         </button>
                     </form>
                     }
