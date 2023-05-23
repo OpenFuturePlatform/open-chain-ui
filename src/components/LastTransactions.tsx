@@ -46,8 +46,8 @@ export class LastTransactionsComponent extends React.Component<IProps, IState> {
   public closePopup = () => this.setState({isPopupShown: false});
 
   public render() {
-    const transactions: ITransaction[] = this.props.transactions.list.slice(0, 15);
-    const transactionList = transactions.map(transaction => (
+    const transactions: ITransaction[] = this.props.transactions?.list.slice(0, 15);
+    const transactionList = transactions?.map(transaction => (
       <Transaction key={transaction.hash} transaction={transaction} popUpOpen={(hash: string) => this.openPopup(hash)}/>
     ));
 
@@ -65,7 +65,7 @@ export class LastTransactionsComponent extends React.Component<IProps, IState> {
             <TransactionsHeader />
             {transactionList}
             <Link to="/wallet/transactions" className="all">
-              View All Transactions <span>{this.props.transactions.totalCount}</span>
+              View All Transactions <span>{this.props.transactions?.totalCount}</span>
             </Link>
           </div>
         </div>

@@ -25,7 +25,7 @@ const store = configureStore();
 
 if (process.env.NODE_ENV === 'development') {
   store.subscribe(() => {
-    console.log(store.getState());
+    // console.log(store.getState());
   });
 }
 

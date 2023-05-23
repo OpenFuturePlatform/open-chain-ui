@@ -45,8 +45,9 @@ export const getTransactions = (address: string): IThunkAction<TransactionsActio
 ) => {
   const page = new Pageable(0);
   const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`, {params: {...page, sortBy: 'timestamp', sortDirection: 'DESC'}});
-  const payload: IList<ITransaction> = data.payload;
-  dispatch(new SetTransactions(payload));
+  const payloads: IList<ITransaction> = data.payload;
+  //  dispatch(new SetTransactions(payload));
+  dispatch({type:ActionType.SET_TRANSACTIONS, payload: payloads});
 };
 
 export type TransactionAction = SetTransaction;
@@ -62,15 +63,17 @@ export const getTransaction = (hash: string): IThunkAction<TransactionAction> =>
     dispatch: Dispatch<TransactionAction>
 ) => {
     const { data } = await axios.get<IGetTransactionResponse>(`/rpc/transactions/transfer/${hash}`);
-    const payload: ITransaction = data.payload;
-    dispatch(new SetTransaction(payload));
+    const payloads: ITransaction = data.payload;
+    //  dispatch(new SetTransaction(payload));
+    dispatch({type:ActionType.SET_TRANSACTION, payload: payloads});
 };
 
 export const resetTransaction = (): IThunkAction<TransactionAction> => async (
     dispatch: Dispatch<TransactionAction>
 ) => {
     const payload: ITransaction = null;
-    dispatch(new SetTransaction(payload));
+    //  dispatch(new SetTransaction(payload));
+    dispatch({type:ActionType.SET_TRANSACTION, payload: null});
 };
 
 export type AppendToTransactionsAction = SetAppendToTransactions;
@@ -88,8 +91,9 @@ export const appendToTransactions = (address: string): IThunkAction<AppendToTran
   const state = getState();
   const page = new Pageable(state.transactions.list.length);
   const { data } = await axios.get<IGetTransactionsResponse>(`/rpc/transactions/transfer/address/${address}`, {params: {...page, sortBy: 'timestamp', sortDirection: 'DESC'}});
-  const payload: IList<ITransaction> = data.payload;
-  dispatch(new SetAppendToTransactions(payload));
+  const payloads: IList<ITransaction> = data.payload;
+  //  dispatch(new SetAppendToTransactions(payload));
+  dispatch({type:ActionType.SET_APPEND_TO_TRANSACTIONS, payload: payloads});
 };
 
 export const createTransaction = (transactionCandidate: ITransactionCandidate) => async (

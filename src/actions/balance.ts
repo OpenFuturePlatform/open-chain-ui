@@ -25,6 +25,8 @@ export const getBalance = (address: string): IThunkAction<BalanceAction> => asyn
   dispatch: Dispatch<BalanceAction>
 ) => {
   const { data } = await axios.get<IGetBalanceResponse>(`/rpc/accounts/wallets/${address}/balance`);
-  const payload: string = (+(data.payload).toFixed(8)).toString();
-  dispatch(new SetBalance(payload));
+  const payloads: string = (+(data.payload).toFixed(8)).toString();
+  console.log("dada "+JSON.stringify(payloads))
+  //  dispatch(new SetBalance(payload));
+  dispatch({type:ActionType.SET_BALANCE, payload: payloads});
 };

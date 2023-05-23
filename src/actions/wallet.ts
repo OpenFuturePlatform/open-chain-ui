@@ -65,8 +65,11 @@ export const generateWallet = (): IThunkAction<WalletAction> => async (
 ) => {
   const { data } = await generateWalletRequest();
   const { defaultWallet, seedPhrase } = data.payload;
-  dispatch(new SaveSeed(seedPhrase));
-  dispatch(new SaveWallet(defaultWallet));
+  // dispatch(new SaveSeed(seedPhrase));
+  // dispatch(new SaveWallet(defaultWallet));
+
+  dispatch({type:ActionType.SAVE_SEED, payload:seedPhrase});
+  dispatch({type:ActionType.SAVE_WALLET, payload:defaultWallet});
 };
 
 export const restoreWallet = (seed: string): IThunkAction<WalletAction> => async (
@@ -74,24 +77,36 @@ export const restoreWallet = (seed: string): IThunkAction<WalletAction> => async
 ) => {
   const { data } = await restoreWalletRequest(seed);
   const { defaultWallet, seedPhrase } = data.payload;
-  dispatch(new SaveSeed(seedPhrase));
-  dispatch(new SaveWallet(defaultWallet));
+  // dispatch(new SaveSeed(seedPhrase));
+  // dispatch(new SaveWallet(defaultWallet));
+
+  dispatch({type:ActionType.SAVE_SEED, payload:seedPhrase});
+  dispatch({type:ActionType.SAVE_WALLET, payload:defaultWallet});
 };
 
 export const getWalletByPrivateKey = (privateKey: string) => async (dispatch: Dispatch<WalletAction>) => {
   const { data } = await getByPrivateKeyRequest(privateKey);
   const wallet = data.payload;
-  dispatch(new SaveWallet(wallet));
+  //  dispatch(new SaveWallet(wallet));
+
+  dispatch({type:ActionType.SAVE_WALLET, payload:wallet});
 };
 
 export const setWallet = (wallet: IWallet) => async (dispatch: Dispatch<WalletAction | SeedAction>) => {
-  dispatch(new SaveWallet(wallet));
+  // dispatch(new SaveWallet(wallet));
+
+  dispatch({type:ActionType.SAVE_WALLET, payload:wallet});
 };
 
-export const cleanWallet = (): IThunkAction<WalletAction> => async (
+export const cleanWallet = () => async (
   dispatch: Dispatch<WalletAction | SeedAction | BalanceAction>
 ) => {
-  dispatch(new ClearWallet());
-  dispatch(new ClearSeed());
-  dispatch(new CleanBalance());
+  // console.log("hey "+JSON.stringify(new CleanBalance()));
+  // dispatch(new ClearWallet());
+  // dispatch(new ClearSeed());
+  // dispatch(new CleanBalance());
+
+  dispatch({type:ActionType.CLEAR_WALLET, payload:null});
+  dispatch({type:ActionType.CLEAR_SEED, payload:""});
+  dispatch({type:ActionType.CLEAN_BALANCE, payload:""});
 };

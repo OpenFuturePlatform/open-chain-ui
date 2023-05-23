@@ -21,8 +21,9 @@ class SetDelegates extends ActionCreator implements IAction<IList<IDelegate>> {
 export const getDelegates = (): IThunkAction<DelegateAction> => async (dispatch: Dispatch<DelegateAction>) => {
   const page = new Pageable(0);
   const { data } = await axios.get<IGetDelegatesResponse>(`/rpc/delegates/view`, {params: page});
-  const payload: IList<IDelegate> = data.payload;
-  dispatch(new SetDelegates(payload));
+  const payloads: IList<IDelegate> = data.payload;
+  // dispatch(new SetDelegates(payload));
+  dispatch({type:ActionType.SET_DELEGATES, payload: payloads });
 };
 
 export type AppendToDelegateAction = SetAppendToDelegates;
@@ -38,6 +39,7 @@ export const appendToDelegates = (): IThunkAction<AppendToDelegateAction> => asy
   const state = getState();
   const page = new Pageable(state.delegates.list.length);
   const { data } = await axios.get<IGetDelegatesResponse>(`/rpc/delegates/view`, {params: page});
-  const payload: IList<IDelegate> = data.payload;
-  dispatch(new SetAppendToDelegates(payload));
+  const payloads: IList<IDelegate> = data.payload;
+  //  dispatch(new SetAppendToDelegates(payload));
+  dispatch({type:ActionType.SET_APPEND_TO_DELEGATES, payload: payloads });
 };

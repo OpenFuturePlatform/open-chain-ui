@@ -55,9 +55,9 @@ class DelegatesComponent extends React.Component<IProps> {
             <p className="address">Address</p>
             <p className="amount">Amount of votes</p>
           </div>
-          {this.renderDelegates(delegates.list.slice(0, 4))}
+          {this.renderDelegates(delegates?.list.slice(0, 4) || [])}
           <Link to="/wallet/delegates" className="all">
-            View all delegates <span>{delegates.totalCount}</span>
+            View all delegates <span>{delegates?.totalCount}</span>
           </Link>
         </div>
       </div>
@@ -67,7 +67,7 @@ class DelegatesComponent extends React.Component<IProps> {
 
 const mapStateToProps = ({ delegates, wallet }: IStoreState) => ({ delegates, wallet });
 
-const mapDispatchToProps = (dispatch: IThunkDispatch, getState: (() => IStoreState)) => ({
+const mapDispatchToProps = (dispatch: IThunkDispatch) => ({
   getDelegates: () => dispatch(getDelegates()),
   getBalance: (address: string) => dispatch(getBalance(address)),
   getInfo: () => dispatch(getInfo()),

@@ -19,6 +19,7 @@ class SetDelegates extends ActionCreator implements IAction<ICastedVotesDelegate
 
 export const getCastedVotesDelegates = (address: string): IThunkAction<DelegateAction> => async (dispatch: Dispatch<DelegateAction>) => {
   const { data } = await axios.get<IGetDelegatesResponse>(`/rpc/accounts/wallets/${address}/delegate`);
-  const payload: ICastedVotesDelegate | null = data.payload;
-  dispatch(new SetDelegates(payload));
+  const payloads: ICastedVotesDelegate | null = data.payload;
+  //  dispatch(new SetDelegates(payload));
+  dispatch({type:ActionType.SET_CASTED_VOTES_DELEGATES, payload: payloads});
 };

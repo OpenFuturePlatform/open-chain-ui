@@ -5,7 +5,7 @@ export const readJsonFile = (file: File): Promise<IEncWallet> =>
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const encWallet: IEncWallet = JSON.parse(reader.result);
+        const encWallet: IEncWallet = JSON.parse(reader.result as string);
         resolve(encWallet);
       } catch (e) {
         reject(e);

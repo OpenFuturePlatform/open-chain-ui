@@ -18,6 +18,7 @@ class SaveVersion extends ActionCreator implements IAction<string> {
 
 export const getVersion = (): IThunkAction<VersionAction> => async (dispatch: Dispatch<SaveVersion>) => {
   const { data } = await axios.get<IGetVersionResponse>('/rpc/info/getVersion');
-  const payload: string = data.version;
-  dispatch(new SaveVersion(payload));
+  const payloads: string = data.version;
+  // dispatch(new SaveVersion(payload));
+  dispatch({type:ActionType.SAVE_VERSION, payload: payloads});
 };

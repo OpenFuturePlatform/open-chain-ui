@@ -24,7 +24,7 @@
     "url-search-params-polyfill": "^4.0.1"
   },
   "scripts": {
-    "start": "REACT_APP_VERSION=0.1.1 react-scripts-ts start",
+    "start": "react-scripts-ts start",
     "start:mock": "REACT_APP_IS_MOCK=true REACT_APP_VERSION=0.1.1 react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
@@ -39,6 +39,6 @@
     "@types/react-redux": "6.0.5",
     "@types/react-router-dom": "^4.3.0",
     "redux-thunk": "^2.3.0",
-    "typescript": "^2.9.2"
+    "typescript": "^3.9.10"
   }
 }
